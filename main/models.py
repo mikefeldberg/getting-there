@@ -36,7 +36,7 @@ class Trip(models.Model):
     line_id = models.CharField(max_length=50)
     direction = models.CharField(max_length=50)
 
-class Votes(models.Model):
+class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     resolved = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
