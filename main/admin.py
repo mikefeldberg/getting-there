@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Alert, Comment, Trip, Vote
+
+admin.site.register(Alert)
+admin.site.register(Comment)
+admin.site.register(Trip)
+admin.site.register(Vote)
