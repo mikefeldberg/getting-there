@@ -1,0 +1,8 @@
+h1 {
+    color: red;
+    text-align: center;
+}
+
+#my-trips, #all-lines{
+    display: inline-block;
+}
