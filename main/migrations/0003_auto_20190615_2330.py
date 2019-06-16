@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Line',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=50)),
                 ('group_id', models.IntegerField()),
                 ('color', models.CharField(max_length=7)),
@@ -28,13 +29,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Station',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('uid', models.CharField(max_length=20)),
                 ('name', models.CharField(max_length=100)),
                 ('uptown_stop_number', models.IntegerField()),
                 ('downtown_stop_number', models.IntegerField()),
                 ('deleted_at', models.DateTimeField(null=True)),
-                ('line_id', models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Line')),
+                ('line_id', models.ForeignKey(default=None,
+                                              on_delete=django.db.models.deletion.CASCADE, to='main.Line')),
             ],
         ),
         migrations.RemoveField(
@@ -60,12 +63,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='alert',
             name='user_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='comment',
             name='user_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='trip',
@@ -75,17 +80,20 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='trip',
             name='user_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='vote',
             name='alert_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Alert'),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Alert'),
         ),
         migrations.AddField(
             model_name='vote',
             name='user_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name='alert',
@@ -95,17 +103,20 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='alert',
             name='line_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Line'),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Line'),
         ),
         migrations.AlterField(
             model_name='alert',
             name='station_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Station'),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Station'),
         ),
         migrations.AlterField(
             model_name='comment',
             name='alert_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Alert'),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Alert'),
         ),
         migrations.AlterField(
             model_name='comment',
@@ -120,11 +131,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='trip',
             name='line_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Line'),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Line'),
         ),
         migrations.AlterField(
             model_name='trip',
             name='station_id',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Station'),
+            field=models.ForeignKey(
+                default=None, on_delete=django.db.models.deletion.CASCADE, to='main.Station'),
         ),
     ]

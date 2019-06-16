@@ -1,0 +1,7 @@
+{% for line in lines %}
+
+    <span style="background-color:{{ line.color }};color:{{ line.text_color }}">
+        <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">{{ line.name }}</a>
+    </span>
+
+{% endfor %}

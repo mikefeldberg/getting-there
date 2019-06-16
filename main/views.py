@@ -11,14 +11,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import uuid
 import boto3
 
-# from .models import Cocktail, Garnish, Photo
+from .models import Line, Station
 # from .forms import OccasionForm
+
 
 def home(request):
     return render(request, 'home.html')
 
+
 def about(request):
     return render(request, 'about.html')
+
 
 def signup(request):
     error_message = ''
@@ -36,5 +39,17 @@ def signup(request):
         'form': form,
         'error_message': error_message,
     }
-    
+
     return render(request, 'registration/signup.html', context)
+
+
+def lines_index(request):
+    lines = Line.objects.filter(deleted_at=None)
+
+    return render(request, 'lines/index.html', {'lines': lines})
+
+def lines_detail(request, line_id):
+    line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    stations = Station.objects.filter(line_id=line_id, deleted_at=None)
+
+    return render(request, 'lines/detail.html', {'line': line, 'stations': stations})
