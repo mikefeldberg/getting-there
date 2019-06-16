@@ -1,6 +1,8 @@
-<span style="background-color:{{ line.color }};color:{{ line.text_color }}">
-    <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">{{ line.name }}</a>
-</span>
+<a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
+    <div class="line-emblem line-emblem-md {% if line.express %} express {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+        {{ line.name }}
+    </div>
+</a>
 
 {% for station in stations %}
     {{ station.name }}

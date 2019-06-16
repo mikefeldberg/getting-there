@@ -1,7 +1,39 @@
 {% for line in lines %}
-
-    <span style="background-color:{{ line.color }};color:{{ line.text_color }}">
-        <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">{{ line.name }}</a>
-    </span>
-
+    <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
+        <div class="line-emblem line-emblem-md {% if line.express %} express {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+            {{ line.name }}
+        </div>
+    </a>
 {% endfor %}
+
+<style>
+.line-emblem {
+    border-radius: 50%;
+    align-content: center;
+    font-family: Helvetica;
+    text-align: center;
+}
+
+.line-emblem-sm {
+    width: 1em;
+    height: 1em;
+    font-size: 1em;
+}
+
+.line-emblem-md {
+    width: 1.4em;
+    height: 1.4em;
+    font-size: 1.2em;
+}
+
+.line-emblem-lg {
+    width: 1.9em;
+    height: 1.9em;
+    font-size: 1.7em;
+}
+
+.line-emblem.express {
+    border-radius: 0;
+}
+
+</style>
