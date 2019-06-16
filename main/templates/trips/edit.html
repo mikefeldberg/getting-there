@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>This is the Edit Trip page</h1>
+    {% for trip in trips %}
+        <span> {{trip.line_nanme}}
+    {% endfor %}
+
+{% endblock %}
