@@ -1,9 +1,21 @@
 <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
-    <div class="line-emblem line-emblem-md {% if line.express %} express {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+    <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
         {{ line.name }}
     </div>
 </a>
 
 {% for station in stations %}
-    {{ station.name }}
+    <div>
+
+        {{ station.name }}
+        {% if  %}
+            <a href="/trips/edit">
+                Edit Trips
+            </a>
+        {% else %}
+            <a href="/trips/new/{{ line.id }}/{{ station.id }}">
+                Add Trip
+            </a>
+        {% endif %}
+    </div>
 {% endfor %}

@@ -8,10 +8,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+import collections
 import uuid
 import boto3
 
-from .models import Line, Station
+from .models import Line, Station, Trip
 # from .forms import OccasionForm
 
 
@@ -44,12 +45,29 @@ def signup(request):
 
 
 def lines_index(request):
-    lines = Line.objects.filter(deleted_at=None)
+    lines = Line.objects.filter(deleted_at=None).all()
 
-    return render(request, 'lines/index.html', {'lines': lines})
+    grouped_lines = collections.defaultdict(list)
+    for line in lines:
+        grouped_lines[line.group_id].append(line)
+    
+    return render(request, 'lines/index.html', {'grouped_lines': dict(grouped_lines)})
+
 
 def lines_detail(request, line_id):
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    stations = Station.objects.filter(line_id=line_id, deleted_at=None)
+    stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
+    trips = Trip.objects.filter(line_id=line_id, deleted_at=None).all()
 
-    return render(request, 'lines/detail.html', {'line': line, 'stations': stations})
+    return render(request, 'lines/detail.html', {'line': line, 'stations': stations, 'trips': trips})
+
+def trips_new(request, line_id, station_id):
+    line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    station = Station.objects.filter(id=station_id, deleted_at=None).first()
+    return render(request, 'trips/new.html', {'line': line, 'station': station})
+
+def trips_edit(request):
+    trips = Trip.objects.filter(deleted_at=None).all()
+    # lines = Line.objects.filter()
+    return render(request, 'trips/edit.html', {'trips': trips})
+
