@@ -12,6 +12,9 @@ class Line(models.Model):
     express = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Station(models.Model):
     uid = models.CharField(max_length=20)
@@ -21,10 +24,14 @@ class Station(models.Model):
     downtown_stop_number = models.IntegerField()
     deleted_at = models.DateTimeField(null=True)
 
+    def __str__(self):
+        return self.name + ' ' + str(self.line_id)
+
 
 class Alert(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    station_id = models.ForeignKey(Station, on_delete=models.CASCADE, default=None)
+    station_id = models.ForeignKey(
+        Station, on_delete=models.CASCADE, default=None)
     line_id = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     direction = models.CharField(max_length=100)
     wait_time = models.IntegerField()
@@ -48,15 +55,21 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True)
 
+    def __str__(self):
+        return str(self.user_id) + ' - ' + str(self.alert_id) + ' - ' + self.message
+
 
 class Trip(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     trip_type = models.CharField(max_length=10)
-    station_id = models.ForeignKey(Station, on_delete=models.CASCADE, default=None)
+    station_id = models.ForeignKey(
+        Station, on_delete=models.CASCADE, default=None)
     line_id = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     direction = models.CharField(max_length=20)
-    deleted_at = models.DateTimeField(null=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return str(self.user_id) + ' - ' + str(self.trip_type) + ' - ' + str(self.station_id) + ' - ' + str(self.direction)
 
 class Vote(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
@@ -64,3 +77,6 @@ class Vote(models.Model):
     resolved = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.resolved
