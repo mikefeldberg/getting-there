@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 {% for group, lines in grouped_lines.items %}
     <div>
         {% for line in lines %}
@@ -10,36 +14,4 @@
     </div>
 {% endfor %}
 
-<style>
-.line-emblem {
-    border-radius: 50%;
-    align-content: center;
-    font-family: Helvetica;
-    text-align: center;
-    display: inline-block;
-}
-
-.line-emblem-sm {
-    width: 1em;
-    height: 1em;
-    font-size: 1em;
-}
-
-.line-emblem-md {
-    width: 1.4em;
-    height: 1.4em;
-    font-size: 1.2em;
-}
-
-.line-emblem-lg {
-    width: 1.9em;
-    height: 1.9em;
-    font-size: 1.7em;
-}
-
-.line-emblem.diamond {
-    border-radius: 0;
-    /* TODO: make this a diamond shape */
-}
-  
-</style>
+{% endblock %}
