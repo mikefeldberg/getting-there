@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
+from copy import copy
 import collections
 import uuid
 import boto3
@@ -80,7 +81,39 @@ def trips_new(request, line_id, station_id):
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
-    return render(request, 'trips/new.html', {'line': line, 'station': station})
+    lines = Station.objects.filter(
+        uid=station.uid,
+        deleted_at=None
+    ).values(
+        'line__name',
+        'line__color',
+        'line__text_color',
+        'line__express',
+        'uptown_stop_number',
+        'downtown_stop_number'
+    ).all()
+    print(list(lines))
+
+    train_list = []
+
+    for line in lines:
+        train = {
+            'name': line['line__name'],
+            'color': line['line__color'],
+            'text_color': line['line__text_color'],
+            'express': line['line__express'],
+        }
+
+        if line.get('uptown_stop_number'):
+            train['direction'] = 'Uptown'
+            train_list.append(copy(train))
+
+        if line.get('downtown_stop_number'):
+            train['direction'] = 'Downtown'
+            train_list.append(copy(train))
+
+
+    return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_list': train_list})
 
 def trips_edit(request):
     trips = Trip.objects.filter(deleted_at=None).all()

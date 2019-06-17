@@ -12,19 +12,22 @@
 
 {% for station in stations %}
     <div>
-        {{ station.name }}
-    
-            {% if station.id in trip_station_ids %}
-                <a href="/trips/edit">
-                    Edit Trips
-                </a>
-            {% else %}
-                <a href="/trips/new/{{ line.id }}/{{ station.id }}">
-                    Add Trip
-                </a>
-            {% endif %}
-
+            <span>
+                {{ station.name }}
+            </span>
+            <span>
+                {% if station.id in trip_station_ids %}
+                    <a href="/trips/edit">
+                        Edit Trips
+                    </a>
+                {% else %}
+                    <a href="/trips/new/{{ line.id }}/{{ station.id }}">
+                        Add Trip
+                    </a>
+                {% endif %}
+            </span>
     </div>
+
 {% endfor %}
 
 {% endblock %}
