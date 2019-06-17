@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>This is the Add Alert page</h1>
+<h2>For the {{ station.name }} stop on the {{ line.name }} line.</h2>
+<form action="" method="POST">
+    {% csrf_token %}
+    <div>Station: {{ station.name }}</div>
+    <label for="wait_time">How long have you been waiting?</label>
+    <select name="wait_time">
+        {% for minute in minute_range %}
+            <option value="{{ minute }}">{{ minute }} Minutes</option>
+        {% endfor %}
+            <option value="60">Over an hour</option>
+    </select>
+    <label>Which trains are affected?</label>
+    {% for line in train_list %}
+        <div>
+            <input type="checkbox" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+            <label for="{{line.name}}_{{line.direction}}">
+                <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                    {{ line.name }}
+                </div> {{ line.direction }}
+            </label>
+        </div>
+    {% endfor %}
+    <input type="submit" value="Create Alert">
+
+</form>
+{% endblock %}
