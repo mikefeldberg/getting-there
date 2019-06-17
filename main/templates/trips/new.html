@@ -4,10 +4,11 @@
 
 <h1>This is the Add Trip page</h1>
 <h2>For the {{ station.name }} stop on the {{ line.name }} line.</h2>
-<form action="">
+<form action="" method="POST">
+    {% csrf_token %}
     <div>Station: {{ station.name }}</div>
-    <label>When do you travel from this station?</label>
-    <select id="trip-type-select">
+    <label for="trip_type">When do you travel from this station?</label>
+    <select name="trip_type">
         <option value="AM">AM</option>
         <option value="PM">PM</option>
         <option value="Both">Both</option>
@@ -23,7 +24,7 @@
             </label>
         </div>
     {% endfor %}
-    <button type="submit">Submit</button>
+    <input type="submit" value="Add Trip">
 
 </form>
 {% endblock %}

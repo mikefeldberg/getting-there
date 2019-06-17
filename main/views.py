@@ -15,7 +15,6 @@ import uuid
 import boto3
 
 from .models import Line, Station, Trip
-# from .forms import OccasionForm
 
 
 def home(request):
@@ -78,6 +77,29 @@ def lines_detail(request, line_id):
     })
 
 def trips_new(request, line_id, station_id):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+        trip_type = data.pop('trip_type')[0]
+
+        station_uid = Station.objects.filter(id=station_id).first().uid
+
+        for item in data.keys():
+            line_name, direction = item.split('_')
+            line = Line.objects.filter(name=line_name).first()
+            station = Station.objects.filter(uid=station_uid, line_id=line.id).first()
+            trip = Trip(
+                user=request.user,
+                trip_type=trip_type,
+                station_id=station.id,
+                line_id=line.id,
+                direction=direction,
+            )
+
+            trip.save()
+
+        return redirect('/lines')
+
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
@@ -92,7 +114,6 @@ def trips_new(request, line_id, station_id):
         'uptown_stop_number',
         'downtown_stop_number'
     ).all()
-    print(list(lines))
 
     train_list = []
 
@@ -112,8 +133,8 @@ def trips_new(request, line_id, station_id):
             train['direction'] = 'Downtown'
             train_list.append(copy(train))
 
-
     return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_list': train_list})
+
 
 def trips_edit(request):
     trips = Trip.objects.filter(deleted_at=None).all()
