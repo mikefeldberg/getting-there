@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<title>Getting There - New Comment</title>
+
+<h1>This is the Add Comment to Alert page</h1>
+
+<div>
+    {{ alert.station.name }}
+</div>
+
+<div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
+    {{ alert.line.name }}
+</div>
+
+<div>
+    {{ alert.direction }}
+</div>
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <input type="text" name="message">
+    <input type="submit" value="Add Comment">
+</form>
+{% endblock %}

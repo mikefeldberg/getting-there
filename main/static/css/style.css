@@ -3,11 +3,6 @@ h1 {
     text-align: center;
 }
 
-<<<<<<< HEAD
-#my-trips, #all-lines {
-=======
-/* TODO: replace hacky input styles with something from Materialize */
-
 input[type=checkbox] {
     opacity: 1 !important;
     position: inherit !important;
@@ -20,10 +15,8 @@ select {
 }
 
 #my-trips, #all-lines{
->>>>>>> master
     display: inline-block;
     margin: 0px 0px 10px 0px;
-
 }
 
 #train-icon {

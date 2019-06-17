@@ -171,6 +171,7 @@ def alerts_index(request, station_id, line_id):
         'line__color',
         'line__text_color',
         'line__express',
+        'station__name',
         'direction',
     ).all()
 
@@ -241,7 +242,30 @@ def alerts_new(request, station_id, line_id):
     return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})
 
 def alerts_detail(request, alert_id):
-    return render(request, 'alerts/detail.html')
+    alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
+    # line_id = alert.line_id
+    # station_id = alert.station_id
+    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    # station = Station.objects.filter(id=station_id, deleted_at=None).first()
+    comments = Comment.objects.filter(alert_id=alert.id, deleted_at=None).all()
+    # if (request.user.id):
+    user = User.objects.filter(id=request.user.id)
+    # station = Station.objects.filter(id=station_id, deleted_at=None).first()
+
+    # lines = Station.objects.filter(
+    #     uid=station.uid,
+    #     deleted_at=None
+    # ).values(
+    #     'line__name',
+    #     'line__color',
+    #     'line__text_color',
+    #     'line__express',
+    #     'uptown_stop_number',
+    #     'downtown_stop_number'
+    # ).all()
+    
+    
+    return render(request, 'alerts/detail.html', {'alert': alert, 'comments': comments, 'user': user})
     # line = Line.objects.filter(id=line_id, deleted_at=None).first()
     # stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
 
@@ -259,5 +283,25 @@ def alerts_detail(request, alert_id):
     #     'line': line,
     #     'stations': stations,
     #     'trip_station_ids': trip_station_ids,
-    #     'user': user
     # })
+    #     'user': user
+
+def comments_new(request, alert_id):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+
+        alert = Alert.objects.filter(id=alert_id).first()
+        # user = User.objects.filter(id=request.user.id)
+
+        comment = Comment(
+            user=request.user,
+            alert=alert,
+            message=data['message'],
+        )
+
+        comment.save()
+        return redirect('alerts')
+
+    alert = Alert.objects.filter(id=alert_id).first()
+    return render(request, 'comments/new.html', {'alert': alert})
