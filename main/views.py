@@ -238,3 +238,25 @@ def alerts_new(request, station_id, line_id):
     minute_range = list(range(1,60))
 
     return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})
+
+def alerts_detail(request, alert_id):
+    return HttpResponse('This will be the alert detail page. Ooooh. Look at the majesty!')
+    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    # stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
+
+    # trips = Trip.objects.filter(
+    #     user_id=request.user.id,
+    #     line_id=line_id,
+    #     deleted_at=None
+    # ).values('station_id').all()
+
+    # trip_station_ids = [i['station_id'] for i in trips]
+
+    # user = User.objects.filter(id=request.user.id).first()
+
+    # return render(request, 'lines/detail.html', {
+    #     'line': line,
+    #     'stations': stations,
+    #     'trip_station_ids': trip_station_ids,
+    #     'user': user
+    # })

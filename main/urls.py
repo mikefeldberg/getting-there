@@ -13,4 +13,5 @@ urlpatterns = [
     path('trips/edit/', views.trips_edit, name='trips_edit'),
     path('stations/alerts/<int:station_id>/<int:line_id>/', views.alerts_index, name='alerts_index'),
     path('alerts/new/<int:station_id>/<int:line_id>/', views.alerts_new, name='alerts_new'),
+    path('alerts/<int:alert_id>/', views.alerts_detail, name='alerts_detail'),
 ]
