@@ -3,6 +3,28 @@
 {% block content %}
 
 <h1>This is the Add Trip page</h1>
-<p>For the {{station.name}} stop on the {{line.name}} line.</p>
+<h2>For the {{ station.name }} stop on the {{ line.name }} line.</h2>
+<form action="" method="POST">
+    {% csrf_token %}
+    <div>Station: {{ station.name }}</div>
+    <label for="trip_type">When do you travel from this station?</label>
+    <select name="trip_type">
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+        <option value="Both">Both</option>
+    </select>
+    <label>Which trains do you take from here?</label>
+    {% for line in train_list %}
+        <div>
+            <input type="checkbox" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+            <label for="{{line.name}}_{{line.direction}}">
+                <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                    {{ line.name }}
+                </div> {{ line.direction }}
+            </label>
+        </div>
+    {% endfor %}
+    <input type="submit" value="Add Trip">
 
+</form>
 {% endblock %}
