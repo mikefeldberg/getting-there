@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<h1>{{ line.name }} Status</h1>
+
 <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
     <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
         {{ line.name }}
@@ -10,17 +12,18 @@
 
 {% for station in stations %}
     <div>
-
         {{ station.name }}
-        {% if True %}
-            <a href="/trips/edit">
-                Edit Trips
-            </a>
-        {% else %}
-            <a href="/trips/new/{{ line.id }}/{{ station.id }}">
-                Add Trip
-            </a>
-        {% endif %}
+    
+            {% if station.id in trip_station_ids %}
+                <a href="/trips/edit">
+                    Edit Trips
+                </a>
+            {% else %}
+                <a href="/trips/new/{{ line.id }}/{{ station.id }}">
+                    Add Trip
+                </a>
+            {% endif %}
+
     </div>
 {% endfor %}
 
