@@ -2,6 +2,24 @@
 
 {% block content %}
 
-<h1>HOME STATE 0</h1>
+<h1>My Trips</h1>
+{% if trips %}
+
+    {% for trip in trips %}
+        <a href="stations/alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
+            <div>
+                <div class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
+                    {{ trip.line__name }}
+                </div> 
+                {{ trip.station__name }}
+                {{ trip.direction }}
+                ({{ trip.trip_type }})
+            </div>
+        </a>
+    {% endfor %}
+
+{% else %}
+    <p>Hi! Add trips by going to the <a href="/lines">All Lines</a> page and selecting the trains and stations you travel from most.</p>
+{% endif %}
 
 {% endblock %}

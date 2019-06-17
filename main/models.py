@@ -19,7 +19,7 @@ class Line(models.Model):
 class Station(models.Model):
     uid = models.CharField(max_length=20)
     name = models.CharField(max_length=100)
-    line_id = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
+    line = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     uptown_stop_number = models.IntegerField()
     downtown_stop_number = models.IntegerField()
     deleted_at = models.DateTimeField(null=True)
@@ -29,10 +29,9 @@ class Station(models.Model):
 
 
 class Alert(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    station_id = models.ForeignKey(
-        Station, on_delete=models.CASCADE, default=None)
-    line_id = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    station = models.ForeignKey(Station, on_delete=models.CASCADE, default=None)
+    line = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     direction = models.CharField(max_length=100)
     wait_time = models.IntegerField()
     ongoing = models.BooleanField(default=True)
@@ -42,15 +41,16 @@ class Alert(models.Model):
     deleted_at = models.DateTimeField(null=True)
 
     def __str__(self):
-        return self.id
+        return str(self.user) + ' ' + str(self.station) + ' ' + str(self.line) + ' ' + str(self.direction) + ' ' + str(self.ongoing)
 
-    def get_absolute_url(self):
-        return reverse('detail', kwargs={'alert_id': self.id})
+    #TO DO: Decide whether or not to delete this or put it to use. May be useless for what we're doing.
+    # def get_absolute_url(self):
+    #     return reverse('detail', kwargs={'alert_id': self.id})
 
 
 class Comment(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    alert_id = models.ForeignKey(Alert, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    alert = models.ForeignKey(Alert, on_delete=models.CASCADE, default=None)
     message = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True)
@@ -60,11 +60,11 @@ class Comment(models.Model):
 
 
 class Trip(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     trip_type = models.CharField(max_length=10)
-    station_id = models.ForeignKey(
+    station = models.ForeignKey(
         Station, on_delete=models.CASCADE, default=None)
-    line_id = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
+    line = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     direction = models.CharField(max_length=20)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
@@ -72,8 +72,8 @@ class Trip(models.Model):
         return str(self.user_id) + ' - ' + str(self.trip_type) + ' - ' + str(self.station_id) + ' - ' + str(self.direction)
 
 class Vote(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    alert_id = models.ForeignKey(Alert, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    alert = models.ForeignKey(Alert, on_delete=models.CASCADE, default=None)
     resolved = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
