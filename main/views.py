@@ -91,6 +91,8 @@ def lines_detail(request, line_id):
         'user': user
     })
 
+
+@login_required
 def trips_new(request, line_id, station_id):
     if request.method == 'POST':
         data = request.POST.copy()
@@ -151,6 +153,7 @@ def trips_new(request, line_id, station_id):
     return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_list': train_list})
 
 
+@login_required
 def trips_edit(request):
     trips = Trip.objects.filter(deleted_at=None).all()
     # lines = Line.objects.filter()
@@ -172,6 +175,8 @@ def alerts_index(request, station_id, line_id):
 
     return render(request, 'stations/alert_index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
 
+
+@login_required
 def alerts_new(request, station_id, line_id):
     if request.method == 'POST':
         data = request.POST.copy()
