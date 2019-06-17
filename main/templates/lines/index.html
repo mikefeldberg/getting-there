@@ -3,14 +3,20 @@
 {% block content %}
 
 {% for group, lines in grouped_lines.items %}
-    <div>
-        {% for line in lines %}
-            <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
-                <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-                    {{ line.name }}
-                </div>
-            </a>
-        {% endfor %}
+    <div class="container">
+        <table class="grey lighten-2">
+            <tr>
+                <td>
+                    {% for line in lines %}
+                        <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
+                            <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                                {{ line.name }}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </td>
+            </tr>
+        </table>
     </div>
 {% endfor %}
 

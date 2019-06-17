@@ -3,8 +3,18 @@ h1 {
     text-align: center;
 }
 
-#my-trips, #all-lines{
+#my-trips, #all-lines {
     display: inline-block;
+    margin: 0px 0px 10px 0px;
+
+}
+
+#train-icon {
+    padding: 0px 10px 0px 0px;
+}
+
+#lines-icon {
+    padding: 0px 10px 0px 0px;
 }
 
 .line-emblem {
