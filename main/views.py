@@ -47,7 +47,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('index')
+            return redirect('home')
         else:
             error_message = 'Invalid sign up - try again!'
 
@@ -296,12 +296,12 @@ def comments_new(request, alert_id):
 
         comment = Comment(
             user=request.user,
-            alert=alert,
+            alert_id=alert.id,
             message=data['message'],
         )
 
         comment.save()
-        return redirect('alerts')
+        return redirect('/')
 
     alert = Alert.objects.filter(id=alert_id).first()
     return render(request, 'comments/new.html', {'alert': alert})

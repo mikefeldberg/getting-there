@@ -24,8 +24,14 @@
         SORT & FILTER DROP DOWNS
         <a href="/alerts/{{ alert.id }}/add_comment"><button>Add Comment</button></a>
     </div>
-    <div style="background-color:green">
+    <div style="background-color:green" class="all_comments">
         {% for comment in comments %}
+            <div class="comment_container">
+                <a href="">&#128465;</a>
+                <div class="comment_body">{{ comment.created_at }}</div>
+                <div class="comment_body">{{ comment.created_at }}</div>
+                <div class="comment_body">{{ comment.message }}</div>
+            </div>
 
         {% endfor %}
     </div>
