@@ -18,7 +18,20 @@ from .models import Line, Station, Trip
 
 
 def home(request):
-    return render(request, 'home.html')
+    trips = Trip.objects.filter(
+        user_id=request.user.id,
+        deleted_at=None
+    ).values(
+        'line__name',
+        'line__color',
+        'line__text_color',
+        'line__express',
+        'station__name',
+        'direction',
+        'trip_type',
+    )
+
+    return render(request, 'home.html', {'trips': trips})
 
 
 def about(request):
