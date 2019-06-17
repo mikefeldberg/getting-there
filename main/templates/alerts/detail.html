@@ -16,8 +16,8 @@
             <div>{{ alert.direction }}</div>
         </div>
         <div>
-            <a href=""><button>Mark Resolved</button></a>
-            <a href=""><button>Mark Ongoing</button></a>
+            <a href="/alerts/{{ alert.id }}/mark_resolved"><button>Mark Resolved</button></a>
+            <a href="/alerts/{{ alert.id }}/mark_ongoing"><button>Mark Ongoing</button></a>
         </div>
     </div>
     <div style="background-color:yellow">
@@ -27,8 +27,12 @@
     <div style="background-color:green" class="all_comments">
         {% for comment in comments %}
             <div class="comment_container">
-                <a href="">&#128465;</a>
-                <div class="comment_body">{{ comment.created_at }}</div>
+                {% if user.id == comment.user__id %}
+                    <a href="">&#128465;</a>
+                {% endif %}
+                {{ user.id }}
+                <div class="comment_body">{{ comment.user__id }}</div>
+                <div class="comment_body">{{ comment.user__first_name }}</div>
                 <div class="comment_body">{{ comment.created_at }}</div>
                 <div class="comment_body">{{ comment.message }}</div>
             </div>

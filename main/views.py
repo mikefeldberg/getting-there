@@ -247,22 +247,21 @@ def alerts_detail(request, alert_id):
     # station_id = alert.station_id
     # line = Line.objects.filter(id=line_id, deleted_at=None).first()
     # station = Station.objects.filter(id=station_id, deleted_at=None).first()
-    comments = Comment.objects.filter(alert_id=alert.id, deleted_at=None).all()
+    # comments = Comment.objects.filter(alert_id=alert.id, deleted_at=None).all()
     # if (request.user.id):
     user = User.objects.filter(id=request.user.id)
+    print(user)
     # station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
-    # lines = Station.objects.filter(
-    #     uid=station.uid,
-    #     deleted_at=None
-    # ).values(
-    #     'line__name',
-    #     'line__color',
-    #     'line__text_color',
-    #     'line__express',
-    #     'uptown_stop_number',
-    #     'downtown_stop_number'
-    # ).all()
+    comments = Comment.objects.filter(
+        alert_id=alert.id,
+        deleted_at=None
+    ).values(
+        'user__id',
+        'user__first_name',
+        'message',
+        'created_at'
+    ).all()
     
     
     return render(request, 'alerts/detail.html', {'alert': alert, 'comments': comments, 'user': user})
@@ -294,6 +293,7 @@ def comments_new(request, alert_id):
         alert = Alert.objects.filter(id=alert_id).first()
         # user = User.objects.filter(id=request.user.id)
 
+
         comment = Comment(
             user=request.user,
             alert_id=alert.id,
@@ -303,5 +303,59 @@ def comments_new(request, alert_id):
         comment.save()
         return redirect('/')
 
-    alert = Alert.objects.filter(id=alert_id).first()
-    return render(request, 'comments/new.html', {'alert': alert})
+    alert = Alert.objects.filter(
+        id=alert_id
+        ).values(
+            'user__id',
+            'user__first_name',
+
+        ).all()
+
+
+    print(user)
+    print(user.id)
+
+    # comments = Comment.objects.filter(
+    #     alert_id=alert.id,
+    #     deleted_at=None
+    # ).values(
+    #     'user__id',
+    #     'user__first_name',
+    #     'message',
+    #     'created_at'
+    # ).all()
+
+
+    return render(request, 'comments/new.html', {'alert': alert, 'user': user})
+
+def mark_resolved(request, alert_id):
+    vote = Vote.objects.filter(
+        alert_id=alert_id,
+        user_id=request.user.id
+    ).first()
+
+    if (vote):
+        vote.resolved=True
+        return render(request, 'alerts/')
+    
+    vote = Vote(
+        alert_id=alert_id,
+        user_id=request.user.id,
+        resolved=True
+    )
+
+    vote.save()
+
+    return render(request, 'about.html')
+
+def mark_ongoing(request, alert_id):
+    vote = Vote(
+        alert_id=alert_id,
+        user_id=request.user.id,
+        resolved=False
+    )
+
+
+    print(vote)
+
+    return False
