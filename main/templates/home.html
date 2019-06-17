@@ -2,6 +2,17 @@
 
 {% block content %}
 
-<h1>HOME STATE 0</h1>
+<h1>My Trips</h1>
+
+{% for trip in trips %}
+<div>
+    <div class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
+        {{ trip.line__name }}
+    </div> 
+    {{ trip.station__name }}
+    {{ trip.direction }}
+    ({{ trip.trip_type }})
+</div>
+{% endfor %}
 
 {% endblock %}
