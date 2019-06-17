@@ -14,7 +14,7 @@ import collections
 import uuid
 import boto3
 
-from .models import Line, Station, Trip
+from .models import Line, Station, Trip, Alert, Comment, Vote
 
 
 def home(request):
@@ -22,14 +22,16 @@ def home(request):
         user_id=request.user.id,
         deleted_at=None
     ).values(
+        'line__id',
         'line__name',
         'line__color',
         'line__text_color',
         'line__express',
+        'station__id',
         'station__name',
         'direction',
         'trip_type',
-    )
+    ).all()
 
     return render(request, 'home.html', {'trips': trips})
 
@@ -111,7 +113,7 @@ def trips_new(request, line_id, station_id):
 
             trip.save()
 
-        return redirect('/lines')
+        return redirect('lines')
 
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
@@ -154,3 +156,80 @@ def trips_edit(request):
     # lines = Line.objects.filter()
     return render(request, 'trips/edit.html', {'trips': trips})
 
+def alerts_index(request, station_id, line_id):
+    alerts = Alert.objects.filter(
+        station_id=station_id,
+        line_id=line_id,
+        deleted_at=None
+    ).values(
+        'line__id',
+        'line__name',
+        'line__color',
+        'line__text_color',
+        'line__express',
+        'direction',
+    ).all()
+
+    return render(request, 'stations/alert_index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
+
+def alerts_new(request, station_id, line_id):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+        wait_time = data.pop('wait_time')[0]
+
+        station_uid = Station.objects.filter(id=station_id).first().uid
+
+        for item in data.keys():
+            line_name, direction = item.split('_')
+            line = Line.objects.filter(name=line_name).first()
+            station = Station.objects.filter(uid=station_uid, line_id=line.id).first()
+            alert = Alert(
+                user=request.user,
+                station_id=station.id,
+                line_id=line.id,
+                direction=direction,
+                wait_time=wait_time,
+            )
+
+            alert.save()
+
+        # TO DO: redirect to origin station
+        return redirect('/')
+
+    line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    station = Station.objects.filter(id=station_id, deleted_at=None).first()
+
+    lines = Station.objects.filter(
+        uid=station.uid,
+        deleted_at=None
+    ).values(
+        'line__name',
+        'line__color',
+        'line__text_color',
+        'line__express',
+        'uptown_stop_number',
+        'downtown_stop_number'
+    ).all()
+
+    train_list = []
+
+    for line in lines:
+        train = {
+            'name': line['line__name'],
+            'color': line['line__color'],
+            'text_color': line['line__text_color'],
+            'express': line['line__express'],
+        }
+
+        if line.get('uptown_stop_number'):
+            train['direction'] = 'Uptown'
+            train_list.append(copy(train))
+
+        if line.get('downtown_stop_number'):
+            train['direction'] = 'Downtown'
+            train_list.append(copy(train))
+
+    minute_range = list(range(1,60))
+
+    return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})

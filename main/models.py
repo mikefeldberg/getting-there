@@ -30,8 +30,7 @@ class Station(models.Model):
 
 class Alert(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    station = models.ForeignKey(
-        Station, on_delete=models.CASCADE, default=None)
+    station = models.ForeignKey(Station, on_delete=models.CASCADE, default=None)
     line = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     direction = models.CharField(max_length=100)
     wait_time = models.IntegerField()
@@ -42,7 +41,7 @@ class Alert(models.Model):
     deleted_at = models.DateTimeField(null=True)
 
     def __str__(self):
-        return self.id
+        return str(self.user) + ' ' + str(self.station) + ' ' + str(self.line) + ' ' + str(self.direction) + ' ' + str(self.ongoing)
 
     def get_absolute_url(self):
         return reverse('detail', kwargs={'alert_id': self.id})

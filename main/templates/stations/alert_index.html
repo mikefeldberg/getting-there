@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Trip Alerts</h1>
+{{ station }}
+---
+{{ line }}
+<a href="/alerts/new/{{ station_id }}/{{ line_id }}"><button>Add Alert</button></a>
+
+{% if alerts %}
+
+    {% for alert in alerts %}
+        <a href="">
+            <div>
+                <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
+                    {{ alert.line__name }}
+                </div> 
+                {{ alert.station__name }}
+                {{ alert.direction }}
+            </div>
+        </a>
+    {% endfor %}
+
+{% else %}
+    <p>No current alerts for this station and line combo</p>
+{% endif %}
+
+{% endblock %}
