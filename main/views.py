@@ -165,6 +165,7 @@ def alerts_index(request, station_id, line_id):
         line_id=line_id,
         deleted_at=None
     ).values(
+        'id',
         'line__id',
         'line__name',
         'line__color',
@@ -240,7 +241,7 @@ def alerts_new(request, station_id, line_id):
     return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})
 
 def alerts_detail(request, alert_id):
-    return HttpResponse('This will be the alert detail page. Ooooh. Look at the majesty!')
+    return render(request, 'alerts/detail.html')
     # line = Line.objects.filter(id=line_id, deleted_at=None).first()
     # stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
 
