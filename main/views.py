@@ -37,44 +37,41 @@ def home(request):
     ).all()
 
     for trip in trips:
-        print('before', trip)
+        trip['alert_count'] = []
+        trip['ongoing'] = True
+        trip['updated_at'] = None
         alerts = []
+
         station_alerts = Alert.objects.filter(
             station_id=trip['station__id'],
             deleted_at=None
         ).values(
-            'id'
+            'id',
+            'ongoing',
+            'updated_at',
         )
+
         line_alerts = Alert.objects.filter(
             line_id=trip['line__id'],
             deleted_at=None
         ).values(
-            'id'
+            'id',
+            'ongoing',
+            'updated_at',
         )
+
         for alert in station_alerts:
             alerts.append(alert['id'])
-        
+            trip['ongoing'] = alert['ongoing']
+            trip['updated_at'] = alert['updated_at']
+
         for alert in line_alerts:
             if alert['id'] not in alerts:
                 alerts.append(alert['id'])
+                trip['ongoing'] = alert['ongoing']
+                trip['updated_at'] = alert['updated_at']
 
-        line_alerts = Alert.objects.filter(line_id=trip['line__id'], deleted_at=None).all()
-
-        print('after', trip)
-
-        
-        # print(trip)
-        # print('sa', station_alerts)
-        # print('la', line_alerts)
-
-
-    # alerts = []
-    # station_alerts = Alert.objects.filter(station_id=station__id)
-    # line_alerts = Alert.objects.filter(line_id=line__id)
-    # alerts.append(station_alerts)
-    # alerts.append(line_alerts)
-    # alert_count = count(alerts)
-
+        trip['alert_count'].append(len(alerts))
 
     return render(request, 'home.html', {'trips': trips})
 
@@ -298,8 +295,6 @@ def alerts_detail(request, alert_id):
     ongoing_as_of = None
 
     for vote in all_votes:
-        print('ca', vote['created_at'])
-        print('ua', vote['updated_at'])
         votes.append(vote['resolved'])
 
         if vote['resolved'] == True:
@@ -327,7 +322,6 @@ def alerts_detail(request, alert_id):
     # d = datetime.today() - timedelta(hours=0, minutes=50)
 
     # d.strftime('%H:%M %p')
-
 
     comments = Comment.objects.filter(
         alert_id=alert.id,

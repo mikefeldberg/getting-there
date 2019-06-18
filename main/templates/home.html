@@ -9,26 +9,30 @@
 <div name="all-trips">
     {% for trip in trips %}
         <a href="stations/alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
-            <div>
-                <div>{{ trip.station__name }}</div>
-                <div class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
+            <div class="card-panel blue-grey lighten-5">
+                <div class="my-trip-text">
+                    {{ trip.station__name }}
+                </div>
+                <div id="my-trip-emblem" class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
                     {{ trip.line__name }}
                 </div> 
-                <div>{{ trip.direction }}</div>
+                <div class="my-trip-text">
+                    {{ trip.direction }}
+                </div>
 
                 <div>Next 3 trains will go here</div>
-                <div>Alert Count</div>
-                <div>Latest Status</div>
-                <div>As of</div>
+                <div>{{ trip.alert_count }}</div>
+                <div>{{ trip.ongoing }}</div>
+                <div>{{ trip.updated_at }}</div>
 
-                ({{ trip.trip_type }}) -- remove later, only here for debug feedback
+                Trip Type: ({{ trip.trip_type }}) -- remove later, only here for debug feedback
             </div>
             -----
         </a>
     {% endfor %}
 </div>
 {% else %}
-    <p>Hi! Add trips by going to the <a href="/lines">All Lines</a> page and selecting the trains and stations you travel from most.</p>
+    <p>You currently do not have any lines added to your trips. Access the All Lines page to add trips.</p>
 {% endif %}
 
 {% endblock %}
