@@ -9,19 +9,22 @@
 
     {% for trip in trips %}
         <a href="stations/alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
-            <div>
-                <div class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
+            <div class="card-panel blue-grey lighten-5">
+                <div class="my-trip-text">
+                    {{ trip.station__name }}
+                </div>
+                <div id="my-trip-emblem" class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
                     {{ trip.line__name }}
                 </div> 
-                {{ trip.station__name }}
-                {{ trip.direction }}
-                ({{ trip.trip_type }})
+                <div class="my-trip-text">
+                    {{ trip.direction }}
+                </div>
             </div>
         </a>
     {% endfor %}
 
 {% else %}
-    <p>Hi! Add trips by going to the <a href="/lines">All Lines</a> page and selecting the trains and stations you travel from most.</p>
+    <p>You currently do not have any lines added to your trips. Access the All Lines page to add trips.</p>
 {% endif %}
 
 {% endblock %}
