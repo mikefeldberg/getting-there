@@ -14,4 +14,7 @@ urlpatterns = [
     path('stations/alerts/<int:station_id>/<int:line_id>/', views.alerts_index, name='alerts_index'),
     path('alerts/new/<int:station_id>/<int:line_id>/', views.alerts_new, name='alerts_new'),
     path('alerts/<int:alert_id>/', views.alerts_detail, name='alerts_detail'),
+    path('alerts/<int:alert_id>/add_comment', views.comments_new, name='comments_new'),
+    path('alerts/<int:alert_id>/mark_resolved', views.mark_resolved, name='mark_resolved'),
+    path('alerts/<int:alert_id>/mark_ongoing', views.mark_ongoing, name='mark_ongoing'),
 ]

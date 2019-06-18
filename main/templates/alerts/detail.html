@@ -2,6 +2,41 @@
 
 {% block content %}
 
+<title>Getting There - Alert Detais</title>
+
 <h1>This is the Alert Detail page</h1>
+
+<div>
+    <div style="background-color:orange">
+        <div>
+            <div>{{ alert.station.name }}</div>
+            <div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
+                {{ alert.line.name }}
+            </div>
+            <div>{{ alert.direction }}</div>
+        </div>
+        <div>
+            <a href="/alerts/{{ alert.id }}/mark_resolved"><button>Mark Resolved</button></a>
+            <a href="/alerts/{{ alert.id }}/mark_ongoing"><button>Mark Ongoing</button></a>
+        </div>
+    </div>
+    <div style="background-color:yellow">
+        SORT & FILTER DROP DOWNS
+        <a href="/alerts/{{ alert.id }}/add_comment"><button>Add Comment</button></a>
+    </div>
+    <div style="background-color:green" class="all_comments">
+        {% for comment in comments %}
+            <div class="comment_container">
+                {% if comment.user__id == user_id %}
+                    <a href="">&#128465;</a>
+                {% endif %}
+                <div class="comment_body">{{ comment.user__username }}</div>
+                <div class="comment_body">{{ comment.created_at }}</div>
+                <div class="comment_body">{{ comment.message }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
 
 {% endblock %}

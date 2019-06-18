@@ -47,7 +47,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('index')
+            return redirect('home')
         else:
             error_message = 'Invalid sign up - try again!'
 
@@ -171,6 +171,7 @@ def alerts_index(request, station_id, line_id):
         'line__color',
         'line__text_color',
         'line__express',
+        'station__name',
         'direction',
     ).all()
 
@@ -240,24 +241,80 @@ def alerts_new(request, station_id, line_id):
 
     return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})
 
+
 def alerts_detail(request, alert_id):
-    return render(request, 'alerts/detail.html')
-    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    # stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
+    alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
+    user_id = request.user.id
 
-    # trips = Trip.objects.filter(
-    #     user_id=request.user.id,
-    #     line_id=line_id,
-    #     deleted_at=None
-    # ).values('station_id').all()
+    comments = Comment.objects.filter(
+        alert_id=alert.id,
+        deleted_at=None
+    ).values(
+        'user__id',
+        'user__username',
+        'message',
+        'created_at'
+    ).all()
 
-    # trip_station_ids = [i['station_id'] for i in trips]
+    return render(request, 'alerts/detail.html', {'alert': alert, 'comments': comments, 'user_id': user_id})
 
-    # user = User.objects.filter(id=request.user.id).first()
 
-    # return render(request, 'lines/detail.html', {
-    #     'line': line,
-    #     'stations': stations,
-    #     'trip_station_ids': trip_station_ids,
-    #     'user': user
-    # })
+def comments_new(request, alert_id):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+
+        alert = Alert.objects.filter(id=alert_id).first()
+
+        comment = Comment(
+            user=request.user,
+            alert_id=alert.id,
+            message=data['message'],
+        )
+
+        comment.save()
+        return redirect('/')
+
+    current_user = Alert.objects.filter(
+        id=alert_id
+    ).values(
+        'user__id',
+        'user__username',
+        'user__first_name',
+    )
+
+    alert = Alert.objects.filter(id=alert_id).first()
+
+    return render(request, 'comments/new.html', {'alert': alert, 'current_user': current_user})
+
+def mark_resolved(request, alert_id):
+    vote = Vote.objects.filter(
+        alert_id=alert_id,
+        user_id=request.user.id
+    ).first()
+
+    if (vote):
+        vote.resolved=True
+        return render(request, 'alerts/')
+    
+    vote = Vote(
+        alert_id=alert_id,
+        user_id=request.user.id,
+        resolved=True
+    )
+
+    vote.save()
+
+    return render(request, 'about.html')
+
+def mark_ongoing(request, alert_id):
+    vote = Vote(
+        alert_id=alert_id,
+        user_id=request.user.id,
+        resolved=False
+    )
+
+
+    print(vote)
+
+    return False

@@ -2,22 +2,22 @@
 
 {% block content %}
 
+<title>Getting - Station Alerts</title>
+
 <h1>Trip Alerts</h1>
-{{ station }}
----
-{{ line }}
-<a href="/alerts/new/{{ station_id }}/{{ line_id }}"><button>Add Alert</button></a>
+
+<span>FILTER & SORT DROPDOWNS HERE</span><a href="/alerts/new/{{ station_id }}/{{ line_id }}"><button>Add Alert</button></a>
 
 {% if alerts %}
 
     {% for alert in alerts %}
         <a href="/alerts/{{ alert.id }}">
             <div>
+                <div>{{ alert.station__name }}</div>
                 <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
                     {{ alert.line__name }}
                 </div> 
-                {{ alert.station__name }}
-                {{ alert.direction }}
+                <div>{{ alert.direction }}</div>
             </div>
         </a>
     {% endfor %}
