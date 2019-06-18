@@ -62,8 +62,7 @@ class Comment(models.Model):
 class Trip(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     trip_type = models.CharField(max_length=10)
-    station = models.ForeignKey(
-        Station, on_delete=models.CASCADE, default=None)
+    station = models.ForeignKey(Station, on_delete=models.CASCADE, default=None)
     line = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     direction = models.CharField(max_length=20)
     deleted_at = models.DateTimeField(null=True, blank=True)

@@ -4,7 +4,7 @@
 
 <title>Getting There - Alert Detais</title>
 
-<h1>This is the Alert Detail page</h1>
+<h1>Alert Details</h1>
 
 <div>
     <div style="background-color:orange">
@@ -15,9 +15,21 @@
             </div>
             <div>{{ alert.direction }}</div>
         </div>
-        <div>
-            <a href="/alerts/{{ alert.id }}/mark_resolved"><button>Mark Resolved</button></a>
-            <a href="/alerts/{{ alert.id }}/mark_ongoing"><button>Mark Ongoing</button></a>
+        <div id="voting-container">
+                <div id="vote-resolved-container">
+                    <div>{{ resolved_tally }} Riders Say</div>
+                    <a href="/alerts/{{ alert.id }}/mark_resolved"><button>Mark Resolved</button></a>
+                    {% if resolved_tally >= 1 %}
+                        <div>As of {{ resolved_last }} min</div>
+                    {% endif %}
+                </div>
+                <div id="vote-ongoing-container">
+                    <div>{{ ongoing_tally }} Riders Say</div>
+                    <a href="/alerts/{{ alert.id }}/mark_ongoing"><button>Mark Ongoing</button></a>
+                    {% if ongoing_tally >= 1 %}
+                        <div>As of {{ ongoing_last }} min</div>
+                    {% endif %}
+                </div>
         </div>
     </div>
     <div style="background-color:yellow">
@@ -37,6 +49,5 @@
         {% endfor %}
     </div>
 </div>
-
 
 {% endblock %}

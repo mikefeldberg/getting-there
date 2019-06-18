@@ -4,7 +4,7 @@
 
 <title>Getting There - Create Alert</title>
 
-<h1>This is the Add Alert page</h1>
+<h1>Add Alert</h1>
 
 <h2>For the {{ station.name }} stop on the {{ line.name }} line.</h2>
 
@@ -19,7 +19,7 @@
             <option value="60">Over an hour</option>
     </select>
     <label>Which trains are affected?</label>
-    {% for line in train_list %}
+    {% for line in train_lines %}
         <div>
             <input type="checkbox" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
             <label for="{{line.name}}_{{line.direction}}">

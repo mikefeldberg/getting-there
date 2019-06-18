@@ -10,6 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
 from copy import copy
+from datetime import datetime, timedelta
+
 import collections
 import uuid
 import boto3
@@ -115,15 +117,16 @@ def trips_new(request, line_id, station_id):
 
             trip.save()
 
-        return redirect('/')
+        return redirect('lines_detail', line_id=line_id)
 
-    line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
         uid=station.uid,
         deleted_at=None
     ).values(
+        'line__id',
         'line__name',
         'line__color',
         'line__text_color',
@@ -132,10 +135,11 @@ def trips_new(request, line_id, station_id):
         'downtown_stop_number'
     ).all()
 
-    train_list = []
+    train_lines = []
 
     for line in lines:
         train = {
+            'id': line['line__id'],
             'name': line['line__name'],
             'color': line['line__color'],
             'text_color': line['line__text_color'],
@@ -144,18 +148,18 @@ def trips_new(request, line_id, station_id):
 
         if line.get('uptown_stop_number'):
             train['direction'] = 'Uptown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
         if line.get('downtown_stop_number'):
             train['direction'] = 'Downtown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
-    return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_list': train_list})
+    return render(request, 'trips/new.html', {'line_id': line_id, 'station': station, 'train_lines': train_lines})
 
 
 @login_required
 def trips_edit(request):
-    trips = Trip.objects.filter(deleted_at=None).all()
+    trips = Trip.objects.filter(user_id=request.user.id, deleted_at=None).all()
     # lines = Line.objects.filter()
     return render(request, 'trips/edit.html', {'trips': trips})
 
@@ -201,8 +205,7 @@ def alerts_new(request, station_id, line_id):
 
             alert.save()
 
-        # TO DO: redirect to origin station
-        return redirect('/')
+        return redirect('alerts_index', station_id=station_id, line_id=line_id)
 
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
@@ -219,7 +222,7 @@ def alerts_new(request, station_id, line_id):
         'downtown_stop_number'
     ).all()
 
-    train_list = []
+    train_lines = []
 
     for line in lines:
         train = {
@@ -231,20 +234,59 @@ def alerts_new(request, station_id, line_id):
 
         if line.get('uptown_stop_number'):
             train['direction'] = 'Uptown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
         if line.get('downtown_stop_number'):
             train['direction'] = 'Downtown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
     minute_range = list(range(1,60))
 
-    return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})
+    return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_lines': train_lines, 'minute_range': minute_range})
 
 
 def alerts_detail(request, alert_id):
     alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
     user_id = request.user.id
+
+    all_votes = Vote.objects.filter(alert_id=alert_id).values('resolved', 'created_at', 'updated_at')
+    votes = []
+    resolved_last = None
+    ongoing_last = None
+    resolved_as_of = None
+    ongoing_as_of = None
+
+    for vote in all_votes:
+        print('ca', vote['created_at'])
+        print('ua', vote['updated_at'])
+        votes.append(vote['resolved'])
+
+        if vote['resolved'] == True:
+            resolved_last = vote['updated_at']
+        if vote['resolved'] == False:
+            ongoing_last = vote['updated_at']
+
+    resolved_tally = votes.count(True)
+    ongoing_tally = votes.count(False)
+
+### --------------- ongoing updated_at is updating properly when marked ongoing, resolved updated_at is NOT updating properly when marked resolved --------- ###
+
+    # if (resolved_last):
+    #     resolved_as_of = datetime.today() - timedelta(resolved_last)
+    # if (ongoing_last):
+    #     ongoing_as_of = datetime.today() - timedelta(ongoing_last)
+    
+    # print('now', datetime.today())
+
+    print('res last', resolved_last)
+    print('ong last', ongoing_last)
+    # print('res ao', resolved_last)
+    # print('ong ao', ongoing_last)
+
+    # d = datetime.today() - timedelta(hours=0, minutes=50)
+
+    # d.strftime('%H:%M %p')
+
 
     comments = Comment.objects.filter(
         alert_id=alert.id,
@@ -253,10 +295,74 @@ def alerts_detail(request, alert_id):
         'user__id',
         'user__username',
         'message',
-        'created_at'
+        'created_at',
     ).all()
 
-    return render(request, 'alerts/detail.html', {'alert': alert, 'comments': comments, 'user_id': user_id})
+    return render(
+        request,
+        'alerts/detail.html',
+        {
+            'alert': alert,
+            'resolved_tally': resolved_tally,
+            'ongoing_tally': ongoing_tally,
+            'resolved_last': resolved_last,
+            'ongoing_last': ongoing_last,
+            'comments': comments,
+            'user_id': user_id
+        }
+    )
+
+
+def mark_resolved(request, alert_id):
+    vote = Vote.objects.filter(
+        alert_id=alert_id,
+        user_id=request.user.id
+    ).first()
+
+    alert = Alert.objects.filter(id=alert_id).first()
+
+    if (vote):
+        vote.resolved=True
+        vote.save()
+        alert.save()
+        return redirect('alerts_detail', alert_id=alert_id)
+    
+    vote = Vote(
+        alert_id=alert_id,
+        user_id=request.user.id,
+        resolved=True
+    )
+
+    vote.save()
+    alert.save()
+
+    return redirect('alerts_detail', alert_id=alert_id)
+
+def mark_ongoing(request, alert_id):
+    vote = Vote.objects.filter(
+        alert_id=alert_id,
+        user_id=request.user.id
+    ).first()
+
+    alert = Alert.objects.filter(id=alert_id).first()
+
+    if (vote):
+        vote.resolved=False
+        vote.save()
+        alert.save()
+        return redirect('alerts_detail', alert_id=alert_id)
+
+    
+    vote = Vote(
+        alert_id=alert_id,
+        user_id=request.user.id,
+        resolved=False
+    )
+
+    vote.save()
+    alert.save()
+
+    return redirect('alerts_detail', alert_id=alert_id)
 
 
 def comments_new(request, alert_id):
@@ -273,7 +379,7 @@ def comments_new(request, alert_id):
         )
 
         comment.save()
-        return redirect('/')
+        return redirect('alerts_detail', alert_id=alert_id)
 
     current_user = Alert.objects.filter(
         id=alert_id
@@ -286,35 +392,3 @@ def comments_new(request, alert_id):
     alert = Alert.objects.filter(id=alert_id).first()
 
     return render(request, 'comments/new.html', {'alert': alert, 'current_user': current_user})
-
-def mark_resolved(request, alert_id):
-    vote = Vote.objects.filter(
-        alert_id=alert_id,
-        user_id=request.user.id
-    ).first()
-
-    if (vote):
-        vote.resolved=True
-        return render(request, 'alerts/')
-    
-    vote = Vote(
-        alert_id=alert_id,
-        user_id=request.user.id,
-        resolved=True
-    )
-
-    vote.save()
-
-    return render(request, 'about.html')
-
-def mark_ongoing(request, alert_id):
-    vote = Vote(
-        alert_id=alert_id,
-        user_id=request.user.id,
-        resolved=False
-    )
-
-
-    print(vote)
-
-    return False
