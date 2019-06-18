@@ -275,14 +275,17 @@ def comments_new(request, alert_id):
         comment.save()
         return redirect('/')
 
-    alert = Alert.objects.filter(
+    current_user = Alert.objects.filter(
         id=alert_id
-        ).values(
-            'user__id',
-            'user__first_name',
-        ).all()
+    ).values(
+        'user__id',
+        'user__username',
+        'user__first_name',
+    )
 
-    return render(request, 'comments/new.html', {'alert': alert})
+    alert = Alert.objects.filter(id=alert_id).first()
+
+    return render(request, 'comments/new.html', {'alert': alert, 'current_user': current_user})
 
 def mark_resolved(request, alert_id):
     vote = Vote.objects.filter(
