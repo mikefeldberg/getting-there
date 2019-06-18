@@ -295,7 +295,8 @@ def mark_resolved(request, alert_id):
 
     if (vote):
         vote.resolved=True
-        return render(request, 'alerts/')
+        vote.save()
+        return render(request, 'home.html')
     
     vote = Vote(
         alert_id=alert_id,
@@ -308,13 +309,23 @@ def mark_resolved(request, alert_id):
     return render(request, 'about.html')
 
 def mark_ongoing(request, alert_id):
+    vote = Vote.objects.filter(
+        alert_id=alert_id,
+        user_id=request.user.id
+    ).first()
+
+    if (vote):
+        vote.resolved=False
+        vote.save()
+        return render(request, 'home.html')
+
+    
     vote = Vote(
         alert_id=alert_id,
         user_id=request.user.id,
         resolved=False
     )
 
+    vote.save()
 
-    print(vote)
-
-    return False
+    return render(request, 'about.html')
