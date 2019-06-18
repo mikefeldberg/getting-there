@@ -249,8 +249,7 @@ def alerts_detail(request, alert_id):
     # station = Station.objects.filter(id=station_id, deleted_at=None).first()
     # comments = Comment.objects.filter(alert_id=alert.id, deleted_at=None).all()
     # if (request.user.id):
-    user = User.objects.filter(id=request.user.id)
-    print(user)
+    user_id = request.user.id
     # station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     comments = Comment.objects.filter(
@@ -258,13 +257,13 @@ def alerts_detail(request, alert_id):
         deleted_at=None
     ).values(
         'user__id',
-        'user__first_name',
+        'user__username',
         'message',
         'created_at'
     ).all()
     
     
-    return render(request, 'alerts/detail.html', {'alert': alert, 'comments': comments, 'user': user})
+    return render(request, 'alerts/detail.html', {'alert': alert, 'comments': comments, 'user_id': user_id})
     # line = Line.objects.filter(id=line_id, deleted_at=None).first()
     # stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
 

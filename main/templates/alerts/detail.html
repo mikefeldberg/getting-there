@@ -27,12 +27,10 @@
     <div style="background-color:green" class="all_comments">
         {% for comment in comments %}
             <div class="comment_container">
-                {% if user.id == comment.user__id %}
+                {% if comment.user__id == user_id %}
                     <a href="">&#128465;</a>
                 {% endif %}
-                {{ user.id }}
-                <div class="comment_body">{{ comment.user__id }}</div>
-                <div class="comment_body">{{ comment.user__first_name }}</div>
+                <div class="comment_body">{{ comment.user__username }}</div>
                 <div class="comment_body">{{ comment.created_at }}</div>
                 <div class="comment_body">{{ comment.message }}</div>
             </div>
