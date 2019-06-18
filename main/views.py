@@ -296,7 +296,7 @@ def mark_resolved(request, alert_id):
     if (vote):
         vote.resolved=True
         vote.save()
-        return render(request, 'home.html')
+        return redirect('alerts_detail', alert_id=alert_id)
     
     vote = Vote(
         alert_id=alert_id,
@@ -306,7 +306,7 @@ def mark_resolved(request, alert_id):
 
     vote.save()
 
-    return render(request, 'about.html')
+    return redirect('alerts_detail', alert_id=alert_id)
 
 def mark_ongoing(request, alert_id):
     vote = Vote.objects.filter(
@@ -317,7 +317,7 @@ def mark_ongoing(request, alert_id):
     if (vote):
         vote.resolved=False
         vote.save()
-        return render(request, 'home.html')
+        return redirect('alerts_detail', alert_id=alert_id)
 
     
     vote = Vote(
@@ -328,4 +328,4 @@ def mark_ongoing(request, alert_id):
 
     vote.save()
 
-    return render(request, 'about.html')
+    return redirect('alerts_detail', alert_id=alert_id)
