@@ -3,17 +3,6 @@ h1 {
     text-align: center;
 }
 
-input[type=checkbox] {
-    opacity: 1 !important;
-    position: inherit !important;
-    pointer-events: all !important;
-    margin-left: 10px;
-}
-
-select {
-    display: block;
-}
-
 #my-trips, #all-lines{
     display: inline-block;
     margin: 0px 0px 10px 0px;
@@ -29,6 +18,19 @@ select {
 
 #sign-up-card {
     padding: 20px;
+}
+
+#submit-trip-button {
+    margin: 20px 0px 0px 0px;
+}
+
+#selector-row {
+    margin: 20px 0px 0px 0px;
+}
+
+#selector-row-two {
+    display: inline;
+    color: black;
 }
 
 .line-emblem {
@@ -58,6 +60,6 @@ select {
 }
 
 .line-emblem.diamond {
-    border-radius: 0;
+    border-radius: 0px;
     /* TODO: make this a diamond shape */
 }
