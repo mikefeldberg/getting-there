@@ -24,6 +24,10 @@ h1 {
     margin: 20px 0px 0px 0px;
 }
 
+#submit-alert-button {
+    margin: 20px 0px 0px 0px;
+}
+
 #selector-row {
     margin: 20px 0px 0px 0px;
 }
@@ -35,6 +39,20 @@ h1 {
 
 #my-trip-emblem {
     margin: 10px 0px 10px 10px;
+}
+
+#new-alert {
+    background-color: #C7C3FA;
+}
+
+#alert-card-panel {
+    margin: 0;
+    padding: 0;
+}
+
+#alert-form {
+    margin: 15px;
+    padding: 15px;
 }
 
 .my-trip-text {
