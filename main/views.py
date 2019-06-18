@@ -24,6 +24,7 @@ def home(request):
         user_id=request.user.id,
         deleted_at=None
     ).values(
+        'id',
         'line__id',
         'line__name',
         'line__color',
@@ -34,6 +35,46 @@ def home(request):
         'direction',
         'trip_type',
     ).all()
+
+    for trip in trips:
+        print('before', trip)
+        alerts = []
+        station_alerts = Alert.objects.filter(
+            station_id=trip['station__id'],
+            deleted_at=None
+        ).values(
+            'id'
+        )
+        line_alerts = Alert.objects.filter(
+            line_id=trip['line__id'],
+            deleted_at=None
+        ).values(
+            'id'
+        )
+        for alert in station_alerts:
+            alerts.append(alert['id'])
+        
+        for alert in line_alerts:
+            if alert['id'] not in alerts:
+                alerts.append(alert['id'])
+
+        line_alerts = Alert.objects.filter(line_id=trip['line__id'], deleted_at=None).all()
+
+        print('after', trip)
+
+        
+        # print(trip)
+        # print('sa', station_alerts)
+        # print('la', line_alerts)
+
+
+    # alerts = []
+    # station_alerts = Alert.objects.filter(station_id=station__id)
+    # line_alerts = Alert.objects.filter(line_id=line__id)
+    # alerts.append(station_alerts)
+    # alerts.append(line_alerts)
+    # alert_count = count(alerts)
+
 
     return render(request, 'home.html', {'trips': trips})
 
