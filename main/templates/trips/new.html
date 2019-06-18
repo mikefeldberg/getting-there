@@ -1,39 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-
-<h1>Add a Trip</h1>
-
-<form action="#" method="POST">
-    {% csrf_token %}
-    <div>Station: {{ station.name }}</div>
-    <label for="trip_type">When do you travel from this station?</label>
-    <div class="input-field col s12">
-        <select class="red-text" id="selector" required="required" name="trip_type">
-            <option value="" disabled selected>Please choose...</option>
-            <option value="AM">AM</option>
-            <option class="red" value="PM">PM</option>
-            <option value="Both">Both</option>
-        </select>
+<div id="trip-card-panel" class="card-panel">
+    <div class="row">
+            <div class="form-label" class="col s12">New Trip</div>
     </div>
-    <label>Which trains do you take from here?</label>
-    <!-- TODO need to fix this to put into a two-column view MF -->
-    {% for line in train_lines %}
-        <div id="selector-row">
-            <label for="{{line.name}}_{{line.direction}}">
-            <input type="checkbox" class="filled-in" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
-            <span id ="selector-row-two" >
-            <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-                {{line.name}}
-            </div>
-            <span>{{ line.direction }}</span>
-            </span>
-            </label>
+    <form class="form-style" action="#" method="POST">
+        {% csrf_token %}
+        <h5>Station</h5>
+            <div>{{ station.name }}</div>
+        <h5 for="trip_type">When do you travel from this station?</h5>
+        <div class="input-field col s12">
+            <select class="red-text" id="selector" required="required" name="trip_type">
+                <option value="" disabled selected>Please choose...</option>
+                <option value="AM">AM</option>
+                <option class="red" value="PM">PM</option>
+                <option value="Both">Both</option>
+            </select>
         </div>
-    {% endfor %}
-    
-    <a href="/lines/{{ line_id }}" id="submit-trip-button" class="btn red" value="Cancel">Cancel</a> 
-    <input id="submit-trip-button" class="btn blue darken-3" type="submit" value="Add Trip">
-    </form>
+        <h5>Which trains do you take from here?</h5>
+        <!-- TODO need to fix this to put into a two-column view MF -->
+        {% for line in train_lines %}
+            <div id="selector-row">
+                <label for="{{line.name}}_{{line.direction}}">
+                <input type="checkbox" class="filled-in" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+                <span id ="selector-row-two" >
+                <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                    {{line.name}}
+                </div>
+                <span>{{ line.direction }}</span>
+                </span>
+                </label>
+            </div>
+        {% endfor %}
+        
+        <a href="/lines/{{ line_id }}" id="submit-trip-button" class="btn red" value="Cancel">Cancel</a> 
+        <input id="submit-trip-button" class="btn blue darken-3" type="submit" value="Add Trip">
+        </form>
+</div>
 {% endblock %}

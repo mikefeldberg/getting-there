@@ -3,10 +3,10 @@
 {% block content %}
 <div id="alert-card-panel" class="card-panel">
     <div class="row">
-        <div id="new-alert" class="col s12">New Alert</div>
-</div>
+        <div class="form-label" class="col s12">New Alert</div>
+    </div>
 <title>Getting There - Create Alert</title>    
-    <form id="alert-form" action="" method="POST">
+    <form class="form-style" action="" method="POST">
         {% csrf_token %}
         <h5>Station</h5>
         <div>
@@ -14,7 +14,7 @@
         </div>
         <h5>How long have you been waiting?</h5>
             <p class="range-field">
-                <input type="range" min="0" max="60" placeholder="minutes"/>
+                <input name="wait_time" type="range" min="0" max="60" placeholder="minutes"/>
             </p>
         <!-- <select name="wait_time">
             {% for minute in minute_range %}

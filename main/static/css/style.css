@@ -41,8 +41,11 @@ h1 {
     margin: 10px 0px 10px 10px;
 }
 
-#new-alert {
+.form-label {
     background-color: #C7C3FA;
+    font-size: 20px;
+    padding: 0px 0px 0px 15px;
+    font-weight: bold;
 }
 
 #alert-card-panel {
@@ -50,9 +53,13 @@ h1 {
     padding: 0;
 }
 
-#alert-form {
-    margin: 15px;
-    padding: 15px;
+#trip-card-panel {
+    margin: 0;
+    padding: 0;
+}
+
+.form-style {
+    padding: 0px 15px 15px 15px;
 }
 
 .my-trip-text {
