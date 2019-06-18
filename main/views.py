@@ -241,16 +241,10 @@ def alerts_new(request, station_id, line_id):
 
     return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})
 
+
 def alerts_detail(request, alert_id):
     alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
-    # line_id = alert.line_id
-    # station_id = alert.station_id
-    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    # station = Station.objects.filter(id=station_id, deleted_at=None).first()
-    # comments = Comment.objects.filter(alert_id=alert.id, deleted_at=None).all()
-    # if (request.user.id):
     user_id = request.user.id
-    # station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     comments = Comment.objects.filter(
         alert_id=alert.id,
@@ -261,28 +255,9 @@ def alerts_detail(request, alert_id):
         'message',
         'created_at'
     ).all()
-    
-    
+
     return render(request, 'alerts/detail.html', {'alert': alert, 'comments': comments, 'user_id': user_id})
-    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    # stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
 
-    # trips = Trip.objects.filter(
-    #     user_id=request.user.id,
-    #     line_id=line_id,
-    #     deleted_at=None
-    # ).values('station_id').all()
-
-    # trip_station_ids = [i['station_id'] for i in trips]
-
-    # user = User.objects.filter(id=request.user.id).first()
-
-    # return render(request, 'lines/detail.html', {
-    #     'line': line,
-    #     'stations': stations,
-    #     'trip_station_ids': trip_station_ids,
-    # })
-    #     'user': user
 
 def comments_new(request, alert_id):
     if request.method == 'POST':
@@ -290,8 +265,6 @@ def comments_new(request, alert_id):
         del data['csrfmiddlewaretoken']
 
         alert = Alert.objects.filter(id=alert_id).first()
-        # user = User.objects.filter(id=request.user.id)
-
 
         comment = Comment(
             user=request.user,
@@ -307,25 +280,9 @@ def comments_new(request, alert_id):
         ).values(
             'user__id',
             'user__first_name',
-
         ).all()
 
-
-    print(user)
-    print(user.id)
-
-    # comments = Comment.objects.filter(
-    #     alert_id=alert.id,
-    #     deleted_at=None
-    # ).values(
-    #     'user__id',
-    #     'user__first_name',
-    #     'message',
-    #     'created_at'
-    # ).all()
-
-
-    return render(request, 'comments/new.html', {'alert': alert, 'user': user})
+    return render(request, 'comments/new.html', {'alert': alert})
 
 def mark_resolved(request, alert_id):
     vote = Vote.objects.filter(
