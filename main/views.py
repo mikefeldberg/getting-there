@@ -37,41 +37,36 @@ def home(request):
     ).all()
 
     for trip in trips:
+        print('before', trip)
         trip['alert_count'] = []
-        trip['ongoing'] = True
+        trip['resolved'] = False
         trip['updated_at'] = None
         alerts = []
 
-        station_alerts = Alert.objects.filter(
+        all_alerts = Alert.objects.filter(
             station_id=trip['station__id'],
-            deleted_at=None
-        ).values(
-            'id',
-            'ongoing',
-            'updated_at',
-        )
-
-        line_alerts = Alert.objects.filter(
             line_id=trip['line__id'],
-            deleted_at=None
+            deleted_at=None,
         ).values(
             'id',
-            'ongoing',
             'updated_at',
-        )
+        ).all()
 
-        for alert in station_alerts:
-            alerts.append(alert['id'])
-            trip['ongoing'] = alert['ongoing']
+        for alert in all_alerts:
             trip['updated_at'] = alert['updated_at']
+            
+            vote = Vote.objects.filter(
+                alert_id=alert['id']
+            ).values(
+                'resolved'
+            ).last()
 
-        for alert in line_alerts:
-            if alert['id'] not in alerts:
-                alerts.append(alert['id'])
-                trip['ongoing'] = alert['ongoing']
-                trip['updated_at'] = alert['updated_at']
+            alerts.append(alert['id'])
+            if vote:
+                trip['resolved'] = vote['resolved']
 
         trip['alert_count'].append(len(alerts))
+        print('after', trip)
 
     return render(request, 'home.html', {'trips': trips})
 
