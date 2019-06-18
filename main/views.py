@@ -157,7 +157,7 @@ def trips_new(request, line_id, station_id):
 
 @login_required
 def trips_edit(request):
-    trips = Trip.objects.filter(deleted_at=None).all()
+    trips = Trip.objects.filter(user_id=request.user.id, deleted_at=None).all()
     # lines = Line.objects.filter()
     return render(request, 'trips/edit.html', {'trips': trips})
 
