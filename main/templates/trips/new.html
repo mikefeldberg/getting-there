@@ -2,31 +2,41 @@
 
 {% block content %}
 
-<title>Getting - Create Trip</title>
 
-<h1>This is the Add Trip page</h1>
+<h1>Add a Trip</h1>
+
 <h2>For the {{ station.name }} stop on the {{ line.name }} line.</h2>
-<form action="" method="POST">
+
+<form action="#" method="POST">
     {% csrf_token %}
     <div>Station: {{ station.name }}</div>
     <label for="trip_type">When do you travel from this station?</label>
-    <select name="trip_type">
-        <option value="AM">AM</option>
-        <option value="PM">PM</option>
-        <option value="Both">Both</option>
-    </select>
+    <div class="input-field col s12">
+        <select class="red-text" id="selector" name="trip_type">
+            <option value="" disabled selected>Choose your option</option>
+            <option value="AM">AM</option>
+            <option class="red" value="PM">PM</option>
+            <option value="Both">Both</option>
+        </select>
+    </div>
     <label>Which trains do you take from here?</label>
+    <!-- TODO need to fix this to put into a two-column view MF -->
     {% for line in train_list %}
-        <div>
-            <input type="checkbox" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+        <div id="selector-row">
             <label for="{{line.name}}_{{line.direction}}">
-                <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-                    {{ line.name }}
-                </div> {{ line.direction }}
+            <input type="checkbox" class="filled-in" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+            <span id ="selector-row-two" >
+            <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                {{line.name}}   
+            </div>
+            {{ line.direction }}
+            </span>
             </label>
         </div>
     {% endfor %}
-    <input type="submit" value="Add Trip">
-
+    
+        <input id="submit-trip-button" class="btn blue darken-3" type="submit" value="Add Trip">
+        <a href="{% url 'lines_index' %}" id="submit-trip-button" class="btn red" value="Cancel">Cancel</a> 
+    
 </form>
 {% endblock %}
