@@ -24,6 +24,7 @@ def home(request):
         user_id=request.user.id,
         deleted_at=None
     ).values(
+        'id',
         'line__id',
         'line__name',
         'line__color',
@@ -34,6 +35,38 @@ def home(request):
         'direction',
         'trip_type',
     ).all()
+
+    for trip in trips:
+        print('before', trip)
+        trip['alert_count'] = []
+        trip['resolved'] = False
+        trip['updated_at'] = None
+        alerts = []
+
+        all_alerts = Alert.objects.filter(
+            station_id=trip['station__id'],
+            line_id=trip['line__id'],
+            deleted_at=None,
+        ).values(
+            'id',
+            'updated_at',
+        ).all()
+
+        for alert in all_alerts:
+            trip['updated_at'] = alert['updated_at']
+            
+            vote = Vote.objects.filter(
+                alert_id=alert['id']
+            ).values(
+                'resolved'
+            ).last()
+
+            alerts.append(alert['id'])
+            if vote:
+                trip['resolved'] = vote['resolved']
+
+        trip['alert_count'].append(len(alerts))
+        print('after', trip)
 
     return render(request, 'home.html', {'trips': trips})
 
@@ -257,8 +290,6 @@ def alerts_detail(request, alert_id):
     ongoing_as_of = None
 
     for vote in all_votes:
-        print('ca', vote['created_at'])
-        print('ua', vote['updated_at'])
         votes.append(vote['resolved'])
 
         if vote['resolved'] == True:
@@ -286,7 +317,6 @@ def alerts_detail(request, alert_id):
     # d = datetime.today() - timedelta(hours=0, minutes=50)
 
     # d.strftime('%H:%M %p')
-
 
     comments = Comment.objects.filter(
         alert_id=alert.id,

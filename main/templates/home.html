@@ -6,7 +6,7 @@
 
 <h1>My Trips</h1>
 {% if trips %}
-
+<div name="all-trips">
     {% for trip in trips %}
         <a href="stations/alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
             <div class="card-panel blue-grey lighten-5">
@@ -19,10 +19,18 @@
                 <div class="my-trip-text">
                     {{ trip.direction }}
                 </div>
+
+                <div>Next 3 trains will go here</div>
+                <div>{{ trip.alert_count }}</div>
+                <div>{{ trip.resolved }}</div>
+                <div>{{ trip.updated_at }}</div>
+
+                Trip Type: ({{ trip.trip_type }}) -- remove later, only here for debug feedback
             </div>
+            -----
         </a>
     {% endfor %}
-
+</div>
 {% else %}
     <p>You currently do not have any lines added to your trips. Access the All Lines page to add trips.</p>
 {% endif %}
