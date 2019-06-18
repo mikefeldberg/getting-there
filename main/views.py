@@ -115,15 +115,16 @@ def trips_new(request, line_id, station_id):
 
             trip.save()
 
-        return redirect('/')
+        return redirect('lines_detail', line_id=line_id)
 
-    line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
         uid=station.uid,
         deleted_at=None
     ).values(
+        'line__id',
         'line__name',
         'line__color',
         'line__text_color',
@@ -132,10 +133,11 @@ def trips_new(request, line_id, station_id):
         'downtown_stop_number'
     ).all()
 
-    train_list = []
+    train_lines = []
 
     for line in lines:
         train = {
+            'id': line['line__id'],
             'name': line['line__name'],
             'color': line['line__color'],
             'text_color': line['line__text_color'],
@@ -144,13 +146,13 @@ def trips_new(request, line_id, station_id):
 
         if line.get('uptown_stop_number'):
             train['direction'] = 'Uptown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
         if line.get('downtown_stop_number'):
             train['direction'] = 'Downtown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
-    return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_list': train_list})
+    return render(request, 'trips/new.html', {'line_id': line_id, 'station': station, 'train_lines': train_lines})
 
 
 @login_required
@@ -201,8 +203,7 @@ def alerts_new(request, station_id, line_id):
 
             alert.save()
 
-        # TO DO: redirect to origin station
-        return redirect('/')
+        return redirect('alerts_index', station_id=station_id, line_id=line_id)
 
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
@@ -219,7 +220,7 @@ def alerts_new(request, station_id, line_id):
         'downtown_stop_number'
     ).all()
 
-    train_list = []
+    train_lines = []
 
     for line in lines:
         train = {
@@ -231,15 +232,15 @@ def alerts_new(request, station_id, line_id):
 
         if line.get('uptown_stop_number'):
             train['direction'] = 'Uptown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
         if line.get('downtown_stop_number'):
             train['direction'] = 'Downtown'
-            train_list.append(copy(train))
+            train_lines.append(copy(train))
 
     minute_range = list(range(1,60))
 
-    return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_list': train_list, 'minute_range': minute_range})
+    return render(request, 'alerts/new.html', {'line': line, 'station': station, 'train_lines': train_lines, 'minute_range': minute_range})
 
 
 def alerts_detail(request, alert_id):
@@ -273,7 +274,7 @@ def comments_new(request, alert_id):
         )
 
         comment.save()
-        return redirect('/')
+        return redirect('alerts_detail', alert_id=alert_id)
 
     current_user = Alert.objects.filter(
         id=alert_id

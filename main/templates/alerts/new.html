@@ -19,7 +19,7 @@
             <option value="60">Over an hour</option>
     </select>
     <label>Which trains are affected?</label>
-    {% for line in train_list %}
+    {% for line in train_lines %}
         <div>
             <input type="checkbox" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
             <label for="{{line.name}}_{{line.direction}}">
