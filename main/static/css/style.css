@@ -33,6 +33,14 @@ h1 {
     color: black;
 }
 
+#my-trip-emblem {
+    margin: 10px 0px 10px 10px;
+}
+
+.my-trip-text {
+    color: black;
+}
+
 .line-emblem {
     border-radius: 50%;
     align-content: center;
