@@ -411,6 +411,29 @@ def comments_new(request, alert_id):
         comment.save()
         return redirect('alerts_detail', alert_id=alert_id)
 
+
+    alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
+    user_id = request.user.id
+
+    all_votes = Vote.objects.filter(alert_id=alert_id).values('resolved', 'created_at', 'updated_at')
+    votes = []
+    resolved_last = None
+    ongoing_last = None
+    resolved_as_of = None
+    ongoing_as_of = None
+
+    for vote in all_votes:
+        votes.append(vote['resolved'])
+
+        if vote['resolved'] == True:
+            resolved_last = vote['updated_at']
+        if vote['resolved'] == False:
+            ongoing_last = vote['updated_at']
+
+    resolved_tally = votes.count(True)
+    ongoing_tally = votes.count(False)
+
+
     current_user = Alert.objects.filter(
         id=alert_id
     ).values(
@@ -421,4 +444,14 @@ def comments_new(request, alert_id):
 
     alert = Alert.objects.filter(id=alert_id).first()
 
-    return render(request, 'comments/new.html', {'alert': alert, 'current_user': current_user})
+    return render(
+        request, 'comments/new.html',
+        {
+            'alert': alert,
+            'current_user': current_user,
+            'resolved_tally': resolved_tally,
+            'ongoing_tally': ongoing_tally,
+            'resolved_last': resolved_last,
+            'ongoing_last': ongoing_last,
+        }
+    )

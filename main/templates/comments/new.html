@@ -6,16 +6,30 @@
 
 <h1>Add Comment</h1>
 
-<div>
-    {{ alert.station.name }}
-</div>
-
-<div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
-    {{ alert.line.name }}
-</div>
-
-<div>
-    {{ alert.direction }}
+<div name="status-container" style="background-color:grey">
+    <div style="background-color:pink"> 
+        <div>{{ alert.station.name }}</div>
+        <div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
+            {{ alert.line.name }}
+        </div>
+        <div>{{ alert.direction }}</div>
+    </div>
+    <div style="background-color:blue" id="vote-container">
+        <div style="background-color:yellow" id="vote-resolved-container">
+            <div>{{ resolved_tally }} Riders Say</div>
+            <div>Resolved</div>
+            {% if resolved_tally >= 1 %}
+                <div>As of {{ resolved_last }} min</div>
+            {% endif %}
+        </div>
+        <div style="background-color:orange" id="vote-ongoing-container">
+            <div>{{ ongoing_tally }} Riders Say</div>
+            <div>Ongoing</div>
+            {% if ongoing_tally >= 1 %}
+                <div>As of {{ ongoing_last }} min</div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 <form action="" method="POST">
