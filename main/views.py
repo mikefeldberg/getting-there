@@ -107,7 +107,7 @@ def lines_index(request):
 
 def lines_detail(request, line_id):
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
+    stations = Station.objects.filter(line_id=line_id, deleted_at=None).all().order_by('downtown_stop_number')
 
     trips = Trip.objects.filter(
         user_id=request.user.id,
