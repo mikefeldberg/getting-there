@@ -11,15 +11,13 @@ class Line(models.Model):
     text_color = models.CharField(max_length=7)
     express = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True)
-    route = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class Station(models.Model):
-    mta_uptown_id = models.CharField(max_length=20, blank=True)
-    mta_downtown_id = models.CharField(max_length=20, blank=True)
+    uid = models.CharField(max_length=20)
     name = models.CharField(max_length=100)
     line = models.ForeignKey(Line, on_delete=models.CASCADE, default=None)
     uptown_stop_number = models.IntegerField()
@@ -44,6 +42,10 @@ class Alert(models.Model):
 
     def __str__(self):
         return str(self.user) + ' ' + str(self.station) + ' ' + str(self.line) + ' ' + str(self.direction) + ' ' + str(self.ongoing)
+
+    #TO DO: Decide whether or not to delete this or put it to use. May be useless for what we're doing.
+    # def get_absolute_url(self):
+    #     return reverse('detail', kwargs={'alert_id': self.id})
 
 
 class Comment(models.Model):
