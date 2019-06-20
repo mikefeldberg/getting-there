@@ -231,6 +231,8 @@ def alerts_index(request, station_id, line_id):
         'direction',
     ).all()
 
+    
+
     return render(request, 'stations/alert_index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
 
 
