@@ -7,14 +7,19 @@
 <h1>Station Alerts</h1>
 
 <span>Filter by:</span>
-<form>
+<form action="" method="POST">
     <div name="navigation" class="row">
         <div class="input-field col s3">
-            <select class="multiple icons" required="required" name="trip_type">
+            <!-- <label for="filter-on-line">hay hay hay</label> -->
+            <select class="multiple icons" required="required" name="trip_type" name="filter-on-line">
                 <option value="" disabled selected>Line(s)</option>
-                <option value="AM">AM</option>
-                <option class="red" value="PM">PM</option>
-                <option value="Both">Both</option>
+                {% for line in lines %}
+                    <option value="{{ line.id }}">
+                        <div class="line-emblem line-emblem-md {% if line.express %}-diamond diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                            <div class="line-name {% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
+                       </div>
+                    </option>
+                {% endfor %}
             </select>
         </div>
         <div class="input-field col s3">
@@ -53,7 +58,7 @@
 <a href="/alerts/{{ alert.id }}">
     <div>
         <div>{{ alert.station__name }}</div>
-        <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
+        <div class="line-emblem line-emblem-md{% if alert.line__express %}-diamond diamond{% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
             <div class="line-name {% if alert.line__express %} undiamond {% endif %}">{{ alert.line__name }}</div>
         </div>
         <div>{{ alert.direction }}</div>

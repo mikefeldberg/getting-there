@@ -234,7 +234,16 @@ def alerts_index(request, station_id, line_id):
         'direction',
     ).all()
 
-    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
+    lines = Line.objects.filter(deleted_at=None).values(
+        'id',
+        'group_id',
+        'name',
+        'express',
+        'color',
+        'text_color',
+    ).all().order_by('group_id')
+
+    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id, 'lines': lines })
 
 
 @login_required
