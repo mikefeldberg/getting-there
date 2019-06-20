@@ -42,7 +42,6 @@
                 {% if comment.user__id == user_id %}
                     <form action="" method="POST">
                         {% csrf_token %}
-                        {{ comment.id }}
                         <button id="{{ comment.id }}"" name="{{ comment.id }}" type="submit">&#128465;</button>
                     </form>
                 {% endif %}
