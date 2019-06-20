@@ -263,6 +263,8 @@ def alerts_new(request, station_id, line_id):
             line = Line.objects.filter(id=route_name).first()
             print('The line ID we pull frmo the DB is:', line.id)
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+            
+
             alert = Alert(
                 user=request.user,
                 station_id=station.id,

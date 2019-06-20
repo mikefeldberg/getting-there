@@ -192,8 +192,20 @@ h1 {
     margin-right: 10px;
 }
 
+.mr15 {
+    margin-right: 15px;
+}
+
 .mb10 {
     margin-bottom: 10px;
+}
+
+.mb15 {
+    margin-bottom: 15px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
 }
 
 .ctr-txt {
@@ -212,6 +224,13 @@ label {
     color: rgb(62, 62, 62) !important;
 }
 
-.mr2 {
-    margin-right: 2px
+.trip-edit-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.trip-edit-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

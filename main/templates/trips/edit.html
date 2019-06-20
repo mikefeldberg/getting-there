@@ -9,37 +9,48 @@
     <form action="" method="POST">
         {% csrf_token %}
         <div name="am-trips">
-            <span>AM Trips</span><button type="submit">Delete</button>
-            {% for trip in trips %}
-                {% if trip.trip_type == 'AM' %}
-                    <div>
-                        {{ trip.trip_type }}
-                        {{ trip.station.name }}
-                        <div class="line-emblem line-emblem-md {% if trip.line.express %} diamond {% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
-                            {{ trip.line.name }}
+            <div class="trip-edit-row-header mb20">
+                <h5>AM Trips</h5><button type="submit">Delete</button>
+            </div>
+                {% for trip in trips %}
+                    {% if trip.trip_type == 'AM' %}
+                        <div class="trip-edit-row mb15">
+                            <label for="{{ trip.id }}">
+                                <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
+                                <span>
+                                    <div class="trip-edit-row">
+                                        <div class="mr15 line-emblem line-emblem-md {% if trip.line.express %}-diamond diamond{% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
+                                            <div class="{% if trip.line.express %} undiamond {% endif %}"">{{ trip.line.name }}</div>
+                                        </div>
+                                        <div class="mr10 bold">{{ trip.station.name }}</div>
+                                        <div class="boldish">({{ trip.direction }})</div>
+                                    </div>
+                                </span>
+                            </label>
                         </div>
-                        {{ trip.direction }}
-                    </div>
-                    <div>
-                        <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
-                    </div>
-                {% endif %}
-            {% endfor %}    
+                    {% endif %}
+                {% endfor %}
         </div>
+        <div class="mb20"></div>
         <div name="pm-trips">
-            <span>PM Trips</span><button type="submit">Delete</button>
+            <div class="trip-edit-row-header mb20">
+                <h5>PM Trips</h5><button type="submit">Delete</button>
+            </div>
             {% for trip in trips %}
                 {% if trip.trip_type == 'PM' %}
-                    <div>
-                        {{ trip.trip_type }}
-                        {{ trip.station.name }}
-                        <div class="line-emblem line-emblem-md{% if trip.line.express %}-diamond diamond{% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
-                            <div class="{% if trip.line.express %} undiamond {% endif %}"">{{ trip.line.name }}</div>
-                        </div>
-                        {{ trip.direction }}
-                    </div>
-                    <div>
-                        <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
+                    <div class="trip-edit-row mb15">
+                        <label for="{{ trip.id }}">
+                            <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
+                            <span>
+                                <div class="trip-edit-row">
+                                    <div class="mr15 line-emblem line-emblem-md {% if trip.line.express %}-diamond diamond{% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
+                                        <div class="{% if trip.line.express %} undiamond {% endif %}"">{{ trip.line.name }}</div>
+                                    </div>
+                                    <div class="mr10 bold">{{ trip.station.name }}</div>
+                                    <div class="boldish">({{ trip.direction }})</div>
+                                </div>
+                            </span>
+                        </label>
                     </div>
                 {% endif %}
             {% endfor %}
