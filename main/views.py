@@ -250,7 +250,7 @@ def alerts_new(request, station_id, line_id):
 
         for item in data.keys():
             line_name, direction = item.split('_')
-            line = Line.objects.filter(name=line_name).first()
+            line = Line.objects.filter(id=line_id).first()
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             alert = Alert(
                 user=request.user,
