@@ -37,11 +37,6 @@ h1 {
     color: black;
 }
 
-#my-trip-emblem {
-    margin: 10px 0px 10px 10px;
-}
-
-
 #alert-card-panel {
     margin: 0;
     padding: 0;
@@ -52,7 +47,11 @@ h1 {
     padding: 0;
 }
 
-#unresolved-alert-icon {
+#station-alert-text {
+    font-weight: bold;
+}
+
+.unresolved-alert-icon {
     height: 25px;
     width: 25px;
     background-color: red;
@@ -60,7 +59,7 @@ h1 {
     margin: auto;
 }
 
-#resolved-alert-icon {
+.resolved-alert-icon {
     height: 25px;
     width: 25px;
     background-color: green;
@@ -106,5 +105,57 @@ h1 {
 
 .line-emblem.diamond {
     border-radius: 0px;
-    /* TODO: make this a diamond shape */
+    /* width: 90%; */
+}
+
+
+
+.hel {
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.flex {
+    display: flex;
+}
+
+.trip-row {
+    display: flex;
+    align-items: center;
+
+}
+
+.flex-center {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+.bold {
+    font-weight: 550;
+}
+
+.boldish {
+    font-weight: 450;
+}
+
+.lg-ft {
+    font-size: 2.2em;
+}
+
+.pr100 {
+    padding-right: 100px
+}
+.undiamond {
+    transform: rotate(-45deg)
+}
+
+.diamond {
+    transform: rotate(45deg)
 }

@@ -6,9 +6,11 @@
 
 <h1>{{ line.name }} Status</h1>
 
+
+
 <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
     <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-        {{ line.name }}
+        <div class="{% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
     </div>
 </a>
 
@@ -16,6 +18,11 @@
     <div>
         <span>
             {{ station.name }}
+        </span>
+        <span>
+            {% if station.id in alert_station_ids %}
+                <a href="/alerts/{{ station.id }}/{{ line.id }}">⚠️</a>
+            {% endif %}
         </span>
         <span>
             {% if station.id in trip_station_ids %}

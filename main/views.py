@@ -105,7 +105,17 @@ def lines_index(request):
 
 def lines_detail(request, line_id):
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    stations = Station.objects.filter(line_id=line_id, deleted_at=None).all().order_by('downtown_stop_number')
+    stations = Station.objects.filter(
+        line_id=line_id,
+        deleted_at=None
+        ).all().order_by('downtown_stop_number')
+        
+    alerts = Alert.objects.filter(
+        line_id=line_id,
+        deleted_at=None
+    ).values('station_id').all()
+
+    print(alerts)
 
     trips = Trip.objects.filter(
         user_id=request.user.id,
@@ -114,14 +124,16 @@ def lines_detail(request, line_id):
     ).values('station_id').all()
 
     trip_station_ids = [i['station_id'] for i in trips]
+    alert_station_ids = [i['station_id'] for i in alerts]
 
     user = User.objects.filter(id=request.user.id).first()
 
     return render(request, 'lines/detail.html', {
+        'user': user,
         'line': line,
         'stations': stations,
         'trip_station_ids': trip_station_ids,
-        'user': user
+        'alert_station_ids': alert_station_ids,
     })
 
 
@@ -136,7 +148,8 @@ def trips_new(request, line_id, station_id):
 
         for item in data.keys():
             line_name, direction = item.split('_')
-            line = Line.objects.filter(name=line_name).first()
+            line = Line.objects.filter(id=line_id).first()
+            print(line)
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             trip = Trip(
                 user=request.user,
@@ -150,7 +163,7 @@ def trips_new(request, line_id, station_id):
 
         return redirect('lines_detail', line_id=line_id)
 
-    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
@@ -185,7 +198,7 @@ def trips_new(request, line_id, station_id):
             train['direction'] = 'Downtown'
             train_lines.append(copy(train))
 
-    return render(request, 'trips/new.html', {'line_id': line_id, 'station': station, 'train_lines': train_lines})
+    return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_lines': train_lines, 'line_id': line_id, })
 
 
 @login_required
@@ -204,6 +217,7 @@ def trips_edit(request):
 
     return render(request, 'trips/edit.html', {'trips': trips})
 
+
 def alerts_index(request, station_id, line_id):
     alerts = Alert.objects.filter(
         station_id=station_id,
@@ -220,21 +234,22 @@ def alerts_index(request, station_id, line_id):
         'direction',
     ).all()
 
-    return render(request, 'stations/alert_index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
+    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
 
 
 @login_required
 def alerts_new(request, station_id, line_id):
     if request.method == 'POST':
+        print('here I am')
+
         data = request.POST.copy()
         del data['csrfmiddlewaretoken']
         wait_time = data.pop('wait_time')[0]
-
         station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
             line_name, direction = item.split('_')
-            line = Line.objects.filter(name=line_name).first()
+            line = Line.objects.filter(id=line_id).first()
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             alert = Alert(
                 user=request.user,
@@ -255,18 +270,20 @@ def alerts_new(request, station_id, line_id):
         mta_downtown_id=station.mta_downtown_id,
         deleted_at=None
     ).values(
+        'line__id',
         'line__name',
         'line__color',
         'line__text_color',
         'line__express',
         'uptown_stop_number',
-        'downtown_stop_number'
+        'downtown_stop_number',
     ).all()
 
     train_lines = []
 
     for line in lines:
         train = {
+            'id': line['line__id'],
             'name': line['line__name'],
             'color': line['line__color'],
             'text_color': line['line__text_color'],
@@ -287,6 +304,15 @@ def alerts_new(request, station_id, line_id):
 
 
 def alerts_detail(request, alert_id):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+
+        for item in data.keys():
+            comment = Comment.objects.filter(id=item).first()
+            comment.deleted_at = datetime.now()
+            comment.save()
+
     alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
     user_id = request.user.id
 
@@ -314,13 +340,6 @@ def alerts_detail(request, alert_id):
     #     resolved_as_of = datetime.today() - timedelta(resolved_last)
     # if (ongoing_last):
     #     ongoing_as_of = datetime.today() - timedelta(ongoing_last)
-    
-    # print('now', datetime.today())
-
-    print('res last', resolved_last)
-    print('ong last', ongoing_last)
-    # print('res ao', resolved_last)
-    # print('ong ao', ongoing_last)
 
     # d = datetime.today() - timedelta(hours=0, minutes=50)
 
@@ -330,6 +349,7 @@ def alerts_detail(request, alert_id):
         alert_id=alert.id,
         deleted_at=None
     ).values(
+        'id',
         'user__id',
         'user__username',
         'message',

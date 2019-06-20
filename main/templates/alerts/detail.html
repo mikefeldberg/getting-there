@@ -11,7 +11,7 @@
         <div>
             <div>{{ alert.station.name }}</div>
             <div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
-                {{ alert.line.name }}
+                <div class="line-name {% if alert.line.express %} undiamond {% endif %}">{{ alert.line.name }}</div>
             </div>
             <div>{{ alert.direction }}</div>
         </div>
@@ -40,7 +40,10 @@
         {% for comment in comments %}
             <div class="comment_container">
                 {% if comment.user__id == user_id %}
-                    <a href="">&#128465;</a>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <button id="{{ comment.id }}"" name="{{ comment.id }}" type="submit">&#128465;</button>
+                    </form>
                 {% endif %}
                 <div class="comment_body">{{ comment.user__username }}</div>
                 <div class="comment_body">{{ comment.created_at }}</div>

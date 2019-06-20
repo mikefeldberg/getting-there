@@ -34,7 +34,7 @@
                         {{ trip.trip_type }}
                         {{ trip.station.name }}
                         <div class="line-emblem line-emblem-md {% if trip.line.express %} diamond {% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
-                            {{ trip.line.name }}
+                            <div class="{% if trip.line.express %} undiamond {% endif %}"">{{ trip.line.name }}</div>
                         </div>
                         {{ trip.direction }}
                     </div>
