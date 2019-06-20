@@ -19,7 +19,7 @@
         </span>
         <span>
             {% if station.id in alert_station_ids %}
-                <a href="">⚠️</a>
+                <a href="/stations/alerts/{{ station.id }}/{{ line.id }}">⚠️</a>
             {% endif %}
         </span>
         <span>
