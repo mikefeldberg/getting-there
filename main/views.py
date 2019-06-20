@@ -148,7 +148,8 @@ def trips_new(request, line_id, station_id):
 
         for item in data.keys():
             line_name, direction = item.split('_')
-            line = Line.objects.filter(name=line_name).first()
+            line = Line.objects.filter(id=line_id).first()
+            print(line)
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             trip = Trip(
                 user=request.user,
@@ -162,6 +163,7 @@ def trips_new(request, line_id, station_id):
 
         return redirect('lines_detail', line_id=line_id)
 
+    line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
@@ -196,7 +198,7 @@ def trips_new(request, line_id, station_id):
             train['direction'] = 'Downtown'
             train_lines.append(copy(train))
 
-    return render(request, 'trips/new.html', {'line_id': line_id, 'station': station, 'train_lines': train_lines})
+    return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_lines': train_lines, 'line_id': line_id, })
 
 
 @login_required
@@ -239,10 +241,11 @@ def alerts_index(request, station_id, line_id):
 @login_required
 def alerts_new(request, station_id, line_id):
     if request.method == 'POST':
+        print('here I am')
+
         data = request.POST.copy()
         del data['csrfmiddlewaretoken']
         wait_time = data.pop('wait_time')[0]
-
         station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
