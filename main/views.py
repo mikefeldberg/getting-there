@@ -147,8 +147,8 @@ def trips_new(request, line_id, station_id):
         station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
-            line_name, direction = item.split('_')
-            line = Line.objects.filter(id=line_id).first()
+            route_name, direction = item.split('_')
+            line = Line.objects.filter(id=route_name).first()
             print(line)
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             trip = Trip(
@@ -249,16 +249,19 @@ def alerts_index(request, station_id, line_id):
 @login_required
 def alerts_new(request, station_id, line_id):
     if request.method == 'POST':
-        print('here I am')
-
         data = request.POST.copy()
+        print('data----------------------', data)
+
         del data['csrfmiddlewaretoken']
         wait_time = data.pop('wait_time')[0]
         station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
-            line_name, direction = item.split('_')
-            line = Line.objects.filter(id=line_id).first()
+            print('We want to create an alert for:', item)
+            route_name, direction = item.split('_')
+            print('The provided route is', route_name, 'and the direction is', direction)
+            line = Line.objects.filter(id=route_name).first()
+            print('The line ID we pull frmo the DB is:', line.id)
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             alert = Alert(
                 user=request.user,
@@ -267,6 +270,8 @@ def alerts_new(request, station_id, line_id):
                 direction=direction,
                 wait_time=wait_time,
             )
+
+            print('The alert we create is for the line with ID', alert.line_id, 'line, going ', alert.direction, 'the alert ID is', alert.id)
 
             alert.save()
 
