@@ -22,8 +22,8 @@
         <!-- TODO need to fix this to put into a two-column view MF -->
         {% for line in train_lines %}
             <div id="selector-row">
-                <label for="{{line.name}}_{{line.direction}}">
-                <input type="checkbox" class="filled-in" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+                <label for="{{line.id}}_{{line.direction}}">
+                <input type="checkbox" class="filled-in" id="{{line.id}}_{{line.direction}}" name="{{line.id}}_{{line.direction}}">
                 <span id ="selector-row-two" >
                 <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
                     {{line.name}}
