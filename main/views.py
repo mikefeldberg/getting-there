@@ -268,18 +268,20 @@ def alerts_new(request, station_id, line_id):
         mta_downtown_id=station.mta_downtown_id,
         deleted_at=None
     ).values(
+        'line__id',
         'line__name',
         'line__color',
         'line__text_color',
         'line__express',
         'uptown_stop_number',
-        'downtown_stop_number'
+        'downtown_stop_number',
     ).all()
 
     train_lines = []
 
     for line in lines:
         train = {
+            'id': line['line__id'],
             'name': line['line__name'],
             'color': line['line__color'],
             'text_color': line['line__text_color'],
