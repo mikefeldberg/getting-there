@@ -287,6 +287,15 @@ def alerts_new(request, station_id, line_id):
 
 
 def alerts_detail(request, alert_id):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+
+        for item in data.keys():
+            comment = Comment.objects.filter(id=item).first()
+            comment.deleted_at = datetime.now()
+            comment.save()
+
     alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
     user_id = request.user.id
 
@@ -314,13 +323,6 @@ def alerts_detail(request, alert_id):
     #     resolved_as_of = datetime.today() - timedelta(resolved_last)
     # if (ongoing_last):
     #     ongoing_as_of = datetime.today() - timedelta(ongoing_last)
-    
-    # print('now', datetime.today())
-
-    print('res last', resolved_last)
-    print('ong last', ongoing_last)
-    # print('res ao', resolved_last)
-    # print('ong ao', ongoing_last)
 
     # d = datetime.today() - timedelta(hours=0, minutes=50)
 
@@ -330,6 +332,7 @@ def alerts_detail(request, alert_id):
         alert_id=alert.id,
         deleted_at=None
     ).values(
+        'id',
         'user__id',
         'user__username',
         'message',

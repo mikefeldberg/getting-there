@@ -40,7 +40,11 @@
         {% for comment in comments %}
             <div class="comment_container">
                 {% if comment.user__id == user_id %}
-                    <a href="">&#128465;</a>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {{ comment.id }}
+                        <button id="{{ comment.id }}"" name="{{ comment.id }}" type="submit">&#128465;</button>
+                    </form>
                 {% endif %}
                 <div class="comment_body">{{ comment.user__username }}</div>
                 <div class="comment_body">{{ comment.created_at }}</div>
