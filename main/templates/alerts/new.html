@@ -24,11 +24,11 @@
         </select> -->
         <h5>Which trains are affected?</h5>
         {% for line in train_lines %}
-        <div id="selector-row">
+        <div id="selector-row" class="checkbox-row mb10">
             <label for="{{line.id}}_{{line.direction}}">
                 <input type="checkbox" class="filled-in" id="{{line.id}}_{{line.direction}}" name="{{line.id}}_{{line.direction}}">
                 <span id ="selector-row-two" >
-                <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                <div class="mr10 line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
                     <div class="line-name {% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
                 </div>
                 <span>{{ line.direction }}</span>

@@ -15,7 +15,7 @@
                 <option value="" disabled selected>Line(s)</option>
                 {% for line in lines %}
                     <option value="{{ line.id }}">
-                        <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                        <div class="line-emblem line-emblem-md {% if line.express %}-diamond diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
                             <div class="line-name {% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
                        </div>
                     </option>
@@ -58,7 +58,7 @@
 <a href="/alerts/{{ alert.id }}">
     <div>
         <div>{{ alert.station__name }}</div>
-        <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
+        <div class="line-emblem line-emblem-md{% if alert.line__express %}-diamond diamond{% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
             <div class="line-name {% if alert.line__express %} undiamond {% endif %}">{{ alert.line__name }}</div>
         </div>
         <div>{{ alert.direction }}</div>
