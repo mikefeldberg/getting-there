@@ -6,29 +6,44 @@
 
 <h1>Edit Trips</h1>
 <div>
-    <div name="am-trips">
-        {% for trip in trips %}
-            {% if trip.trip_type == 'AM' %}
-                {{ trip.trip_type }}
-                {{ trip.station.name }}
-                <div class="line-emblem line-emblem-md {% if trip.line.express %} diamond {% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
-                    {{ trip.line.name }}
-                </div>
-                {{ trip.direction }}
-            {% endif %}
-        {% endfor %}    
-    </div>
-    <div name="pm-trips">
-        {% for trip in trips %}
-            {% if trip.trip_type == 'PM' %}
-                {{ trip.trip_type }}
-                {{ trip.station.name }}
-                <div class="line-emblem line-emblem-md {% if trip.line.express %} diamond {% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
-                    {{ trip.line.name }}
-                </div>
-                {{ trip.direction }}
-            {% endif %}
-        {% endfor %}
-    </div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div name="am-trips">
+            <span>AM Trips</span><button type="submit">Delete</button>
+            {% for trip in trips %}
+                {% if trip.trip_type == 'AM' %}
+                    <div>
+                        {{ trip.trip_type }}
+                        {{ trip.station.name }}
+                        <div class="line-emblem line-emblem-md {% if trip.line.express %} diamond {% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
+                            {{ trip.line.name }}
+                        </div>
+                        {{ trip.direction }}
+                    </div>
+                    <div>
+                        <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
+                    </div>
+                {% endif %}
+            {% endfor %}    
+        </div>
+        <div name="pm-trips">
+            <span>PM Trips</span><button type="submit">Delete</button>
+            {% for trip in trips %}
+                {% if trip.trip_type == 'PM' %}
+                    <div>
+                        {{ trip.trip_type }}
+                        {{ trip.station.name }}
+                        <div class="line-emblem line-emblem-md {% if trip.line.express %} diamond {% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
+                            {{ trip.line.name }}
+                        </div>
+                        {{ trip.direction }}
+                    </div>
+                    <div>
+                        <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </form>
 </div>
 {% endblock %}

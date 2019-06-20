@@ -37,7 +37,6 @@ def home(request):
     ).all()
 
     for trip in trips:
-        print('before', trip)
         trip['alert_count'] = []
         trip['resolved'] = False
         trip['updated_at'] = None
@@ -66,7 +65,6 @@ def home(request):
                 trip['resolved'] = vote['resolved']
 
         trip['alert_count'].append(len(alerts))
-        print('after', trip)
 
     return render(request, 'home.html', {'trips': trips})
 
@@ -192,8 +190,18 @@ def trips_new(request, line_id, station_id):
 
 @login_required
 def trips_edit(request):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+
+        for item in data:
+            trip = Trip.objects.filter(id=item).first()
+            trip.deleted_at = datetime.now()
+            trip.save()
+
+
     trips = Trip.objects.filter(user_id=request.user.id, deleted_at=None).all()
-    # lines = Line.objects.filter()
+
     return render(request, 'trips/edit.html', {'trips': trips})
 
 def alerts_index(request, station_id, line_id):
