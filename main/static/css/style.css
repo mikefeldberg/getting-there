@@ -105,8 +105,10 @@ h1 {
 
 .line-emblem.diamond {
     border-radius: 0px;
-    /* TODO: make this a diamond shape */
+    /* width: 90%; */
 }
+
+
 
 .hel {
     font-family: Arial, Helvetica, sans-serif
@@ -149,4 +151,11 @@ h1 {
 
 .pr100 {
     padding-right: 100px
+}
+.undiamond {
+    transform: rotate(-45deg)
+}
+
+.diamond {
+    transform: rotate(45deg)
 }

@@ -17,7 +17,7 @@
                                 {{ trip.station__name }}
                             </div>
                             <div class="lg-ft hel bold mb10 flex-center line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
-                                {{ trip.line__name }}
+                                <div class="line-name {% if trip.line__express %} undiamond {% endif %}">{{ trip.line__name }}</div>
                             </div> 
                             <div class="hel bold my-trip-text">
                                 {{ trip.direction }}
