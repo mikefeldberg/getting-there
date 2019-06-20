@@ -25,7 +25,7 @@
                 <label for="{{line.id}}_{{line.direction}}">
                 <input type="checkbox" class="filled-in" id="{{line.id}}_{{line.direction}}" name="{{line.id}}_{{line.direction}}">
                 <span id ="selector-row-two" >
-                <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                <div class="line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
                     <div class="{% if line.express %} undiamond {% endif %}">{{line.name}}</div>
                 </div>
                 <span>{{ line.direction }}</span>

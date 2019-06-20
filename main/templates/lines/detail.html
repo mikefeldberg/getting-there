@@ -9,7 +9,7 @@
 
 
 <a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
-    <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+    <div class="line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
         <div class="{% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
     </div>
 </a>
