@@ -162,7 +162,6 @@ def trips_new(request, line_id, station_id):
 
         return redirect('lines_detail', line_id=line_id)
 
-    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
