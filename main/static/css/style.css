@@ -71,3 +71,11 @@ h1 {
     border-radius: 0px;
     /* TODO: make this a diamond shape */
 }
+
+#add-trip {
+    display: inline;
+    float:right;
+} 
+span {
+  height: 200000px;
+}
