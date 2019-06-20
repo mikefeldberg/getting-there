@@ -2,28 +2,35 @@
 
 {% block content %}
 
-<title>Getting - Station Alerts</title>
+<title>Getting There - Station Alerts</title>
 
 <h1>Station Alerts</h1>
 
-<span>FILTER & SORT DROPDOWNS HERE</span><a href="/alerts/new/{{ station_id }}/{{ line_id }}"><button>Add Alert</button></a>
+<div name="navigation">
+
+    <a href="/alerts/new/{{ station_id }}/{{ line_id }}"><button>Add Alert</button></a>
+
+</div>
 
 {% if alerts %}
 
-    {% for alert in alerts %}
-        <a href="/alerts/{{ alert.id }}">
-            <div>
-                <div>{{ alert.station__name }}</div>
-                <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
-                    {{ alert.line__name }}
-                </div> 
-                <div>{{ alert.direction }}</div>
-            </div>
-        </a>
-    {% endfor %}
+{% for alert in alerts %}
+<a href="/alerts/{{ alert.id }}">
+    <div>
+        <div>{{ alert.station__name }}</div>
+        <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}"
+            style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
+            {{ alert.line__name }}
+        </div>
+        <div>{{ alert.direction }}</div>
+    </div>
+</a>
+{% endfor %}
 
 {% else %}
-    <p>No current alerts for this station and line combo</p>
+<p>No current alerts for this station and line combo</p>
 {% endif %}
+
+
 
 {% endblock %}
