@@ -6,20 +6,34 @@
 
 <h1>Station Alerts</h1>
 
-<span>FILTER & SORT DROPDOWNS HERE</span><a href="/alerts/new/{{ station_id }}/{{ line_id }}"><button>Add Alert</button></a>
+<div>
+    <a href="/alerts/new/{{ station_id }}/{{ line_id }}" class="btn add-alert-button">Add Alert</a>
+</div>
+<div>FILTER & SORT DROPDOWNS HERE</div>
 
 {% if alerts %}
-
     {% for alert in alerts %}
-        <a href="/alerts/{{ alert.id }}">
-            <div>
-                <div>{{ alert.station__name }}</div>
-                <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
-                    {{ alert.line__name }}
-                </div> 
-                <div>{{ alert.direction }}</div>
+    <div class="card-panel">
+        <div class="row">
+            <div class="col s4">
+                <a href="/alerts/{{ alert.id }}">
+                    <div>
+                        <div class="station-name">{{ alert.station__name }}</div>
+                        <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
+                            {{ alert.line__name }}
+                        </div> 
+                        <div>{{ alert.direction }}</div>
+                    </div>
+                </a>
             </div>
-        </a>
+            <div class="col s4">
+                comments
+            </div>
+            <div class="col s4">
+                latest status
+            </div>
+        </div>
+    </div>
     {% endfor %}
 
 {% else %}

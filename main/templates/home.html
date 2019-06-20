@@ -10,7 +10,7 @@
     {% for trip in trips %}
         <a href="stations/alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
             <div class="card-panel blue-grey lighten-5">
-                <div class="my-trip-text">
+                <div class="station-name">
                     {{ trip.station__name }}
                 </div>
                 <div id="my-trip-emblem" class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">

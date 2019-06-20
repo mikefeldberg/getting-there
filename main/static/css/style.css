@@ -37,8 +37,13 @@ h1 {
     margin: 10px 0px 10px 10px;
 }
 
-.my-trip-text {
+.add-alert-button {
+    width:100%;
+}
+
+.station-name {
     color: black;
+    font-weight: bold;
 }
 
 .line-emblem {
