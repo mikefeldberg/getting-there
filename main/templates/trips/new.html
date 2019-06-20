@@ -18,14 +18,14 @@
                 <option value="Both">Both</option>
             </select>
         </div>
-        <h5>Which trains do you take from here?</h5>
+        <h5 class="mb20">Which trains do you take from here?</h5>
         <!-- TODO need to fix this to put into a two-column view MF -->
         {% for line in train_lines %}
-            <div id="selector-row">
+            <div id="selector-row" class="mb20">
                 <label for="{{line.id}}_{{line.direction}}">
                 <input type="checkbox" class="filled-in" id="{{line.id}}_{{line.direction}}" name="{{line.id}}_{{line.direction}}">
                 <span id ="selector-row-two" >
-                <div class="line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                <div class="mr10 line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
                     <div class="{% if line.express %} undiamond {% endif %}">{{line.name}}</div>
                 </div>
                 <span>{{ line.direction }}</span>
