@@ -105,7 +105,17 @@ def lines_index(request):
 
 def lines_detail(request, line_id):
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    stations = Station.objects.filter(line_id=line_id, deleted_at=None).all().order_by('downtown_stop_number')
+    stations = Station.objects.filter(
+        line_id=line_id,
+        deleted_at=None
+        ).all().order_by('downtown_stop_number')
+        
+    alerts = Alert.objects.filter(
+        line_id=line_id,
+        deleted_at=None
+    ).values('station_id').all()
+
+    print(alerts)
 
     trips = Trip.objects.filter(
         user_id=request.user.id,
@@ -114,14 +124,16 @@ def lines_detail(request, line_id):
     ).values('station_id').all()
 
     trip_station_ids = [i['station_id'] for i in trips]
+    alert_station_ids = [i['station_id'] for i in alerts]
 
     user = User.objects.filter(id=request.user.id).first()
 
     return render(request, 'lines/detail.html', {
+        'user': user,
         'line': line,
         'stations': stations,
         'trip_station_ids': trip_station_ids,
-        'user': user
+        'alert_station_ids': alert_station_ids,
     })
 
 
