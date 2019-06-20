@@ -1,35 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<title>Getting There - Create Alert</title>
-
-<h1>Add Alert</h1>
-
-<h2>For the {{ station.name }} stop on the {{ line.name }} line.</h2>
-
-<form action="" method="POST">
-    {% csrf_token %}
-    <div>Station: {{ station.name }}</div>
-    <label for="wait_time">How long have you been waiting?</label>
-    <select name="wait_time">
-        {% for minute in minute_range %}
-            <option value="{{ minute }}">{{ minute }} Minutes</option>
-        {% endfor %}
-            <option value="60">Over an hour</option>
-    </select>
-    <label>Which trains are affected?</label>
-    {% for line in train_lines %}
+<div id="alert-card-panel" class="card-panel">
+    <div class="row">
+        <div class="form-label" class="col s12">New Alert</div>
+    </div>
+<title>Getting There - Create Alert</title>    
+    <form class="form-style" action="" method="POST">
+        {% csrf_token %}
+        <h5>Station</h5>
         <div>
-            <input type="checkbox" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+        {{ station.name }}
+        </div>
+        <h5>How long have you been waiting?</h5>
+            <p class="range-field">
+                <input name="wait_time" type="range" min="0" max="60" placeholder="minutes"/>
+            </p>
+        <!-- <select name="wait_time">
+            {% for minute in minute_range %}
+                <option value="{{ minute }}">{{ minute }} Minutes</option>
+            {% endfor %}
+                <option value="60">Over an hour</option>
+        </select> -->
+        <h5>Which trains are affected?</h5>
+        {% for line in train_lines %}
+        <div id="selector-row">
             <label for="{{line.name}}_{{line.direction}}">
+                <input type="checkbox" class="filled-in" id="{{line.name}}_{{line.direction}}" name="{{line.name}}_{{line.direction}}">
+                <span id ="selector-row-two" >
                 <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-                    {{ line.name }}
-                </div> {{ line.direction }}
+                    {{line.name}}
+                </div>
+                <span>{{ line.direction }}</span>
+                </span>
             </label>
         </div>
-    {% endfor %}
-    <input type="submit" value="Create Alert">
-
-</form>
+        {% endfor %}
+        <h5>Comment(optional)</h5>
+        <div class="input-field col 12">
+            <textarea class="materialize-textarea" id="textarea1" cols="30" rows="10"></textarea>
+            <label for="textarea1"></label>
+        </div>
+        <a href="/lines/{{ line_id }}" id="submit-trip-button" class="btn red" value="Cancel">Cancel</a>
+        <input id="submit-alert-button" class= "submit-trip-button btn blue darken-3" type="submit" value="Create Alert">
+    </form>
+</div>
 {% endblock %}

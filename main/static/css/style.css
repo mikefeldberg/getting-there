@@ -24,6 +24,10 @@ h1 {
     margin: 20px 0px 0px 0px;
 }
 
+#submit-alert-button {
+    margin: 20px 0px 0px 0px;
+}
+
 #selector-row {
     margin: 20px 0px 0px 0px;
 }
@@ -37,13 +41,41 @@ h1 {
     margin: 10px 0px 10px 10px;
 }
 
-.add-alert-button {
-    width:100%;
+
+#alert-card-panel {
+    margin: 0;
+    padding: 0;
 }
 
-.station-name {
-    color: black;
+#trip-card-panel {
+    margin: 0;
+    padding: 0;
+}
+
+#unresolved-alert-icon {
+    height: 25px;
+    width: 25px;
+    background-color: red;
+    border-radius: 50%;
+    margin: auto;
+}
+
+#resolved-alert-icon {
+    height: 25px;
+    width: 25px;
+    background-color: green;
+    border-radius: 50%;  
+    margin: auto;
+}
+
+.form-label {
+    background-color: #C7C3FA;
+    font-size: 20px;
+    padding: 0px 0px 0px 15px;
     font-weight: bold;
+}
+.form-style {
+    padding: 0px 15px 15px 15px;
 }
 
 .line-emblem {

@@ -10,25 +10,36 @@
     {% for trip in trips %}
         <a href="stations/alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
             <div class="card-panel blue-grey lighten-5">
-                <div class="station-name">
-                    {{ trip.station__name }}
+                <div class="row">
+                    <div class="col s4">
+                        <div class="my-trip-text">
+                            {{ trip.station__name }}
+                        </div>
+                        <div id="my-trip-emblem" class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
+                            {{ trip.line__name }}
+                        </div> 
+                        <div class="my-trip-text">
+                            {{ trip.direction }}
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <div class="center">Next 3 trains will go here</div>    
+                        <div class="center"> Delay Alerts: {{ trip.alert_count }}</div>
+                    </div>
+                    <div class="col s4">
+                        <div class="center">Latest Status</div>
+                        {% if trip.resolved %}
+                            <div id="resolved-alert-icon"></div>
+                        {% else %}
+                            <div id="unresolved-alert-icon" class="center"></div>
+                        {% endif %}
+                        <div class="center">As of {{ trip.updated_at }}</div>
+                    </div>
                 </div>
-                <div id="my-trip-emblem" class="line-emblem line-emblem-md {% if trip.line__express %} diamond {% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
-                    {{ trip.line__name }}
-                </div> 
-                <div class="my-trip-text">
-                    {{ trip.direction }}
-                </div>
-
-                <div>Next 3 trains will go here</div>
-                <div>{{ trip.alert_count }}</div>
-                <div>{{ trip.resolved }}</div>
-                <div>{{ trip.updated_at }}</div>
-
-                Trip Type: ({{ trip.trip_type }}) -- remove later, only here for debug feedback
+                    <!-- Trip Type: ({{ trip.trip_type }}) -- remove later, only here for debug feedback -->
             </div>
-            -----
-        </a>
+</div>
+            ----- 
     {% endfor %}
 </div>
 {% else %}

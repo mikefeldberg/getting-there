@@ -107,7 +107,7 @@ def lines_index(request):
 
 def lines_detail(request, line_id):
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
-    stations = Station.objects.filter(line_id=line_id, deleted_at=None).all()
+    stations = Station.objects.filter(line_id=line_id, deleted_at=None).all().order_by('downtown_stop_number')
 
     trips = Trip.objects.filter(
         user_id=request.user.id,
@@ -134,12 +134,12 @@ def trips_new(request, line_id, station_id):
         del data['csrfmiddlewaretoken']
         trip_type = data.pop('trip_type')[0]
 
-        station_uid = Station.objects.filter(id=station_id).first().uid
+        station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
             line_name, direction = item.split('_')
             line = Line.objects.filter(name=line_name).first()
-            station = Station.objects.filter(uid=station_uid, line_id=line.id).first()
+            station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             trip = Trip(
                 user=request.user,
                 trip_type=trip_type,
@@ -156,7 +156,7 @@ def trips_new(request, line_id, station_id):
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
-        uid=station.uid,
+        mta_downtown_id=station.mta_downtown_id,
         deleted_at=None
     ).values(
         'line__id',
@@ -222,12 +222,12 @@ def alerts_new(request, station_id, line_id):
         del data['csrfmiddlewaretoken']
         wait_time = data.pop('wait_time')[0]
 
-        station_uid = Station.objects.filter(id=station_id).first().uid
+        station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
             line_name, direction = item.split('_')
             line = Line.objects.filter(name=line_name).first()
-            station = Station.objects.filter(uid=station_uid, line_id=line.id).first()
+            station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
             alert = Alert(
                 user=request.user,
                 station_id=station.id,
@@ -244,7 +244,7 @@ def alerts_new(request, station_id, line_id):
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
-        uid=station.uid,
+        mta_downtown_id=station.mta_downtown_id,
         deleted_at=None
     ).values(
         'line__name',
