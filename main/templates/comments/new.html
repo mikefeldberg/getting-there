@@ -10,7 +10,7 @@
     <div style="background-color:pink"> 
         <div>{{ alert.station.name }}</div>
         <div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
-            {{ alert.line.name }}
+            <div class="line-name {% if trip.line.express %} undiamond {% endif %}">{{ trip.line.name }}</div>
         </div>
         <div>{{ alert.direction }}</div>
     </div>
