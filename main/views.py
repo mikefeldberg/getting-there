@@ -217,6 +217,7 @@ def trips_edit(request):
 
     return render(request, 'trips/edit.html', {'trips': trips})
 
+
 def alerts_index(request, station_id, line_id):
     alerts = Alert.objects.filter(
         station_id=station_id,
@@ -233,9 +234,7 @@ def alerts_index(request, station_id, line_id):
         'direction',
     ).all()
 
-    
-
-    return render(request, 'stations/alert_index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
+    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
 
 
 @login_required
