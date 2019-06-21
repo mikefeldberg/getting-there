@@ -10,7 +10,7 @@
         {% csrf_token %}
         <div name="am-trips">
             <div class="trip-edit-row-header mb20">
-                <h5>AM Trips</h5><button type="submit">Delete</button>
+                <h5>AM Trips</h5><button class="btn red" type="submit">Delete</button>
             </div>
                 {% for trip in trips %}
                     {% if trip.trip_type == 'AM' %}
@@ -34,7 +34,7 @@
         <div class="mb20"></div>
         <div name="pm-trips">
             <div class="trip-edit-row-header mb20">
-                <h5>PM Trips</h5><button type="submit">Delete</button>
+                <h5>PM Trips</h5><button class="btn red" type="submit">Delete</button>
             </div>
             {% for trip in trips %}
                 {% if trip.trip_type == 'PM' %}

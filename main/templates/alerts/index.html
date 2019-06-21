@@ -13,34 +13,36 @@
 
 <span>Filter by:</span>
 <form action="" method="POST">
+    {% csrf_token %}
     <div name="navigation" class="row">
         <div class="input-field col s3">
-            <!-- <label for="filter-on-line">hay hay hay</label> -->
-            <select class="multiple icons" required="required" name="trip_type" name="filter-on-line">
+            <select multiple icons name="line_ids">
                 <option value="" disabled selected>Line(s)</option>
                 {% for line in lines %}
-                    <option value="{{ line.id }}">
-                        <div class="line-emblem line-emblem-md {% if line.express %}-diamond diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-                            <div class="line-name {% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
-                       </div>
-                    </option>
+                    <option class="hidden-val" value="{{ line.id }}" data-icon="/static/bullets/{{ line.id }}.svg"></option>
                 {% endfor %}
             </select>
         </div>
         <div class="input-field col s3">
-            <select class="multiple icons" required="required" name="trip_type">
-                <option value="" disabled selected>Distance</option>
-                <option value="AM">AM</option>
-                <option class="red" value="PM">PM</option>
-                <option value="Both">Both</option>
+            <select name="stations_away">
+                <option value="" selected>Stations Away</option>
+                <option value="0">See entire line</option>
+                {% for range in distance %}
+                    <option value="{{ range }}">{{ range }}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="input-field col s3">
-            <select class="" required="required" name="trip_type">
-                <option value="" disabled selected>Recency</option>
-                <option value="AM">AM</option>
-                <option class="red" value="PM">PM</option>
-                <option value="Both">Both</option>
+            <select name="age_of_alert">
+                <option value="" selected>Minutes</option>
+                <option value="1">1</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="90">90</option>
+                <option value="Today">Today</option>
             </select>
         </div>
         <button type="submit" class="input-field col s3 btn">Filter</button>
