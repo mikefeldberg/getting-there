@@ -16,7 +16,7 @@ import collections
 import uuid
 import boto3
 
-from .models import Line, Station, Trip, Alert, Comment, Vote
+from .models import Line, Station, Trip, Alert, Comment, Vote, Arrival
 
 
 def home(request):
