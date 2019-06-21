@@ -286,3 +286,7 @@ label {
 .list-text {
     font-size: 1.3em;
 }
+
+.red-grad {
+    background-color: linear-gradient(to right, red , yellow);
+}

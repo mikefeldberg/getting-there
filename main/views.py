@@ -36,7 +36,7 @@ def home(request):
     ).all()
 
     for trip in trips:
-        trip['alert_count'] = []
+        trip['alert_count'] = 0
         trip['resolved'] = False
         trip['updated_at'] = None
         alerts = []
@@ -63,7 +63,7 @@ def home(request):
             if vote:
                 trip['resolved'] = vote['resolved']
 
-        trip['alert_count'].append(len(alerts))
+        trip['alert_count'] = len(alerts)
 
     return render(request, 'home.html', {'trips': trips})
 

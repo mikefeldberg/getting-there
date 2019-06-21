@@ -16,7 +16,7 @@
                             <div class="station-text bold mb10 my-trip-text">
                                 {{ trip.station__name }}
                             </div>
-                            <img class="mb15" src="/static/bullets/{{ trip.line__id }}.svg" alt="2" width="48" data-canonical-src="/static/bullets/{{ trip.line__id }}.svg" style="max-width:100%;">
+                            <img class="mb15" src="/static/bullets/{{ trip.line__id }}.svg" alt="2" width="70" data-canonical-src="/static/bullets/{{ trip.line__id }}.svg" style="max-width:100%;">
 
                             <div class="station-text bold my-trip-text">
                                 {{ trip.direction }}
@@ -25,15 +25,19 @@
                     </div>
                     <div class="col s4">
                         <div class="form-center-text center">Next 3 trains will go here</div>    
-                        <div class=" orm-center-text center">Delay Alerts: {{ trip.alert_count }}</div>
+                        {% if trip.alert_count > 0 %}
+                            <div class="station-text form-center-text center">{{ trip.alert_count }} Delays Reported</div>
+                        {% else %}
+                            <div class="station-text form-center-text center">No Delays Reported</div>
+                        {% endif %}
                     </div>
                     <div class="col s4">
                         <div class="flex-center">
                             <div class="station-text mb10 center">Latest Status</div>
                             {% if trip.resolved %}
-                                <div class="mb10 resolved-alert-icon"></div>
+                                <i class="material-icons large light-green-text text-accent-5">train</i>
                             {% else %}
-                                <div class="mb10 unresolved-alert-icon center"></div>
+                                <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
                             {% endif %}
                             <div class="station-text center">As of {{ trip.updated_at }}</div>
                         </div>
