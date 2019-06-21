@@ -276,3 +276,25 @@ label {
 .ctr-pg {
 
 }
+
+.station-text {
+    font-size: 1.4em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+}
+
+.list-text {
+    font-size: 1.3em;
+}
+
+.red-grad {
+    background-color: linear-gradient(to right, red , yellow);
+}
+
+.space-btw {
+    justify-content: space-between;
+}
+
+.w20 {
+    width: 20vw;
+}

@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
 from copy import copy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import collections
 import uuid
@@ -36,7 +36,7 @@ def home(request):
     ).all()
 
     for trip in trips:
-        trip['alert_count'] = []
+        trip['alert_count'] = 0
         trip['resolved'] = False
         trip['updated_at'] = None
         alerts = []
@@ -51,8 +51,16 @@ def home(request):
         ).all()
 
         for alert in all_alerts:
+            alert_time = alert['updated_at']
+            time_now = datetime.now(timezone.utc)
+            time_diff = time_now - alert_time
+            # print(time_diff)
+            timedelta(0, 8, 562000)
+            # print(divmod(time_diff.days * 86400 + time_diff.seconds, 60))
+            
             trip['updated_at'] = alert['updated_at']
             
+
             vote = Vote.objects.filter(
                 alert_id=alert['id']
             ).values(
@@ -62,8 +70,10 @@ def home(request):
             alerts.append(alert['id'])
             if vote:
                 trip['resolved'] = vote['resolved']
+            else:
+                trip['resolved'] = True
 
-        trip['alert_count'].append(len(alerts))
+        trip['alert_count'] = len(alerts)
 
     return render(request, 'home.html', {'trips': trips})
 
@@ -240,68 +250,100 @@ def trips_edit(request):
 
 def alerts_index(request, station_id, line_id):
     if request.method == 'POST':
-        data = request.POST.copy()
-        # print(request.POST)
-        # print(request.POST['line_ids'])
-        del data['csrfmiddlewaretoken']
-        # print(data)
+        data = dict(request.POST.copy())
 
-        lines_new = ''
+        filtered_lines = data['line_ids']
+        
+        if data['stations_away'][0]:
+            station_radius = int(data['stations_away'][0])
+        else:
+            station_radius = 0
 
-        ## Can't iterate through line_ids as contained in POST data. Prints all but yields only one.
+        if data['age_of_alert'][0]:
+            age_of_alert = int(data['age_of_alert'][0])
+        else:
+            age_of_alert = 15
 
-        for item in data['line_ids']:
-            print(item)
-            # trip = Trip.objects.filter(id=item).first()
-            # trip.deleted_at = datetime.now()
-            # trip.save()
+        current_station = Station.objects.filter(id=station_id).values(
+            'mta_uptown_id',
+            'mta_downtown_id'
+        ).last()
 
+        line_filters = {}
 
+        for line_id in filtered_lines:
+            line_data = {}
+            uptown_stations = Station.objects.filter(
+                line_id=line_id,
+                mta_uptown_id=current_station['mta_uptown_id'],
+                deleted_at=None
+            ).values(
+                'uptown_stop_number',
+            ).last()
 
-        # for key, value in request.POST.items():
-        #     print ("%s %s" % (key, value))
+            if uptown_stations:
+                uptown_stop_number = uptown_stations['uptown_stop_number']
+                uptown_min = uptown_stop_number - station_radius
+                uptown_max = uptown_stop_number + station_radius
+                line_data['uptown_range'] = list(range(uptown_min, uptown_max + 1))
 
-        # print(type(data))
-        # print(type(data['line_ids']))
-        # here = []
-        # for item in data['line_ids']:
-        #     here.append(item)
-        # print(here)
-        # # print('nl',new_lines)
-        # filter_lines = []
-        # stations_away = 0
-        # age_of_alert = 15
-        # # print(new_lines)
+            downtown_stations = Station.objects.filter(
+                line_id=line_id,
+                mta_downtown_id=current_station['mta_downtown_id'],
+                deleted_at=None
+            ).values(
+                'downtown_stop_number',
+            ).last()
 
-        # print(data.items()[0])
-        # print(data.items()[1])
-        # print(data.items()[2])
+            if downtown_stations:
+                downtown_stop_number = downtown_stations['downtown_stop_number']
+                downtown_min = downtown_stop_number - station_radius
+                downtown_max = downtown_stop_number + station_radius
+                line_data['downtown_range'] = list(range(downtown_min, downtown_max + 1))
+            
+            if line_data:
+                line_filters[line_id] = line_data
 
-        # for item in data.items():
-        #     print(item)
+        alerts = []
 
-        # for keys,values in data.items():
-        #     print(keys)
-        #     print(values)
+        for line_id, line_filter in line_filters.items():
+            uptown_alerts = Alert.objects.filter(
+                station__uptown_stop_number__in=line_filter['uptown_range'],
+                line_id=line_id,
+                deleted_at=None
+            ).values(
+                'id',
+                'line__id',
+                'line__name',
+                'line__color',
+                'line__text_color',
+                'line__express',
+                'station__name',
+                'direction',
+            ).all()
 
-        # for item in data.values():
-        #     print(item)
+            alerts.append(list(uptown_alerts))
 
-        # for item in data['line_ids']:
-            # print(item)
-            # print(filter_lines)
+            downtown_alerts = Alert.objects.filter(
+                station__downtown_stop_number__in=line_filter['downtown_range'],
+                line_id=line_id,
+                deleted_at=None
+            ).values(
+                'id',
+                'line__id',
+                'line__name',
+                'line__color',
+                'line__text_color',
+                'line__express',
+                'station__name',
+                'direction',
+            ).all()
 
-        if data['stations_away']:
-            stations_away = int(data['stations_away'])
+            alerts.append(list(downtown_alerts))
+            
+        alerts = sum(alerts, [])
 
-        if data['age_of_alert']:
-            age_of_alert = int(data['age_of_alert'])
-
-
-        # print(filter_lines)
-        # print(stations_away)
-        # print(age_of_alert)
-
+    else:
         alerts = Alert.objects.filter(
             station_id=station_id,
             line_id=line_id,
@@ -317,21 +359,6 @@ def alerts_index(request, station_id, line_id):
             'direction',
         ).all()
 
-    alerts = Alert.objects.filter(
-        station_id=station_id,
-        line_id=line_id,
-        deleted_at=None
-    ).values(
-        'id',
-        'line__id',
-        'line__name',
-        'line__color',
-        'line__text_color',
-        'line__express',
-        'station__name',
-        'direction',
-    ).all()
-
     station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
     stations = Station.objects.filter(
@@ -340,34 +367,31 @@ def alerts_index(request, station_id, line_id):
     ).values(
         'line_id'
     ).all()
-    
-    line_ids = []
-    lines = []
 
-    for item in stations:
-        line_ids.append(item['line_id'])
+    line_ids = [i['line_id'] for i in stations]
 
-    # print(line_ids)
-
-    for line_id in line_ids:
-        line = Line.objects.filter(
-            id=line_id,
-            deleted_at=None
-        ).values(
-            'id',
-            'route',
-            'group_id',
-            'name',
-            'express',
-            'color',
-            'text_color',
-        ).first()
-
-        lines.append(line)
+    lines = Line.objects.filter(
+        id__in=line_ids,
+        deleted_at=None
+    ).values(
+        'id',
+        'route',
+        'group_id',
+        'name',
+        'express',
+        'color',
+        'text_color',
+    ).all()
 
     distance = list(range(1,11))
 
-    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id, 'lines': lines, 'distance': distance })
+    return render(request, 'alerts/index.html', {
+        'alerts': alerts,
+        'station_id': station_id,
+        'line_id': line_id,
+        'lines': lines,
+        'distance': distance
+    })
 
 
 @login_required
