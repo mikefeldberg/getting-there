@@ -72,10 +72,18 @@ h1 {
     /* TODO: make this a diamond shape */
 }
 
-#add-trip {
-    display: inline;
-    float:right;
-} 
-span {
-  height: 200000px;
+
+.wrapper-fix:after{
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+
 }
+
+
+input#add-trip.btn {
+    padding: 1000px;
+}
+
+

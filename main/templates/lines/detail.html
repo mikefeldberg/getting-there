@@ -13,8 +13,8 @@
 </a>
 
 {% for station in stations %}
-    <div style="clear: both;">
-        <span>
+    <div>
+         <span>
             {{ station.name }}
         </span>
         <span>
@@ -22,14 +22,15 @@
                 <a href="/trips/edit">
                     Edit Trips
                 </a>
-            {% else %}
-             <div>
-                <a id='trip-links'href="/trips/new/{{ line.id }}/{{ station.id }}">
-                    <input type="button" class="btn" value="Add Trip" id="add-trip">
-                 </a>
-            {% endif %}
         </span>
-        <hr>
+        {% else %}
+    <div class="wrapper">
+            <a id='trip-links'href="/trips/new/{{ line.id }}/{{ station.id }}">
+                <input type="button" class="btn right" value="Add Trip" id="add-trip">
+             </a>
+             <hr>
+    </div>
+    {% endif %}
     </div>
 {% endfor %}
 {% endblock %}
