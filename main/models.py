@@ -75,5 +75,8 @@ class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # def __str__(self):
-    #     return self.resolved
+
+class Arrival(models.Model):
+    stop_id = models.CharField(max_length=10, blank=True)
+    route = models.CharField(max_length=10, blank=True)
+    arrival = models.IntegerField(blank=True)
