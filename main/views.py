@@ -252,7 +252,10 @@ def alerts_index(request, station_id, line_id):
     if request.method == 'POST':
         data = dict(request.POST.copy())
 
-        filtered_lines = data['line_ids']
+        if data['line_ids'][0]:
+            filtered_lines = data['line_ids'][0]
+        else:
+            filtered_lines = 0
         
         if data['stations_away'][0]:
             station_radius = int(data['stations_away'][0])
@@ -270,6 +273,7 @@ def alerts_index(request, station_id, line_id):
         ).last()
 
         line_filters = {}
+
 
         for line_id in filtered_lines:
             line_data = {}
