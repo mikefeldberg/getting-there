@@ -4,18 +4,38 @@
 
 <title>Getting There - {{ line.name }} Status</title>
 
-<h1>{{ line.name }} Status</h1>
-
-
-
-<a style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
-    <div class="line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+<div class="mb20 flx-row flx-ctr-xy">
+    <div class="flx-ctr-xy line-emblem line-emblem-lg{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
         <div class="{% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
     </div>
-</a>
+    <div class="mr20"></div>
+    <h4>Status</h4>
+</div>
 
+<ul class="collection">
 {% for station in stations %}
-    <div>
+    <li class="collection-item">
+        <div>
+            {{ station.name }}
+            {% if station.id in trip_station_ids %}
+                <a class="secondary-content" href="/trips/new/{{ line.id }}/{{ station.id }}">
+                    <i class="material-icons light-blue-text text-darken-4">edit</i>
+                </a>
+            {% else %}
+                <a class="secondary-content" href="/trips/edit">
+                    <i class="material-icons green-text">add_circle</i>
+                </a>
+            {% endif %}
+            <a class=secondary-content"></a>
+            {% if station.id in alert_station_ids %}
+                <a class="secondary-content" href="/alerts/{{ station.id }}/{{ line.id }}" class="secondary-content">
+                    <i class="material-icons yellow-text text-darken-3">warning</i>
+                </a>
+            {% endif %}
+        </div>
+    </li>
+
+    <!-- <div>
         <span>
             {{ station.name }}
         </span>
@@ -35,8 +55,7 @@
                 </a>
             {% endif %}
         </span>
-    </div>
-
+    </div> -->
 {% endfor %}
-
+</ul>
 {% endblock %}
