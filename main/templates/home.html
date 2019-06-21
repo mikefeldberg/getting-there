@@ -4,14 +4,22 @@
 
 <title>Getting There - Home</title>
 
-<h1>My Trips</h1>
+<div class="flx-row space-btw">
+    <div>
+        <h4>My Trips</h4>
+    </div>
+    <div>
+        <a href="/trips/edit"><button class="btn blue w20">Edit Trips</button></a>
+    </div>
+</div>
+
 {% if trips %}
 <div name="all-trips">
     {% for trip in trips %}
         <a class="boldish blue-grey-text text-darken-4" href="alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
             <div class="trip-container card-panel">
                 <div class="flx-row row">
-                    <div class="col s4">
+                    <div class="col 4">
                         <div class="pr100 flex-center center-align">
                             <div class="station-text bold mb10 my-trip-text">
                                 {{ trip.station__name }}

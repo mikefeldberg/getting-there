@@ -8,20 +8,20 @@
 
 <div>
     <div class="trip-container card-panel">
-        <div class="trip-row row">
+        <div class="flx-row space-btw row">
             <div class="col s4">
                 <div class="pr100 flex-center center-align">
-                    <div class="hel bold mb10 my-trip-text">
+                    <div class="station-text bold mb10 my-trip-text">
                         {{ alert.station.name }}
                     </div>
                     <img class="mb15" src="/static/bullets/{{ alert.line.id }}.svg" alt="2" width="48" data-canonical-src="/static/bullets/{{ alert.line.id }}.svg" style="max-width:100%;">
-                    <div class="hel bold my-trip-text">
+                    <div class="station-text bold my-trip-text">
                         {{ alert.direction }}
                     </div>
                 </div>
             </div>
             <div class="col s4">
-                <div id="vote-resolved-container">
+                <div class=flex-center">
                     <div>{{ resolved_tally }} Riders Say</div>
                     <a class="center" href="/alerts/{{ alert.id }}/mark_resolved"><i class="medium material-icons icon-green">thumb_up</i></a>
                     {% if resolved_tally >= 1 %}
@@ -29,12 +29,12 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="col s4">
-                <div id="vote-ongoing-container">
+            <div class="flex-center ol s4">
+                <div class="flex-center">
                     <div>{{ ongoing_tally }} Riders Say</div>
                     <a class="center" href="/alerts/{{ alert.id }}/mark_ongoing"><i class="medium material-icons icon-red">thumb_down</i></a>
                     {% if ongoing_tally >= 1 %}
-                        <div>As of {{ ongoing_last }} min</div>
+                        <div class="center">As of {{ ongoing_last }} min</div>
                     {% endif %}
                 </div>
             </div>

@@ -290,3 +290,11 @@ label {
 .red-grad {
     background-color: linear-gradient(to right, red , yellow);
 }
+
+.space-btw {
+    justify-content: space-between;
+}
+
+.w20 {
+    width: 20vw;
+}

@@ -253,20 +253,22 @@ def alerts_index(request, station_id, line_id):
         data = dict(request.POST.copy())
 
         filtered_lines = data['line_ids']
-        station_radius = 0
-        age_of_alert = 15
-        display_stations = []
+        
+        if data['stations_away'][0]:
+            station_radius = int(data['stations_away'][0])
+        else:
+            station_radius = 0
 
-        station_radius = int(data['stations_away'][0])
         if data['age_of_alert'][0]:
             age_of_alert = int(data['age_of_alert'][0])
+        else:
+            age_of_alert = 15
 
         current_station = Station.objects.filter(id=station_id).values(
             'mta_uptown_id',
             'mta_downtown_id'
         ).last()
 
-        lines = [];
         line_filters = {}
 
         for line_id in filtered_lines:
@@ -281,7 +283,6 @@ def alerts_index(request, station_id, line_id):
 
             if uptown_stations:
                 uptown_stop_number = uptown_stations['uptown_stop_number']
-                line_data['uptown_mid'] = uptown_stop_number
                 uptown_min = uptown_stop_number - station_radius
                 uptown_max = uptown_stop_number + station_radius
                 line_data['uptown_range'] = list(range(uptown_min, uptown_max + 1))
@@ -296,7 +297,6 @@ def alerts_index(request, station_id, line_id):
 
             if downtown_stations:
                 downtown_stop_number = downtown_stations['downtown_stop_number']
-                line_data['downtown_mid'] = downtown_stop_number
                 downtown_min = downtown_stop_number - station_radius
                 downtown_max = downtown_stop_number + station_radius
                 line_data['downtown_range'] = list(range(downtown_min, downtown_max + 1))

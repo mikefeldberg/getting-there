@@ -16,6 +16,12 @@
     <li class="collection-item">
         <div class="list-text">
             {{ station.name }}
+            <a class="secondary-content" href="/alerts/{{ station.id }}/{{ line.id }}">
+                <i class="material-icons blue-text">send</i>
+            </a>
+            <a class="secondary-content" href="">
+                <i class="material-icons white-text">_</i>
+            </a>
             {% if station.id in trip_station_ids %}
                 <a class="secondary-content" href="/trips/edit">
                     <i class="material-icons light-blue-text text-darken-4">edit</i>
@@ -25,6 +31,9 @@
                     <i class="material-icons green-text">add_circle</i>
                 </a>
             {% endif %}
+            <a class="secondary-content" href="">
+                <i class="material-icons white-text">_</i>
+            </a>
             <a class=secondary-content"></a>
             {% if station.id in alert_station_ids %}
                 <a class="secondary-content" href="/alerts/{{ station.id }}/{{ line.id }}" class="secondary-content">
