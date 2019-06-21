@@ -251,11 +251,8 @@ def trips_edit(request):
 def alerts_index(request, station_id, line_id):
     if request.method == 'POST':
         data = request.POST.copy()
-        # print(request.POST)
-        # print(request.POST['line_ids'])
         del data['csrfmiddlewaretoken']
-        # print(data)
-
+        print(data)
         lines_new = ''
 
         ## Can't iterate through line_ids as contained in POST data. Prints all but yields only one.
