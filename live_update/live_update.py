@@ -13,13 +13,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #This script hits the NYC transit live update feed and populate the d
-db_name = os.getenv('DBNAME')
-db_pw = os.getenv('PW')
-db_host = os.getenv('HOST')
-db_user =os.getenv('USER')
+db_name = os.environ('DBNAME')
+db_pw = os.environ('PW')
+db_host = os.environ('HOST')
+db_user =os.environ('USER')
 try:
 
-    key = os.getenv("MTAKEY")
+    key = os.environ("MTAKEY")
 
     urls = ['http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=1',
             'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=26',
