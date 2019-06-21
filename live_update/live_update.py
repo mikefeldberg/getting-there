@@ -13,10 +13,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #This script hits the NYC transit live update feed and populate the d
-db_name = os.environ('DBNAME')
-db_pw = os.environ('PW')
-db_host = os.environ('HOST')
-db_user =os.environ('USER')
+db_info = os.environ('DBINFO')
+
 try:
 
     key = os.environ("MTAKEY")
@@ -64,7 +62,7 @@ try:
 
     logging.basicConfig()
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    engine = create_engine('postgresql://{}:{}@{}/{}').format(db_user,db_pw,db_host,db_name)
+    engine = create_engine('postgres://{}').format(db_info)
 
     df.to_sql("arrivals", 
             engine, 
