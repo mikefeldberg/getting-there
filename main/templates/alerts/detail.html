@@ -14,9 +14,7 @@
                     <div class="hel bold mb10 my-trip-text">
                         {{ alert.station.name }}
                     </div>
-                    <div class="lg-ft hel bold mb10 flex-center line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
-                        <div class="line-name {% if alert.line.express %} undiamond {% endif %}">{{ alert.line.name }}</div>
-                    </div>
+                    <img class="mb15" src="/static/bullets/{{ alert.line.id }}.svg" alt="2" width="48" data-canonical-src="/static/bullets/{{ alert.line.id }}.svg" style="max-width:100%;">
                     <div class="hel bold my-trip-text">
                         {{ alert.direction }}
                     </div>
