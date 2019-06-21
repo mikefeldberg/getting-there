@@ -14,7 +14,7 @@
 <ul class="collection">
 {% for station in stations %}
     <li class="collection-item">
-        <div>
+        <div class="list-text">
             {{ station.name }}
             {% if station.id in trip_station_ids %}
                 <a class="secondary-content" href="/trips/edit">
