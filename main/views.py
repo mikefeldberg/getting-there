@@ -240,6 +240,33 @@ def trips_edit(request):
 
 
 def alerts_index(request, station_id, line_id):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        del data['csrfmiddlewaretoken']
+        print(data)
+
+        filter_lines = []
+
+        for item in data['line_ids']:
+            print(item)
+
+        print(filter_lines)
+
+        alerts = Alert.objects.filter(
+            station_id=station_id,
+            line_id=line_id,
+            deleted_at=None
+        ).values(
+            'id',
+            'line__id',
+            'line__name',
+            'line__color',
+            'line__text_color',
+            'line__express',
+            'station__name',
+            'direction',
+        ).all()
+
     alerts = Alert.objects.filter(
         station_id=station_id,
         line_id=line_id,
@@ -255,16 +282,42 @@ def alerts_index(request, station_id, line_id):
         'direction',
     ).all()
 
-    lines = Line.objects.filter(deleted_at=None).values(
-        'id',
-        'group_id',
-        'name',
-        'express',
-        'color',
-        'text_color',
-    ).all().order_by('group_id')
+    station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
-    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id, 'lines': lines })
+    stations = Station.objects.filter(
+        mta_downtown_id=station_uid,
+        deleted_at=None
+    ).values(
+        'line_id'
+    ).all()
+    
+    line_ids = []
+    lines = []
+
+    for item in stations:
+        line_ids.append(item['line_id'])
+
+    # print(line_ids)
+
+    for line_id in line_ids:
+        line = Line.objects.filter(
+            id=line_id,
+            deleted_at=None
+        ).values(
+            'id',
+            'route',
+            'group_id',
+            'name',
+            'express',
+            'color',
+            'text_color',
+        ).first()
+
+        lines.append(line)
+
+    distance = list(range(1,11))
+
+    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id, 'lines': lines, 'distance': distance })
 
 
 @login_required
