@@ -10,10 +10,10 @@
     <div class="container">
         <table>
             <tr>
-                <td>
+                <td class="line-container">
                     {% for line in lines %}
-                        <a id="line-icon-spacing" style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
-                            <div class="line-emblem line-emblem-md {% if line.express %} diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                        <a class="mr10 ctr-txt" style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
+                            <div class="ctr-txt line-emblem line-emblem-md{% if line.express %}-diamond diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
                                 <div class="{% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
                             </div>
                         </a>

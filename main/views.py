@@ -16,7 +16,7 @@ import collections
 import uuid
 import boto3
 
-from .models import Line, Station, Trip, Alert, Comment, Vote
+from .models import Line, Station, Trip, Alert, Comment, Vote, Arrival
 
 
 def home(request):
@@ -115,8 +115,6 @@ def lines_detail(request, line_id):
         deleted_at=None
     ).values('station_id').all()
 
-    print(alerts)
-
     trips = Trip.objects.filter(
         user_id=request.user.id,
         line_id=line_id,
@@ -147,19 +145,42 @@ def trips_new(request, line_id, station_id):
         station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
-            line_name, direction = item.split('_')
-            line = Line.objects.filter(id=line_id).first()
-            print(line)
-            station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
-            trip = Trip(
-                user=request.user,
-                trip_type=trip_type,
-                station_id=station.id,
-                line_id=line.id,
-                direction=direction,
-            )
+            route_name, direction = item.split('_')
+            if trip_type == 'Both':
+                line = Line.objects.filter(id=route_name).first()
+                station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+                trip = Trip(
+                    user=request.user,
+                    trip_type="AM",
+                    station_id=station.id,
+                    line_id=line.id,
+                    direction=direction,
+                )
+                
+                trip.save()
+                
+                trip = Trip(
+                    user=request.user,
+                    trip_type="PM",
+                    station_id=station.id,
+                    line_id=line.id,
+                    direction=direction,
+                )
 
-            trip.save()
+                trip.save()
+
+            else:
+                line = Line.objects.filter(id=route_name).first()
+                station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+                trip = Trip(
+                    user=request.user,
+                    trip_type=trip_type,
+                    station_id=station.id,
+                    line_id=line.id,
+                    direction=direction,
+                )
+
+                trip.save()
 
         return redirect('lines_detail', line_id=line_id)
 
@@ -234,23 +255,32 @@ def alerts_index(request, station_id, line_id):
         'direction',
     ).all()
 
-    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id})
+    lines = Line.objects.filter(deleted_at=None).values(
+        'id',
+        'group_id',
+        'name',
+        'express',
+        'color',
+        'text_color',
+    ).all().order_by('group_id')
+
+    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id, 'lines': lines })
 
 
 @login_required
 def alerts_new(request, station_id, line_id):
     if request.method == 'POST':
-        print('here I am')
-
         data = request.POST.copy()
+
         del data['csrfmiddlewaretoken']
         wait_time = data.pop('wait_time')[0]
         station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
         for item in data.keys():
-            line_name, direction = item.split('_')
-            line = Line.objects.filter(id=line_id).first()
+            route_name, direction = item.split('_')
+            line = Line.objects.filter(id=route_name).first()
             station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+
             alert = Alert(
                 user=request.user,
                 station_id=station.id,
