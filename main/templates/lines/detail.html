@@ -5,18 +5,23 @@
 <title>Getting There - {{ line.name }} Status</title>
 
 <div class="mb20 flx-row flx-ctr-xy">
-    <div class="flx-ctr-xy line-emblem line-emblem-lg{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-        <div class="{% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
-    </div>
+    <img src="/static/bullets/{{ line.id }}.svg" alt="2" width="48" data-canonical-src="/static/bullets/{{ line.id }}.svg" style="max-width:100%;">
     <div class="mr20"></div>
+    
     <h4>Status</h4>
 </div>
 
 <ul class="collection">
 {% for station in stations %}
     <li class="collection-item">
-        <div>
+        <div class="list-text">
             {{ station.name }}
+            <a class="secondary-content" href="/alerts/{{ station.id }}/{{ line.id }}">
+                <i class="material-icons blue-text">send</i>
+            </a>
+            <a class="secondary-content" href="">
+                <i class="material-icons white-text">_</i>
+            </a>
             {% if station.id in trip_station_ids %}
                 <a class="secondary-content" href="/trips/edit">
                     <i class="material-icons light-blue-text text-darken-4">edit</i>
@@ -26,6 +31,9 @@
                     <i class="material-icons green-text">add_circle</i>
                 </a>
             {% endif %}
+            <a class="secondary-content" href="">
+                <i class="material-icons white-text">_</i>
+            </a>
             <a class=secondary-content"></a>
             {% if station.id in alert_station_ids %}
                 <a class="secondary-content" href="/alerts/{{ station.id }}/{{ line.id }}" class="secondary-content">

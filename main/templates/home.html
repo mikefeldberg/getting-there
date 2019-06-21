@@ -4,45 +4,57 @@
 
 <title>Getting There - Home</title>
 
-<h1>My Trips</h1>
+<div class="flx-row space-btw">
+    <div>
+        <h4>My Trips</h4>
+    </div>
+    <div>
+        <a href="/trips/edit"><button class="btn blue w20">Edit Trips</button></a>
+    </div>
+</div>
+
 {% if trips %}
 <div name="all-trips">
     {% for trip in trips %}
         <a class="boldish blue-grey-text text-darken-4" href="alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
             <div class="trip-container card-panel">
-                <div class="trip-row row">
-                    <div class="col s4">
+                <div class="flx-row row">
+                    <div class="col 4">
                         <div class="pr100 flex-center center-align">
-                            <div class="hel bold mb10 my-trip-text">
+                            <div class="station-text bold mb10 my-trip-text">
                                 {{ trip.station__name }}
                             </div>
-                            <div class="lg-ft hel bold mb10 flex-center line-emblem line-emblem-md{% if trip.line__express %}-diamond diamond{% endif %}" style="background-color:{{ trip.line__color }};color:{{ trip.line__text_color }}">
-                                <div class="line-name {% if trip.line__express %} undiamond {% endif %}">{{ trip.line__name }}</div>
-                            </div> 
-                            <div class="hel bold my-trip-text">
+                            <img class="mb15" src="/static/bullets/{{ trip.line__id }}.svg" alt="2" width="70" data-canonical-src="/static/bullets/{{ trip.line__id }}.svg" style="max-width:100%;">
+
+                            <div class="station-text bold my-trip-text">
                                 {{ trip.direction }}
                             </div>
                         </div>
                     </div>
                     <div class="col s4">
                         <div class="form-center-text center">Next 3 trains will go here</div>    
-                        <div class="form-center-text center">Delay Alerts: {{ trip.alert_count }}</div>
+                        {% if trip.alert_count > 0 %}
+                            <div class="station-text form-center-text center">{{ trip.alert_count }} Delays Reported</div>
+                        {% else %}
+                            <div class="station-text form-center-text center">No Delays Reported</div>
+                        {% endif %}
                     </div>
                     <div class="col s4">
                         <div class="flex-center">
-                            <div class="mb10 center">Latest Status</div>
+                            <div class="station-text mb10 center">Latest Status</div>
                             {% if trip.resolved %}
-                                <div class="mb10 resolved-alert-icon"></div>
+                                <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
                             {% else %}
-                                <div class="mb10 unresolved-alert-icon center"></div>
+                                <i class="material-icons large light-green-text text-accent-5">train</i>
                             {% endif %}
-                            <div class="center">As of {{ trip.updated_at }}</div>
+                            {% if trip.updated_at %}
+                                <div class="station-text center">As of {{ trip.updated_at }}</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                    <!-- Trip Type: ({{ trip.trip_type }}) -- remove later, only here for debug feedback -->
             </div>
-</div>
+        </div>
     {% endfor %}
 </div>
 {% else %}

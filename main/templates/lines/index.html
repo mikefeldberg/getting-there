@@ -13,9 +13,7 @@
                 <td class="line-container">
                     {% for line in lines %}
                         <a class="mr10 ctr-txt" style="text-decoration:none; color:inherit" href="/lines/{{ line.id }}">
-                            <div class="ctr-txt line-emblem line-emblem-md{% if line.express %}-diamond diamond {% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-                                <div class="{% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
-                            </div>
+                            <img src="/static/bullets/{{ line.id }}.svg" alt="2" width="48" data-canonical-src="/static/bullets/{{ line.id }}.svg" style="max-width:100%;">
                         </a>
                     {% endfor %}
                 </td>

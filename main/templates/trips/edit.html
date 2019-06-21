@@ -14,14 +14,12 @@
             </div>
                 {% for trip in trips %}
                     {% if trip.trip_type == 'AM' %}
-                        <div class="trip-edit-row mb15">
-                            <label for="{{ trip.id }}">
+                        <div class="flx-row mb20">
+                            <label class="flx-row" for="{{ trip.id }}">
                                 <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
-                                <span>
-                                    <div class="trip-edit-row">
-                                        <div class="mr15 line-emblem line-emblem-md {% if trip.line.express %}-diamond diamond{% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
-                                            <div class="{% if trip.line.express %} undiamond {% endif %}"">{{ trip.line.name }}</div>
-                                        </div>
+                                <span class="flx-row">
+                                    <div class="flx-row">
+                                        <img class="mr10" src="/static/bullets/{{ trip.line.id }}.svg" alt="2" width="30" data-canonical-src="/static/bullets/{{ trip.line.id }}.svg" style="max-width:100%;">
                                         <div class="mr10 bold">{{ trip.station.name }}</div>
                                         <div class="boldish">({{ trip.direction }})</div>
                                     </div>
@@ -38,14 +36,12 @@
             </div>
             {% for trip in trips %}
                 {% if trip.trip_type == 'PM' %}
-                    <div class="trip-edit-row mb15">
-                        <label for="{{ trip.id }}">
+                    <div class="flx-row mb20">
+                        <label class="flx-row" for="{{ trip.id }}">
                             <input type="checkbox" class="filled-in" id="{{ trip.id }}" name="{{ trip.id }}">
-                            <span>
-                                <div class="trip-edit-row">
-                                    <div class="mr15 line-emblem line-emblem-md {% if trip.line.express %}-diamond diamond{% endif %}" style="background-color:{{ trip.line.color }};color:{{ trip.line.text_color }}">
-                                        <div class="{% if trip.line.express %} undiamond {% endif %}"">{{ trip.line.name }}</div>
-                                    </div>
+                            <span class="flx-row">
+                                <div class="flx-row">
+                                    <img class="mr10" src="/static/bullets/{{ trip.line.id }}.svg" alt="2" width="30" data-canonical-src="/static/bullets/{{ trip.line.id }}.svg" style="max-width:100%;">
                                     <div class="mr10 bold">{{ trip.station.name }}</div>
                                     <div class="boldish">({{ trip.direction }})</div>
                                 </div>
