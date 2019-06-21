@@ -19,7 +19,7 @@
             <select multiple icons name="line_ids">
                 <option value="" disabled selected>Line(s)</option>
                 {% for line in lines %}
-                    <option value="{{ line.id }}">{{ line.route }}</option>
+                    <option class="hidden-val" value="{{ line.id }}" data-icon="/static/bullets/{{ line.id }}.svg"></option>
                 {% endfor %}
             </select>
         </div>

@@ -245,12 +245,29 @@ def alerts_index(request, station_id, line_id):
         del data['csrfmiddlewaretoken']
         print(data)
 
+        new_lines = data['line_ids']
+        print('nl',new_lines)
         filter_lines = []
+        stations_away = 0
+        age_of_alert = 15
 
-        for item in data['line_ids']:
+        for item in data.values():
             print(item)
 
-        print(filter_lines)
+        # for item in data['line_ids']:
+            # print(item)
+            # print(filter_lines)
+
+        if data['stations_away']:
+            stations_away = int(data['stations_away'])
+
+        if data['age_of_alert']:
+            age_of_alert = int(data['age_of_alert'])
+
+
+        # print(filter_lines)
+        # print(stations_away)
+        # print(age_of_alert)
 
         alerts = Alert.objects.filter(
             station_id=station_id,

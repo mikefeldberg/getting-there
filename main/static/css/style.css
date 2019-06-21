@@ -251,3 +251,7 @@ label {
 .icon-green {
     color: green;
 }
+
+.hidden-val {
+    color: white
+}
