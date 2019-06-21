@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
 from copy import copy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import collections
 import uuid
@@ -51,8 +51,16 @@ def home(request):
         ).all()
 
         for alert in all_alerts:
+            alert_time = alert['updated_at']
+            time_now = datetime.now(timezone.utc)
+            time_diff = time_now - alert_time
+            print(time_diff)
+            timedelta(0, 8, 562000)
+            print(divmod(time_diff.days * 86400 + time_diff.seconds, 60))
+            
             trip['updated_at'] = alert['updated_at']
             
+
             vote = Vote.objects.filter(
                 alert_id=alert['id']
             ).values(
@@ -62,6 +70,8 @@ def home(request):
             alerts.append(alert['id'])
             if vote:
                 trip['resolved'] = vote['resolved']
+            else:
+                trip['resolved'] = True
 
         trip['alert_count'] = len(alerts)
 

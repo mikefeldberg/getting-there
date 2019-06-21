@@ -10,7 +10,7 @@
     {% for trip in trips %}
         <a class="boldish blue-grey-text text-darken-4" href="alerts/{{ trip.station__id }}/{{ trip.line__id }}/">
             <div class="trip-container card-panel">
-                <div class="trip-row row">
+                <div class="flx-row row">
                     <div class="col s4">
                         <div class="pr100 flex-center center-align">
                             <div class="station-text bold mb10 my-trip-text">
@@ -35,17 +35,18 @@
                         <div class="flex-center">
                             <div class="station-text mb10 center">Latest Status</div>
                             {% if trip.resolved %}
-                                <i class="material-icons large light-green-text text-accent-5">train</i>
-                            {% else %}
                                 <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
+                            {% else %}
+                                <i class="material-icons large light-green-text text-accent-5">train</i>
                             {% endif %}
-                            <div class="station-text center">As of {{ trip.updated_at }}</div>
+                            {% if trip.updated_at %}
+                                <div class="station-text center">As of {{ trip.updated_at }}</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                    <!-- Trip Type: ({{ trip.trip_type }}) -- remove later, only here for debug feedback -->
             </div>
-</div>
+        </div>
     {% endfor %}
 </div>
 {% else %}
