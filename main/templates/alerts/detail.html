@@ -4,52 +4,67 @@
 
 <title>Getting There - Alert Detais</title>
 
-<h1>Alert Details</h1>
+<!-- <h1>Alert Details</h1> -->
 
 <div>
-    <div style="background-color:orange">
-        <div>
-            <div>{{ alert.station.name }}</div>
-            <div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
-                <div class="line-name {% if alert.line.express %} undiamond {% endif %}">{{ alert.line.name }}</div>
+    <div class="trip-container card-panel">
+        <div class="trip-row row">
+            <div class="col s4">
+                <div class="pr100 flex-center center-align">
+                    <div class="hel bold mb10 my-trip-text">
+                        {{ alert.station.name }}
+                    </div>
+                    <div class="lg-ft hel bold mb10 flex-center line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
+                        <div class="line-name {% if alert.line.express %} undiamond {% endif %}">{{ alert.line.name }}</div>
+                    </div>
+                    <div class="hel bold my-trip-text">
+                        {{ alert.direction }}
+                    </div>
+                </div>
             </div>
-            <div>{{ alert.direction }}</div>
-        </div>
-        <div id="voting-container">
+            <div class="col s4">
                 <div id="vote-resolved-container">
                     <div>{{ resolved_tally }} Riders Say</div>
-                    <a href="/alerts/{{ alert.id }}/mark_resolved"><button>Mark Resolved</button></a>
+                    <a class="center" href="/alerts/{{ alert.id }}/mark_resolved"><i class="medium material-icons icon-green">thumb_up</i></a>
                     {% if resolved_tally >= 1 %}
                         <div>As of {{ resolved_last }} min</div>
                     {% endif %}
                 </div>
+            </div>
+            <div class="col s4">
                 <div id="vote-ongoing-container">
                     <div>{{ ongoing_tally }} Riders Say</div>
-                    <a href="/alerts/{{ alert.id }}/mark_ongoing"><button>Mark Ongoing</button></a>
+                    <a class="center" href="/alerts/{{ alert.id }}/mark_ongoing"><i class="medium material-icons icon-red">thumb_down</i></a>
                     {% if ongoing_tally >= 1 %}
                         <div>As of {{ ongoing_last }} min</div>
                     {% endif %}
                 </div>
+            </div>
         </div>
     </div>
+        <div id="voting-container">
+        </div>
+    <h3 class="center-align"> Rider Discussion </h3>
     <div style="background-color:yellow">
         SORT & FILTER DROP DOWNS
-        <a href="/alerts/{{ alert.id }}/add_comment"><button>Add Comment</button></a>
+        <a class="btn" href="/alerts/{{ alert.id }}/add_comment">Add Comment</a>
     </div>
-    <div style="background-color:green" class="all_comments">
-        {% for comment in comments %}
+    <div class="all_comments">
+            {% for comment in comments %}
             <div class="comment_container">
-                {% if comment.user__id == user_id %}
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <button id="{{ comment.id }}"" name="{{ comment.id }}" type="submit">&#128465;</button>
-                    </form>
-                {% endif %}
-                <div class="comment_body">{{ comment.user__username }}</div>
-                <div class="comment_body">{{ comment.created_at }}</div>
-                <div class="comment_body">{{ comment.message }}</div>
-            </div>
-        {% endfor %}
+                <div class="card-panel">
+                    {% if comment.user__id == user_id %}
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <button id="{{ comment.id }}"" name="{{ comment.id }}" type="submit">&#128465;</button>
+                        </form>
+                    {% endif %}
+                    <div class="comment_body">{{ comment.user__username }}</div>
+                    <div class="comment_body">{{ comment.created_at }}</div>
+                    <div class="comment_body">{{ comment.message }}</div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 

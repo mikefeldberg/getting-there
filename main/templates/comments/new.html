@@ -7,34 +7,48 @@
 <h1>Add Comment</h1>
 
 <div name="status-container" style="background-color:grey">
-    <div style="background-color:pink"> 
-        <div>{{ alert.station.name }}</div>
-        <div class="line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
-            <div class="line-name {% if trip.line.express %} undiamond {% endif %}">{{ trip.line.name }}</div>
-        </div>
-        <div>{{ alert.direction }}</div>
-    </div>
-    <div style="background-color:blue" id="vote-container">
-        <div style="background-color:yellow" id="vote-resolved-container">
-            <div>{{ resolved_tally }} Riders Say</div>
-            <div>Resolved</div>
-            {% if resolved_tally >= 1 %}
-                <div>As of {{ resolved_last }} min</div>
-            {% endif %}
-        </div>
-        <div style="background-color:orange" id="vote-ongoing-container">
-            <div>{{ ongoing_tally }} Riders Say</div>
-            <div>Ongoing</div>
-            {% if ongoing_tally >= 1 %}
-                <div>As of {{ ongoing_last }} min</div>
-            {% endif %}
+    <div class="trip-container card-panel">
+        <div class="trip-row row">
+            <div class="col s4">
+                <div class="pr100 flex-center center-align"> 
+                    <div class="hel bold mb10 my-trip-text">
+                        {{ alert.station.name }}
+                    </div>
+                    <div class="lg-ft hel bold mb10 flex-center line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
+                        <div class="line-name {% if alert.line.express %} undiamond {% endif %}">{{ alert.line.name }}</div>
+                    </div>
+                    <div class="hel bold my-trip-text">
+                        {{ alert.direction }}
+                    </div>
+                </div>
+            </div>
+            <div class="col s4 center" id="vote-container">
+                <div id="vote-resolved-container">
+                    <div>{{ resolved_tally }} Riders Say</div>
+                    <div> This is Resolved</div>
+                    {% if resolved_tally >= 1 %}
+                        <div class="mb10 resolved-alert-icon"></div>
+                        <div>As of {{ resolved_last }} min</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col s4 center" id="vote-ongoing-container">
+                <div>{{ ongoing_tally }} Riders Say</div>
+                <div>This is Ongoing</div>
+                {% if ongoing_tally >= 1 %}
+                    <div class="mb10 unresolved-alert-icon center"></div>
+                    <div>As of {{ ongoing_last }} min</div>
+                {% endif %}
+                </div>
         </div>
     </div>
 </div>
 
+
 <form action="" method="POST">
     {% csrf_token %}
     <input type="text" name="message">
-    <input type="submit" value="Add Comment">
+    <a class="btn red" href="">Cancel</a>
+    <input class="btn green" type="submit" value="Add Comment">
 </form>
 {% endblock %}

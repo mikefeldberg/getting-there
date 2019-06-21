@@ -4,7 +4,12 @@
 
 <title>Getting There - Station Alerts</title>
 
-<h1>Station Alerts</h1>
+<!-- <h1>Station Alerts</h1> -->
+<div class="row">
+    <div class="col s12">
+        <a id="add-alert" class="input-field col s12 btn" href="/alerts/new/{{ station_id }}/{{ line_id }}">Add Alert</a>
+    </div>
+</div>
 
 <span>Filter by:</span>
 <form>
@@ -33,37 +38,51 @@
                 <option value="Both">Both</option>
             </select>
         </div>
-        <!-- <div class="col s1"></div> -->
         <button type="submit" class="input-field col s3 btn">Filter</button>
     </div>
-</form>
-<div class="row">
-    <div class="col s3"></div>
-        <a href="/alerts/new/{{ station_id }}/{{ line_id }}"></a>Add Alert<button type="button" class="input-field col s6 btn">Add Alert</button></a>
-    <div class="col s2"></div>
-</div>
-
-
-<div>
-    <a href="/alerts/new/{{ station_id }}/{{ line_id }}"><button>Add Alert</button></a>
-</div>
-{% if alerts %}
-
-{% for alert in alerts %}
-<a href="/alerts/{{ alert.id }}">
-    <div>
-        <div>{{ alert.station__name }}</div>
-        <div class="line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
-            <div class="line-name {% if alert.line__express %} undiamond {% endif %}">{{ alert.line__name }}</div>
+    </form>
+    
+    {% if alerts %}
+    
+    {% for alert in alerts %}
+    <a href="/alerts/{{ alert.id }}">
+        <div class="card-panel black-text">
+        <div class="trip-row row">
+            <div class="col s4">
+                <div class="pr100 flex-center center-align">
+                    <div class="hel bold mb10 my-trip-text">
+                        {{ alert.station__name }}
+                    </div>
+                    <div class="lg-ft hel bold mb10 flex-center line-emblem line-emblem-md {% if alert.line__express %} diamond {% endif %}" style="background-color:{{ alert.line__color }};color:{{ alert.line__text_color }}">
+                        <div class="line-name {% if alert.line__express %} undiamond {% endif %}">{{ alert.line__name }}</div>
+                    </div>
+                    <div class="hel bold my-trip-text">
+                        {{ alert.direction }}
+                    </div>
+                </div>
+            </div>
+                <div class="col s4">
+                    comments
+                </div>
+                <div class="col s4">
+                    <div class="flex-center">
+                        <div class="mb10 center">Latest Status</div>
+                        {% if alert.resolved %}
+                            <div class="mb10 resolved-alert-icon"></div>
+                        {% else %}
+                            <div class="mb10 unresolved-alert-icon center"></div>
+                        {% endif %}
+                        <div class="center">As of {{ alert.updated_at }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>{{ alert.direction }}</div>
-    </div>
-</a>
-{% endfor %}
-
-{% else %}
-<p>No current alerts for this station and line combo</p>
-{% endif %}
+    </a>
+    {% endfor %}
+    
+    {% else %}
+    <p>No current alerts for this station and line combo</p>
+    {% endif %}
 
 <script>
 // $(document).ready(function() {
