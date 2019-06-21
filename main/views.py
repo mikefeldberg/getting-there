@@ -54,9 +54,9 @@ def home(request):
             alert_time = alert['updated_at']
             time_now = datetime.now(timezone.utc)
             time_diff = time_now - alert_time
-            print(time_diff)
+            # print(time_diff)
             timedelta(0, 8, 562000)
-            print(divmod(time_diff.days * 86400 + time_diff.seconds, 60))
+            # print(divmod(time_diff.days * 86400 + time_diff.seconds, 60))
             
             trip['updated_at'] = alert['updated_at']
             
@@ -250,65 +250,100 @@ def trips_edit(request):
 
 def alerts_index(request, station_id, line_id):
     if request.method == 'POST':
-        data = request.POST.copy()
-        del data['csrfmiddlewaretoken']
-        print(data)
-        lines_new = ''
+        data = dict(request.POST.copy())
 
-        ## Can't iterate through line_ids as contained in POST data. Prints all but yields only one.
+        filtered_lines = data['line_ids']
+        station_radius = 0
+        age_of_alert = 15
+        display_stations = []
 
-        for item in data['line_ids']:
-            print(item)
-            # trip = Trip.objects.filter(id=item).first()
-            # trip.deleted_at = datetime.now()
-            # trip.save()
+        station_radius = int(data['stations_away'][0])
+        if data['age_of_alert'][0]:
+            age_of_alert = int(data['age_of_alert'][0])
 
+        current_station = Station.objects.filter(id=station_id).values(
+            'mta_uptown_id',
+            'mta_downtown_id'
+        ).last()
 
+        lines = [];
+        line_filters = {}
 
-        # for key, value in request.POST.items():
-        #     print ("%s %s" % (key, value))
+        for line_id in filtered_lines:
+            line_data = {}
+            uptown_stations = Station.objects.filter(
+                line_id=line_id,
+                mta_uptown_id=current_station['mta_uptown_id'],
+                deleted_at=None
+            ).values(
+                'uptown_stop_number',
+            ).last()
 
-        # print(type(data))
-        # print(type(data['line_ids']))
-        # here = []
-        # for item in data['line_ids']:
-        #     here.append(item)
-        # print(here)
-        # # print('nl',new_lines)
-        # filter_lines = []
-        # stations_away = 0
-        # age_of_alert = 15
-        # # print(new_lines)
+            if uptown_stations:
+                uptown_stop_number = uptown_stations['uptown_stop_number']
+                line_data['uptown_mid'] = uptown_stop_number
+                uptown_min = uptown_stop_number - station_radius
+                uptown_max = uptown_stop_number + station_radius
+                line_data['uptown_range'] = list(range(uptown_min, uptown_max + 1))
 
-        # print(data.items()[0])
-        # print(data.items()[1])
-        # print(data.items()[2])
+            downtown_stations = Station.objects.filter(
+                line_id=line_id,
+                mta_downtown_id=current_station['mta_downtown_id'],
+                deleted_at=None
+            ).values(
+                'downtown_stop_number',
+            ).last()
 
-        # for item in data.items():
-        #     print(item)
+            if downtown_stations:
+                downtown_stop_number = downtown_stations['downtown_stop_number']
+                line_data['downtown_mid'] = downtown_stop_number
+                downtown_min = downtown_stop_number - station_radius
+                downtown_max = downtown_stop_number + station_radius
+                line_data['downtown_range'] = list(range(downtown_min, downtown_max + 1))
+            
+            if line_data:
+                line_filters[line_id] = line_data
 
-        # for keys,values in data.items():
-        #     print(keys)
-        #     print(values)
+        alerts = []
 
-        # for item in data.values():
-        #     print(item)
+        for line_id, line_filter in line_filters.items():
+            uptown_alerts = Alert.objects.filter(
+                station__uptown_stop_number__in=line_filter['uptown_range'],
+                line_id=line_id,
+                deleted_at=None
+            ).values(
+                'id',
+                'line__id',
+                'line__name',
+                'line__color',
+                'line__text_color',
+                'line__express',
+                'station__name',
+                'direction',
+            ).all()
 
-        # for item in data['line_ids']:
-            # print(item)
-            # print(filter_lines)
+            alerts.append(list(uptown_alerts))
 
-        if data['stations_away']:
-            stations_away = int(data['stations_away'])
+            downtown_alerts = Alert.objects.filter(
+                station__downtown_stop_number__in=line_filter['downtown_range'],
+                line_id=line_id,
+                deleted_at=None
+            ).values(
+                'id',
+                'line__id',
+                'line__name',
+                'line__color',
+                'line__text_color',
+                'line__express',
+                'station__name',
+                'direction',
+            ).all()
 
-        if data['age_of_alert']:
-            age_of_alert = int(data['age_of_alert'])
+            alerts.append(list(downtown_alerts))
+            
+        alerts = sum(alerts, [])
 
-
-        # print(filter_lines)
-        # print(stations_away)
-        # print(age_of_alert)
-
+    else:
         alerts = Alert.objects.filter(
             station_id=station_id,
             line_id=line_id,
@@ -324,21 +359,6 @@ def alerts_index(request, station_id, line_id):
             'direction',
         ).all()
 
-    alerts = Alert.objects.filter(
-        station_id=station_id,
-        line_id=line_id,
-        deleted_at=None
-    ).values(
-        'id',
-        'line__id',
-        'line__name',
-        'line__color',
-        'line__text_color',
-        'line__express',
-        'station__name',
-        'direction',
-    ).all()
-
     station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
     stations = Station.objects.filter(
@@ -347,34 +367,31 @@ def alerts_index(request, station_id, line_id):
     ).values(
         'line_id'
     ).all()
-    
-    line_ids = []
-    lines = []
 
-    for item in stations:
-        line_ids.append(item['line_id'])
+    line_ids = [i['line_id'] for i in stations]
 
-    # print(line_ids)
-
-    for line_id in line_ids:
-        line = Line.objects.filter(
-            id=line_id,
-            deleted_at=None
-        ).values(
-            'id',
-            'route',
-            'group_id',
-            'name',
-            'express',
-            'color',
-            'text_color',
-        ).first()
-
-        lines.append(line)
+    lines = Line.objects.filter(
+        id__in=line_ids,
+        deleted_at=None
+    ).values(
+        'id',
+        'route',
+        'group_id',
+        'name',
+        'express',
+        'color',
+        'text_color',
+    ).all()
 
     distance = list(range(1,11))
 
-    return render(request, 'alerts/index.html', {'alerts': alerts, 'station_id': station_id, 'line_id': line_id, 'lines': lines, 'distance': distance })
+    return render(request, 'alerts/index.html', {
+        'alerts': alerts,
+        'station_id': station_id,
+        'line_id': line_id,
+        'lines': lines,
+        'distance': distance
+    })
 
 
 @login_required
