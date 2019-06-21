@@ -18,7 +18,6 @@ import boto3
 
 from .models import Line, Station, Trip, Alert, Comment, Vote, Arrival
 
-
 def home(request):
     trips = Trip.objects.filter(
         user_id=request.user.id,
@@ -242,17 +241,51 @@ def trips_edit(request):
 def alerts_index(request, station_id, line_id):
     if request.method == 'POST':
         data = request.POST.copy()
+        # print(request.POST)
+        # print(request.POST['line_ids'])
         del data['csrfmiddlewaretoken']
-        print(data)
+        # print(data)
 
-        new_lines = data['line_ids']
-        print('nl',new_lines)
-        filter_lines = []
-        stations_away = 0
-        age_of_alert = 15
+        lines_new = ''
 
-        for item in data.values():
+        ## Can't iterate through line_ids as contained in POST data. Prints all but yields only one.
+
+        for item in data['line_ids']:
             print(item)
+            # trip = Trip.objects.filter(id=item).first()
+            # trip.deleted_at = datetime.now()
+            # trip.save()
+
+
+
+        # for key, value in request.POST.items():
+        #     print ("%s %s" % (key, value))
+
+        # print(type(data))
+        # print(type(data['line_ids']))
+        # here = []
+        # for item in data['line_ids']:
+        #     here.append(item)
+        # print(here)
+        # # print('nl',new_lines)
+        # filter_lines = []
+        # stations_away = 0
+        # age_of_alert = 15
+        # # print(new_lines)
+
+        # print(data.items()[0])
+        # print(data.items()[1])
+        # print(data.items()[2])
+
+        # for item in data.items():
+        #     print(item)
+
+        # for keys,values in data.items():
+        #     print(keys)
+        #     print(values)
+
+        # for item in data.values():
+        #     print(item)
 
         # for item in data['line_ids']:
             # print(item)

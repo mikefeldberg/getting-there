@@ -161,6 +161,8 @@ h1 {
     align-items: center;
 } */
 
+
+
 .flex-center {
     display: flex;
     flex-direction: column;
@@ -203,6 +205,10 @@ h1 {
 
 .mr15 {
     margin-right: 15px;
+}
+
+.mr20 {
+    margin-right: 20px;
 }
 
 .mb10 {
@@ -254,4 +260,19 @@ label {
 
 .hidden-val {
     color: white
+}
+
+.flx-row {
+    display: flex;
+    align-items: center;
+}
+
+.flx-ctr-xy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ctr-pg {
+
 }
