@@ -18,11 +18,11 @@
         <div>
             {{ station.name }}
             {% if station.id in trip_station_ids %}
-                <a class="secondary-content" href="/trips/new/{{ line.id }}/{{ station.id }}">
+                <a class="secondary-content" href="/trips/edit">
                     <i class="material-icons light-blue-text text-darken-4">edit</i>
                 </a>
             {% else %}
-                <a class="secondary-content" href="/trips/edit">
+                <a class="secondary-content" href="/trips/new/{{ line.id }}/{{ station.id }}">
                     <i class="material-icons green-text">add_circle</i>
                 </a>
             {% endif %}
