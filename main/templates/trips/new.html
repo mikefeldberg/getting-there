@@ -33,9 +33,13 @@
                 </label>
             </div>
         {% endfor %}
-        
-        <a href="/lines/{{ line_id }}" id="submit-trip-button" class="btn red" value="Cancel">Cancel</a> 
-        <input id="submit-trip-button" class="btn green" type="submit" value="Add Trip">
-        </form>
+        <div class="row">
+            <div class="col s1"></div>
+            <a href="/lines/{{ line_id }}" class="btn red col s4">Cancel</a>
+            <div class="col s2"></div>
+            <input class="btn blue darken-3 col s4" type="submit" value="Add Trip">
+            <div class="col s1"></div>
+        </div>
+    </form>
 </div>
 {% endblock %}

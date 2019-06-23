@@ -8,14 +8,6 @@ h1 {
     margin: 0px 0px 10px 0px;
 }
 
-#train-icon {
-    padding: 0px 10px 0px 0px;
-}
-
-#lines-icon {
-    padding: 0px 10px 0px 0px;
-}
-
 #sign-up-card {
     padding: 20px;
 }
@@ -27,15 +19,6 @@ h1 {
 #submit-alert-button {
     margin: 20px 0px 0px 0px;
 }
-/* 
-#selector-row {
-    margin: 20px 0px 0px 0px;
-} */
-/* 
-#selector-row-two {
-    display: inline;
-    color: black;
-} */
 
 #alert-card-panel {
     margin: 0;
@@ -161,6 +144,10 @@ h1 {
     align-items: center;
 } */
 
+.flx-ctr {
+    align-items: center;
+    justify-content: center;
+}
 
 
 .flex-center {
@@ -197,6 +184,10 @@ h1 {
 
 .diamond {
     transform: rotate(45deg);
+}
+
+.mr5 {
+    margin-right: 5px;
 }
 
 .mr10 {
@@ -297,4 +288,12 @@ label {
 
 .w20 {
     width: 20vw;
+}
+
+.invisible {
+    opacity: 0;
+}
+
+.row:last-child {
+    margin-bottom: 0 !important;
 }

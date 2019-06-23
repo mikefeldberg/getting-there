@@ -9,29 +9,21 @@
     <form class="form-style" action="" method="POST">
         {% csrf_token %}
         <h5>Station</h5>
-        <div>
-        {{ station.name }}
-        </div>
+        <div>{{ station.name }}</div>
         <h5>How long have you been waiting?</h5>
-            <p class="range-field">
-                <input name="wait_time" type="range" min="0" max="60" placeholder="minutes"/>
-            </p>
-        <!-- <select name="wait_time">
-            {% for minute in minute_range %}
-                <option value="{{ minute }}">{{ minute }} Minutes</option>
-            {% endfor %}
-                <option value="60">Over an hour</option>
-        </select> -->
+        <p class="range-field">
+            <input name="wait_time" type="range" min="0" max="60" placeholder="minutes"/>
+        </p>
         <h5>Which trains are affected?</h5>
         {% for line in train_lines %}
         <div id="selector-row" class="checkbox-row mb20">
             <label for="{{line.id}}_{{line.direction}}">
                 <input type="checkbox" class="filled-in" id="{{line.id}}_{{line.direction}}" name="{{line.id}}_{{line.direction}}">
                 <span id ="selector-row-two" >
-                <div class="mr10 line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
-                    <div class="line-name {% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
-                </div>
-                <span>{{ line.direction }}</span>
+                    <div class="mr10 line-emblem line-emblem-md{% if line.express %}-diamond diamond{% endif %}" style="background-color:{{ line.color }};color:{{ line.text_color }}">
+                        <div class="line-name {% if line.express %} undiamond {% endif %}">{{ line.name }}</div>
+                    </div>
+                    <span>{{ line.direction }}</span>
                 </span>
             </label>
         </div>
@@ -41,8 +33,13 @@
             <textarea class="materialize-textarea" id="textarea1" cols="30" rows="10"></textarea>
             <label for="textarea1"></label>
         </div>
-        <a href="/lines/{{ line_id }}" id="submit-trip-button" class="btn red" value="Cancel">Cancel</a>
-        <input id="submit-alert-button" class= "submit-trip-button btn blue darken-3" type="submit" value="Create Alert">
+        <div class="row">
+            <div class="col s1"></div>
+            <a href="/lines/{{ line_id }}" class="btn red col s4">Cancel</a>
+            <div class="col s2"></div>
+            <input class="btn blue darken-3 col s4" type="submit" value="Create Alert">
+            <div class="col s1"></div>
+        </div>
     </form>
 </div>
 {% endblock %}

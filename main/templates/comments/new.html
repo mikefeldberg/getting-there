@@ -1,46 +1,62 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <title>Getting There - New Comment</title>
 
 <h1>Add Comment</h1>
 
-<div name="status-container" style="background-color:grey">
+<div name="status-container">
 
     <div class="trip-container card-panel">
-        <div class="trip-row row">
-            <div class="col s4">
-                <div class="pr100 flex-center center-align"> 
-                    <div class="hel bold mb10 my-trip-text">
+        <div name="station-text-container" class="flx-row space-btw row">
+            <div class="col s3">
+                <div class="station-text bold flex-center center-align">
+                    <div class=" mb10 my-trip-text">
                         {{ alert.station.name }}
                     </div>
-                    <div class="lg-ft hel bold mb10 flex-center line-emblem line-emblem-md {% if alert.line.express %} diamond {% endif %}" style="background-color:{{ alert.line.color }};color:{{ alert.line.text_color }}">
-                        <div class="line-name {% if alert.line.express %} undiamond {% endif %}">{{ alert.line.name }}</div>
-                    </div>
-                    <div class="hel bold my-trip-text">
+                    <img class="mb15" src="/static/bullets/{{ alert.line.id }}.svg" alt="2" width="48" data-canonical-src="/static/bullets/{{ alert.line.id }}.svg" style="max-width:100%;">
+                    <div class=" my-trip-text">
                         {{ alert.direction }}
                     </div>
                 </div>
             </div>
-            <div class="col s4 center" id="vote-container">
-                <div>
-                    <div>{{ resolved_tally }} Riders Say</div>
-                    <div> This is Resolved</div>
+            <div class="col s1"></div>
+            <div class="col s4">
+                <div name="resolved-container" class="flex-center">
+                    <div class="bold">
+                        {% if resolved_tally %}
+                            <div>{{ resolved_tally }} Rider{% if resolved_tally > 1 %}s{% endif %} Say{% if resolved_tally == 1 %}s{% endif %}</div>
+                        {% else %}
+                            <div class="invisible">_</div>
+                        {% endif %}
+                    </div>
+                    <i class="medium material-icons icon-green">train</i>
                     {% if resolved_tally >= 1 %}
-                        <div class="mb10 resolved-alert-icon"></div>
-                        <div>As of {{ resolved_last }} min</div>
+                        <div>Resolved</div>
+                        <div>As of {{ resolved_last|naturaltime }}</div>
+                    {% else %}
+                        <div class="invisible">_</div>
+                        <div class="invisible">_</div>
                     {% endif %}
                 </div>
             </div>
-            <div class="col s4 center" id="vote-ongoing-container">
-                <div>{{ ongoing_tally }} Riders Say</div>
-                <div>This is Ongoing</div>
-                {% if ongoing_tally >= 1 %}
-                    <div class="mb10 unresolved-alert-icon center"></div>
-                    <div>As of {{ ongoing_last }} min</div>
-                {% endif %}
+            <div class="col s1"></div>
+            <div class="flex-center col s3">
+                <div name="ongoing-container" class="flex-center">
+                    {% if ongoing_tally %}
+                        <div>{{ ongoing_tally }} Rider{% if ongoing_tally > 1 %}s{% endif %} Say{% if ongoing_tally == 1 %}s{% endif %}</div>
+                    {% endif %}
+                    <i class="medium material-icons icon-red">do_not_disturb_on</i>
+                    {% if ongoing_tally >= 1 %}
+                        <div>Ongoing</div>    
+                        <div class="center">As of {{ ongoing_last|naturaltime }}</div>
+                    {% else %}
+                        <div class="invisible">_</div>
+                        <div class="invisible">_</div>
+                    {% endif %}
                 </div>
+            </div>
         </div>
     </div>
 </div>
@@ -49,7 +65,12 @@
 <form action="" method="POST">
     {% csrf_token %}
     <input type="text" name="message">
-    <a class="btn red" href="">Cancel</a>
-    <input class="btn green" type="submit" value="Add Comment">
+    <div class="row">
+        <div class="col s1"></div>
+        <a class="col s4 btn red" href="">Cancel</a>
+        <div class="col s2"></div>
+        <input class="col s4 btn blue darken-3" type="submit" value="Add Comment">
+        <div class="col s1"></div>
+    </div>
 </form>
 {% endblock %}
