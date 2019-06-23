@@ -37,10 +37,20 @@ def home(request):
     ).all()
 
 
-
     for trip in trips:
         trip['resolved'] = True
         trip['status_updated_at'] = None
+        trip['mta_uid'] = ''
+
+        mta_uptown_id = Station.objects.filter(
+            id=trip['station__id'],
+        ).values(
+            'mta_uptown_id'
+        ).first()
+
+        mta_uid = mta_uptown_id['mta_uptown_id'][0:3]
+
+        trip['mta_uid'] = mta_uid
 
         trip['alert_count'] = Alert.objects.filter(
             station_id=trip['station__id'],
@@ -61,10 +71,12 @@ def home(request):
             'updated_at',
         ).last()
 
+
+
         if last_alert:
             trip['resolved'] = False
             trip['status_updated_at'] = last_alert['updated_at']
-            
+
             last_vote = Vote.objects.filter(
                 alert_id=last_alert['id']
             ).order_by(
@@ -204,7 +216,6 @@ def trips_new(request, mta_uid, line_id):
         line=current_line,
         mta_uptown_id=mta_uid + 'N'
     ).values('id').first()
-        
     station_id = station_id_obj['id']
     
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
@@ -447,8 +458,15 @@ def alerts_index(request, mta_uid, line_id):
 
 
 @login_required
-def alerts_new(request, station_id, line_id):
+def alerts_new(request, mta_uid, line_id):
     if request.method == 'POST':
+        current_line = Line.objects.filter(id=line_id).first()
+        station_id_obj = Station.objects.filter(
+            line=current_line,
+            mta_uptown_id=mta_uid + 'N'
+        ).values('id').first()
+        station_id = station_id_obj['id']
+        
         data = request.POST.copy()
 
         del data['csrfmiddlewaretoken']
@@ -470,7 +488,14 @@ def alerts_new(request, station_id, line_id):
 
             alert.save()
 
-        return redirect('alerts_index', station_id=station_id, line_id=line_id)
+        return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id)
+
+    current_line = Line.objects.filter(id=line_id).first()
+    station_id_obj = Station.objects.filter(
+        line=current_line,
+        mta_uptown_id=mta_uid + 'N'
+    ).values('id').first()
+    station_id = station_id_obj['id']
 
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
