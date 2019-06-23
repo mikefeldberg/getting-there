@@ -33,11 +33,6 @@
                     </div>
                     <div class="col s4">
                         <div class="form-center-text center">Next 3 trains will go here</div>    
-                        {% if trip.alert_count > 0 %}
-                            <div class="station-text form-center-text center">{{ trip.alert_count }} Delays Reported</div>
-                        {% else %}
-                            <div class="station-text form-center-text center">No Delays Reported</div>
-                        {% endif %}
                     </div>
                     <div class="col s4">
                         <div class="flex-center">
@@ -46,6 +41,11 @@
                                 <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
                             {% else %}
                                 <i class="material-icons large light-green-text text-accent-5">train</i>
+                            {% endif %}
+                            {% if trip.alert_count > 0 %}
+                                <div class="station-text center">{{ trip.alert_count }} Delays Reported</div>
+                            {% else %}
+                                <div class="station-text center">No Delays Reported</div>
                             {% endif %}
                             {% if trip.status_updated_at %}
                                 <div class="station-text center">As of {{ trip.status_updated_at|naturaltime }}</div>
