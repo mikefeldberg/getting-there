@@ -42,8 +42,20 @@
     </ul>
     <div class="row">
         <div class="col s12"></div>
-        <a id="my-trips" href="/" class="btn-large waves-effect waves-light col s6 grey darken-3" name="action"><i id="train-icon" class="material-icons">train</i>My Trips</a>
-        <a id="all-lines" href="{% url 'lines_index' %}" class="btn-large waves-effect waves-light col s6 grey darken-3" name="action"><i id="lines-icon" class="material-icons">looks_6</i>All Lines</a>
+        <a id="my-trips" href="/" class="btn-large waves-effect waves-light col s6 grey darken-3" name="action">
+            <div class="flx-row flx-ctr">
+                <i class="material-icons mr10">train</i>
+                <div>My Trips</div>
+            </div>
+        </a>
+        <a id="all-lines" href="{% url 'lines_index' %}" class="btn-large waves-effect waves-light col s6 grey darken-3" name="action">
+            <div class="flx-row flx-ctr">
+                <img class="mr5" src="/static/bullets/10.svg" alt="2" width="20" data-canonical-src="/static/bullets/10.svg" style="max-width:100%;">
+                <img class="mr5" src="/static/bullets/11.svg" alt="2" width="20" data-canonical-src="/static/bullets/11.svg" style="max-width:100%;">
+                <img class="mr10" src="/static/bullets/12.svg" alt="2" width="20" data-canonical-src="/static/bullets/12.svg" style="max-width:100%;">
+                <div>All Lines</div>
+            </div>
+        </a>
     </div>
     <main class="container">
         {% block content %}
@@ -62,6 +74,6 @@ M.FormSelect.init(selector);
 $(document).ready(function(){
     $('select').formSelect();
 });
- 
+
 </script>
 </html>
