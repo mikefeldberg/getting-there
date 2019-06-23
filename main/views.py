@@ -324,6 +324,7 @@ def alerts_index(request, station_id, line_id):
                 'line__express',
                 'station__name',
                 'direction',
+                'message',
             ).all()
 
             alerts.append(list(uptown_alerts))
@@ -341,11 +342,14 @@ def alerts_index(request, station_id, line_id):
                 'line__express',
                 'station__name',
                 'direction',
+                'message',
             ).all()
 
             alerts.append(list(downtown_alerts))
             
         alerts = sum(alerts, [])
+
+        return redirect('alerts_index', station_id=station_id, line_id=line_id)
 
     else:
         alerts = Alert.objects.filter(
@@ -363,6 +367,7 @@ def alerts_index(request, station_id, line_id):
             'direction',
             'created_at',
             'updated_at',
+            'message',
         ).all()
 
     station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id

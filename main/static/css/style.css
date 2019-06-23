@@ -298,3 +298,7 @@ label {
 .w20 {
     width: 20vw;
 }
+
+.invisible {
+    opacity: 0;
+}

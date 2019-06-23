@@ -60,29 +60,40 @@
     {% for alert in alerts %}
     <a href="/alerts/{{ alert.id }}">
         <div class="card-panel black-text">
-        <div class="flx-row row">
-            <div class="col s4">
-                <div class="pr100 flex-center center-align">
-                    <div class="station-text bold mb10 my-trip-text">
-                        {{ alert.station__name }}
-                    </div>
-                    <img class="mb15" src="/static/bullets/{{ alert.line__id }}.svg" alt="2" width="80" data-canonical-src="/static/bullets/{{ alert.line__id }}.svg" style="max-width:100%;">
-                    <div class="station-text bold my-trip-text">
-                        {{ alert.direction }}
+            <div class="flx-row row">
+                <div class="col s3">
+                    <div class="flex-center center-align">
+                        <div class="station-text bold mb10 my-trip-text">
+                            {{ alert.station__name }}
+                        </div>
+                        <img class="mb15" src="/static/bullets/{{ alert.line__id }}.svg" alt="2" width="80" data-canonical-src="/static/bullets/{{ alert.line__id }}.svg" style="max-width:100%;">
+                        <div class="station-text bold my-trip-text">
+                            {{ alert.direction }}
+                        </div>
                     </div>
                 </div>
-            </div>
-                <div class="col s4">
-                    comments
+
+                <div class="col s1"></div>
+                <div class="col s4 center">
+                    {% if alert.message %}
+                        <div><span class="bold">Description: </span>{{ alert.message }}</div>
+                    {% endif %}
+                    <div class="invisible">_</div>
+                    {% if alert.comments %}
+                        <div>{{ alert.message }}</div>
+                    {% endif %}
                 </div>
-                <div class="col s4">
+                <div class="col s1"></div>
+                <div class="col s3">
                     <div class="flex-center">
                         <div class="station-text mb10 center">Latest Status</div>
-                        {% if alert.resolved %}
-                            <i class="material-icons large green-text text-darken-4">train</i>
-                        {% else %}
-                            <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
-                        {% endif %}
+                        <div class="mb10">
+                            {% if alert.resolved %}
+                                <i class="material-icons large green-text text-darken-4">train</i>
+                            {% else %}
+                                <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
+                            {% endif %}
+                        </div>
                         {% if alert.updated_at %}
                             <div class="station-text center">As of {{ alert.updated_at|naturaltime }}</div>
                         {% endif %}
