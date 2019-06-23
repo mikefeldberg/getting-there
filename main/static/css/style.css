@@ -302,3 +302,7 @@ label {
 .invisible {
     opacity: 0;
 }
+
+.row:last-child {
+    margin-bottom: 0 !important;
+}
