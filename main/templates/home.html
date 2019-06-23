@@ -13,6 +13,8 @@
     </div>
 </div>
 
+TODO: Change home -> alert routing. Station ID should be Str, not Int. The station ID used for trips should be the MTA id. N if uptown trip, S if downtown trip. The line_id parameter should still be passed, but will no longer be used to create a unique URI, it will only used to set the initial filter param on the alerts index page.
+
 {% if trips %}
 <div name="all-trips">
     {% for trip in trips %}

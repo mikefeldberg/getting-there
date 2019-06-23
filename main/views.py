@@ -18,6 +18,7 @@ import boto3
 
 from .models import Line, Station, Trip, Alert, Comment, Vote, Arrival
 
+
 def home(request):
     trips = Trip.objects.filter(
         user_id=request.user.id,
@@ -34,6 +35,8 @@ def home(request):
         'direction',
         'trip_type',
     ).all()
+
+
 
     for trip in trips:
         trip['resolved'] = True
@@ -117,8 +120,11 @@ def lines_detail(request, line_id):
     stations = Station.objects.filter(
         line_id=line_id,
         deleted_at=None
-        ).all().order_by('downtown_stop_number')
-        
+    ).all().order_by('downtown_stop_number')
+
+    for station in stations:
+        station.mta_uid = station.mta_uptown_id[0:3]
+
     alerts = Alert.objects.filter(
         line_id=line_id,
         deleted_at=None
@@ -145,7 +151,8 @@ def lines_detail(request, line_id):
 
 
 @login_required
-def trips_new(request, line_id, station_id):
+# def trips_new(request, line_id, station_id):
+def trips_new(request, mta_station_uid):
     if request.method == 'POST':
         data = request.POST.copy()
         del data['csrfmiddlewaretoken']
@@ -242,15 +249,21 @@ def trips_edit(request):
             trip.deleted_at = datetime.now()
             trip.save()
 
-
     trips = Trip.objects.filter(user_id=request.user.id, deleted_at=None).all()
 
     return render(request, 'trips/edit.html', {'trips': trips})
 
 
-def alerts_index(request, station_id, line_id):
+def alerts_index(request, mta_uid, line_id):
     if request.method == 'POST':
         data = dict(request.POST.copy())
+
+        current_line = Line.objects.filter(id=line_id).first()
+
+        station_id = Station.objects.filter(
+            line=current_line,
+            mta_uptown_id=mta_uid + 'N'
+        ).values('id').first()
 
         if 'line_ids' in data and data['line_ids'][0]:
             filtered_lines = data['line_ids']
@@ -355,27 +368,41 @@ def alerts_index(request, station_id, line_id):
 
         return redirect('alerts_index', station_id=station_id, line_id=line_id)
 
-    else:
-        alerts = Alert.objects.filter(
-            station_id=station_id,
-            line_id=line_id,
-            deleted_at=None
-        ).values(
-            'id',
-            'line__id',
-            'line__name',
-            'line__color',
-            'line__text_color',
-            'line__express',
-            'station__name',
-            'direction',
-            'created_at',
-            'updated_at',
-            'message',
-        ).all()
+    current_line = Line.objects.filter(id=line_id).first()
+
+    station_id_obj = Station.objects.filter(
+        line=current_line,
+        mta_uptown_id=mta_uid + 'N'
+    ).values('id').first()
+    
+    station_id = station_id_obj['id']
+
+    print('JUST BEFORE ALERT LOOKUP ################################################################')
+
+    print('line ID ', line_id)
+    print('station ID ', station_id)
+
+    alerts = Alert.objects.filter(
+        station_id=station_id,
+        line_id=line_id,
+        deleted_at=None
+    ).values(
+        'id',
+        'line__id',
+        'line__name',
+        'line__color',
+        'line__text_color',
+        'line__express',
+        'station__name',
+        'direction',
+        'created_at',
+        'updated_at',
+        'message',
+    ).all()
+
+    print('JUST MADE IT PAST ALERT LOOKUP **************************************************************************************************************')
 
     station_display = Station.objects.filter(id=station_id).values('name').first()
-
 
     print(station_display['name'])
 
