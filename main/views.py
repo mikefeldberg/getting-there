@@ -346,7 +346,11 @@ def alerts_index(request, station_id, line_id):
             ).all()
 
             alerts.append(list(downtown_alerts))
-            
+
+        station_display = Station.objects.filter(id=station_id).values('name').first()
+
+        print(station_display['name'])
+
         alerts = sum(alerts, [])
 
         return redirect('alerts_index', station_id=station_id, line_id=line_id)
@@ -370,13 +374,19 @@ def alerts_index(request, station_id, line_id):
             'message',
         ).all()
 
+    station_display = Station.objects.filter(id=station_id).values('name').first()
+
+
+    print(station_display['name'])
+
     station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
 
     stations = Station.objects.filter(
         mta_downtown_id=station_uid,
         deleted_at=None
     ).values(
-        'line_id'
+        'line_id',
+        'name',
     ).all()
 
     line_ids = [i['line_id'] for i in stations]
@@ -401,7 +411,8 @@ def alerts_index(request, station_id, line_id):
         'station_id': station_id,
         'line_id': line_id,
         'lines': lines,
-        'distance': distance
+        'distance': distance,
+        'station_display': station_display['name'],
     })
 
 
@@ -482,6 +493,15 @@ def alerts_detail(request, alert_id):
             comment.save()
 
     alert = Alert.objects.filter(id=alert_id, deleted_at=None).first()
+
+    origin_station = Alert.objects.filter(id=alert_id, deleted_at=None).values(
+        'station__id',
+        'station__name',
+        'line__id',
+    ).first()
+
+    print(origin_station)
+
     user_id = request.user.id
 
     all_votes = Vote.objects.filter(alert_id=alert_id).values('resolved', 'created_at', 'updated_at')
@@ -502,17 +522,6 @@ def alerts_detail(request, alert_id):
     resolved_tally = votes.count(True)
     ongoing_tally = votes.count(False)
 
-### --------------- ongoing updated_at is updating properly when marked ongoing, resolved updated_at is NOT updating properly when marked resolved --------- ###
-
-    # if (resolved_last):
-    #     resolved_as_of = datetime.today() - timedelta(resolved_last)
-    # if (ongoing_last):
-    #     ongoing_as_of = datetime.today() - timedelta(ongoing_last)
-
-    # d = datetime.today() - timedelta(hours=0, minutes=50)
-
-    # d.strftime('%H:%M %p')
-
     comments = Comment.objects.filter(
         alert_id=alert.id,
         deleted_at=None
@@ -524,6 +533,8 @@ def alerts_detail(request, alert_id):
         'created_at',
     ).all()
 
+    
+
     return render(
         request,
         'alerts/detail.html',
@@ -534,7 +545,8 @@ def alerts_detail(request, alert_id):
             'resolved_last': resolved_last,
             'ongoing_last': ongoing_last,
             'comments': comments,
-            'user_id': user_id
+            'user_id': user_id,
+            'origin_station': origin_station,
         }
     )
 

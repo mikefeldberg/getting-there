@@ -186,6 +186,10 @@ h1 {
     transform: rotate(45deg);
 }
 
+.mr5 {
+    margin-right: 5px;
+}
+
 .mr10 {
     margin-right: 10px;
 }
