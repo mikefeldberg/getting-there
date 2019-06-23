@@ -36,44 +36,44 @@ def home(request):
     ).all()
 
     for trip in trips:
-        trip['alert_count'] = 0
-        trip['resolved'] = False
-        trip['updated_at'] = None
-        alerts = []
+        trip['resolved'] = True
+        trip['status_updated_at'] = None
 
-        all_alerts = Alert.objects.filter(
+        trip['alert_count'] = Alert.objects.filter(
             station_id=trip['station__id'],
             line_id=trip['line__id'],
+            updated_at__gt=datetime.now() - timedelta(minutes=20),
             deleted_at=None,
+        ).count()
+
+        last_alert = Alert.objects.filter(
+            station_id=trip['station__id'],
+            line_id=trip['line__id'],
+            updated_at__gt=datetime.now() - timedelta(minutes=20),
+            deleted_at=None,
+        ).order_by(
+            '-updated_at',
         ).values(
             'id',
             'updated_at',
-        ).all()
+        ).last()
 
-        for alert in all_alerts:
-            alert_time = alert['updated_at']
-            time_now = datetime.now(timezone.utc)
-            time_diff = time_now - alert_time
-            # print(time_diff)
-            timedelta(0, 8, 562000)
-            # print(divmod(time_diff.days * 86400 + time_diff.seconds, 60))
+        if last_alert:
+            trip['resolved'] = False
+            trip['status_updated_at'] = last_alert['updated_at']
             
-            trip['updated_at'] = alert['updated_at']
-            
-
-            vote = Vote.objects.filter(
-                alert_id=alert['id']
+            last_vote = Vote.objects.filter(
+                alert_id=last_alert['id']
+            ).order_by(
+                '-updated_at'
             ).values(
-                'resolved'
+                'resolved',
+                'updated_at'
             ).last()
 
-            alerts.append(alert['id'])
-            if vote:
-                trip['resolved'] = vote['resolved']
-            else:
-                trip['resolved'] = True
-
-        trip['alert_count'] = len(alerts)
+            if last_vote:
+                trip['resolved'] = last_vote['resolved']
+                trip['status_updated_at'] = last_vote['updated_at']
 
     return render(request, 'home.html', {'trips': trips})
 
