@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <title>Getting There - Alert Detais</title>
@@ -25,7 +25,7 @@
                     <div>{{ resolved_tally }} Riders Say</div>
                     <a class="center" href="/alerts/{{ alert.id }}/mark_resolved"><i class="medium material-icons icon-green">thumb_up</i></a>
                     {% if resolved_tally >= 1 %}
-                        <div>As of {{ resolved_last }} min</div>
+                        <div>As of {{ resolved_last|naturaltime }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     <div>{{ ongoing_tally }} Riders Say</div>
                     <a class="center" href="/alerts/{{ alert.id }}/mark_ongoing"><i class="medium material-icons icon-red">thumb_down</i></a>
                     {% if ongoing_tally >= 1 %}
-                        <div class="center">As of {{ ongoing_last }} min</div>
+                        <div class="center">As of {{ ongoing_last|naturaltime }}</div>
                     {% endif %}
                 </div>
             </div>

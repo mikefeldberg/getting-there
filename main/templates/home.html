@@ -32,11 +32,14 @@
                         </div>
                     </div>
                     <div class="col s4">
-                        <div class="form-center-text center">Next 3 trains will go here</div>    
+                        <div class="form-center-text bold center">Upcoming trains:</div>
+                        <div class="form-center-text center">Next:</div>
+                        <div class="form-center-text center">Next + 1:</div>
+                        <div class="form-center-text center">Next + 2:</div>
                     </div>
                     <div class="col s4">
                         <div class="flex-center">
-                            <div class="station-text mb10 center">Latest Status</div>
+                            <div class="station-text mb10 center bold">Latest Status</div>
                             {% if not trip.resolved %}
                                 <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
                             {% else %}

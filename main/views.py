@@ -361,6 +361,8 @@ def alerts_index(request, station_id, line_id):
             'line__express',
             'station__name',
             'direction',
+            'created_at',
+            'updated_at',
         ).all()
 
     station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id

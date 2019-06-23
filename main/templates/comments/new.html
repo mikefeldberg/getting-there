@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <title>Getting There - New Comment</title>
@@ -29,7 +29,7 @@
                     <div> This is Resolved</div>
                     {% if resolved_tally >= 1 %}
                         <div class="mb10 resolved-alert-icon"></div>
-                        <div>As of {{ resolved_last }} min</div>
+                        <div>As of {{ resolved_last|naturaltime }} ago</div>
                     {% endif %}
                 </div>
             </div>
@@ -38,7 +38,7 @@
                 <div>This is Ongoing</div>
                 {% if ongoing_tally >= 1 %}
                     <div class="mb10 unresolved-alert-icon center"></div>
-                    <div>As of {{ ongoing_last }} min</div>
+                    <div>As of {{ ongoing_last|naturaltime }} ago</div>
                 {% endif %}
                 </div>
         </div>
