@@ -27,7 +27,7 @@
                     <i class="material-icons light-blue-text text-darken-4">edit</i>
                 </a>
             {% else %}
-                <a class="secondary-content" href="/trips/new/{{ line.id }}/{{ station.id }}">
+                <a class="secondary-content" href="/trips/new/{{ station.mta_uid }}/{{ line.id }}">
                     <i class="material-icons green-text">add_circle</i>
                 </a>
             {% endif %}

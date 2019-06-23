@@ -152,19 +152,17 @@ def lines_detail(request, line_id):
 
 @login_required
 # def trips_new(request, line_id, station_id):
-def trips_new(request, mta_station_uid):
+def trips_new(request, mta_uid, line_id):
     if request.method == 'POST':
         data = request.POST.copy()
         del data['csrfmiddlewaretoken']
         trip_type = data.pop('trip_type')[0]
 
-        station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
-
         for item in data.keys():
             route_name, direction = item.split('_')
             if trip_type == 'Both':
                 line = Line.objects.filter(id=route_name).first()
-                station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+                station = Station.objects.filter(mta_uptown_id=mta_uid + 'N', line_id=line.id).first()
                 trip = Trip(
                     user=request.user,
                     trip_type="AM",
@@ -172,9 +170,9 @@ def trips_new(request, mta_station_uid):
                     line_id=line.id,
                     direction=direction,
                 )
-                
+
                 trip.save()
-                
+
                 trip = Trip(
                     user=request.user,
                     trip_type="PM",
@@ -187,7 +185,7 @@ def trips_new(request, mta_station_uid):
 
             else:
                 line = Line.objects.filter(id=route_name).first()
-                station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+                station = Station.objects.filter(mta_uptown_id=mta_uid + 'N', line_id=line.id).first()
                 trip = Trip(
                     user=request.user,
                     trip_type=trip_type,
@@ -200,7 +198,15 @@ def trips_new(request, mta_station_uid):
 
         return redirect('lines_detail', line_id=line_id)
 
-    line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    current_line = Line.objects.filter(id=line_id).first()
+    station_id_obj = Station.objects.filter(
+        line=current_line,
+        mta_uptown_id=mta_uid + 'N'
+    ).values('id').first()
+        
+    station_id = station_id_obj['id']
+    
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
@@ -235,7 +241,7 @@ def trips_new(request, mta_station_uid):
             train['direction'] = 'Downtown'
             train_lines.append(copy(train))
 
-    return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_lines': train_lines, 'line_id': line_id, })
+    return render(request, 'trips/new.html', {'station': station, 'train_lines': train_lines, 'line_id': line_id, })
 
 
 @login_required
@@ -260,10 +266,12 @@ def alerts_index(request, mta_uid, line_id):
 
         current_line = Line.objects.filter(id=line_id).first()
 
-        station_id = Station.objects.filter(
+        station_id_obj = Station.objects.filter(
             line=current_line,
             mta_uptown_id=mta_uid + 'N'
         ).values('id').first()
+        
+        station_id = station_id_obj['id']
 
         if 'line_ids' in data and data['line_ids'][0]:
             filtered_lines = data['line_ids']
@@ -286,7 +294,6 @@ def alerts_index(request, mta_uid, line_id):
         ).last()
 
         line_filters = {}
-
 
         for line_id in filtered_lines:
             line_data = {}
@@ -366,7 +373,7 @@ def alerts_index(request, mta_uid, line_id):
 
         alerts = sum(alerts, [])
 
-        return redirect('alerts_index', station_id=station_id, line_id=line_id)
+        return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id)
 
     current_line = Line.objects.filter(id=line_id).first()
 
@@ -376,11 +383,6 @@ def alerts_index(request, mta_uid, line_id):
     ).values('id').first()
     
     station_id = station_id_obj['id']
-
-    print('JUST BEFORE ALERT LOOKUP ################################################################')
-
-    print('line ID ', line_id)
-    print('station ID ', station_id)
 
     alerts = Alert.objects.filter(
         station_id=station_id,
@@ -440,6 +442,7 @@ def alerts_index(request, mta_uid, line_id):
         'lines': lines,
         'distance': distance,
         'station_display': station_display['name'],
+        'mta_uid': mta_uid,
     })
 
 
