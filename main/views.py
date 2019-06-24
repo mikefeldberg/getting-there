@@ -89,7 +89,7 @@ def home(request):
 
             if last_vote:
                 trip['resolved'] = last_vote['resolved']
-                trip['status_updated_at'] = last_vote['updated_at']
+                # trip['status_updated_at'] = last_vote['updated_at']
 
     return render(request, 'home.html', {'trips': trips})
 
@@ -348,6 +348,7 @@ def alerts_index(request, mta_uid, line_id):
                 station__uptown_stop_number__in=line_filter['uptown_range'],
                 line_id=line_id,
                 direction='Uptown',
+                updated_at__gt=datetime.now() - timedelta(minutes=age_of_alert),
                 deleted_at=None,
             ).values(
                 'id',
@@ -367,6 +368,7 @@ def alerts_index(request, mta_uid, line_id):
                 station__downtown_stop_number__in=line_filter['downtown_range'],
                 line_id=line_id,
                 direction='Downtown',
+                updated_at__gt=datetime.now() - timedelta(minutes=age_of_alert),
                 deleted_at=None,
             ).values(
                 'id',
@@ -580,6 +582,12 @@ def alerts_detail(request, alert_id):
         'line__id',
     ).first()
 
+    print(origin_station)
+    mta_uptown_id = Station.objects.filter(id=origin_station['station__id']).values('mta_uptown_id').first()
+    print(mta_uptown_id)
+    origin_station['mta_uid'] = mta_uptown_id['mta_uptown_id'][0:3]
+    print(origin_station)
+
     user_id = request.user.id
 
     all_votes = Vote.objects.filter(alert_id=alert_id).values('resolved', 'created_at', 'updated_at')
@@ -591,11 +599,6 @@ def alerts_detail(request, alert_id):
 
     for vote in all_votes:
         votes.append(vote['resolved'])
-
-        if vote['resolved'] == True:
-            resolved_last = vote['updated_at']
-        if vote['resolved'] == False:
-            ongoing_last = vote['updated_at']
 
     resolved_tally = votes.count(True)
     ongoing_tally = votes.count(False)
@@ -610,8 +613,6 @@ def alerts_detail(request, alert_id):
         'message',
         'created_at',
     ).all()
-
-    
 
     return render(
         request,
@@ -670,7 +671,6 @@ def mark_ongoing(request, alert_id):
         alert.save()
         return redirect('alerts_detail', alert_id=alert_id)
 
-    
     vote = Vote(
         alert_id=alert_id,
         user_id=request.user.id,
