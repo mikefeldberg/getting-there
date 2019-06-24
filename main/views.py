@@ -446,6 +446,7 @@ def alerts_index(request, mta_uid, line_id):
         'line__text_color',
         'line__express',
         'station__name',
+        'ongoing',
         'direction',
         'created_at',
         'updated_at',
@@ -639,6 +640,7 @@ def mark_resolved(request, alert_id):
     if (vote):
         vote.resolved=True
         vote.save()
+        alert.ongoing=False
         alert.save()
         return redirect('alerts_detail', alert_id=alert_id)
     
@@ -664,6 +666,7 @@ def mark_ongoing(request, alert_id):
     if (vote):
         vote.resolved=False
         vote.save()
+        alert.ongoing=True
         alert.save()
         return redirect('alerts_detail', alert_id=alert_id)
 

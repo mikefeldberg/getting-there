@@ -96,12 +96,11 @@
                 <div class="col s3">
                     <div class="flex-center">
                         <div class="station-text mb10 center">Latest Status</div>
-                        TO DO: FIX LASTEST STATUS ICON TO UPDATE WITH RIDER VOTES
                         <div class="mb10">
-                            {% if alert.resolved %}
-                                <i class="material-icons large green-text text-darken-4">train</i>
-                            {% else %}
+                            {% if alert.ongoing %}
                                 <i class="material-icons large red-text text-darken-4">do_not_disturb_on</i>
+                            {% else %}
+                                <i class="material-icons large green-text text-darken-4">train</i>
                             {% endif %}
                         </div>
                         {% if alert.updated_at %}
