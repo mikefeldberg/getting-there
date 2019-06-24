@@ -275,6 +275,12 @@ def trips_edit(request):
 def alerts_index(request, mta_uid, line_id):
     if request.method == 'POST':
         data = dict(request.POST.copy())
+        del data['csrfmiddlewaretoken']
+
+        print(data)
+
+        for item in data:
+            print(item)
 
         current_line = Line.objects.filter(id=line_id).first()
 
@@ -282,28 +288,36 @@ def alerts_index(request, mta_uid, line_id):
             line=current_line,
             mta_uptown_id=mta_uid + 'N'
         ).values('id').first()
-        
+
         station_id = station_id_obj['id']
 
         if 'line_ids' in data and data['line_ids'][0]:
             filtered_lines = data['line_ids']
         else:
             filtered_lines = [line_id]
-        
+
+        print('filt lines-------------------------------',filtered_lines)
+
         if data['stations_away'][0]:
             station_radius = int(data['stations_away'][0])
         else:
             station_radius = 0
+
+        print('radius-----------------------------------------',station_radius)
 
         if data['age_of_alert'][0]:
             age_of_alert = int(data['age_of_alert'][0])
         else:
             age_of_alert = 15
 
+        print('age-----------------------',age_of_alert)
+
         current_station = Station.objects.filter(id=station_id).values(
             'mta_uptown_id',
             'mta_downtown_id'
         ).last()
+
+        print('cur sta----------------------', current_station)
 
         line_filters = {}
 
@@ -317,11 +331,15 @@ def alerts_index(request, mta_uid, line_id):
                 'uptown_stop_number',
             ).last()
 
+            print('ut stations----------------------', uptown_stations)
+
             if uptown_stations:
                 uptown_stop_number = uptown_stations['uptown_stop_number']
                 uptown_min = uptown_stop_number - station_radius
                 uptown_max = uptown_stop_number + station_radius
                 line_data['uptown_range'] = list(range(uptown_min, uptown_max + 1))
+
+            print(line_data)
 
             downtown_stations = Station.objects.filter(
                 line_id=line_id,
@@ -336,7 +354,7 @@ def alerts_index(request, mta_uid, line_id):
                 downtown_min = downtown_stop_number - station_radius
                 downtown_max = downtown_stop_number + station_radius
                 line_data['downtown_range'] = list(range(downtown_min, downtown_max + 1))
-            
+
             if line_data:
                 line_filters[line_id] = line_data
 
@@ -381,20 +399,44 @@ def alerts_index(request, mta_uid, line_id):
 
         station_display = Station.objects.filter(id=station_id).values('name').first()
 
-        print(station_display['name'])
+        stations = Station.objects.filter(
+            Q(mta_uptown_id=mta_uid+'N') | Q(mta_downtown_id=mta_uid+'S')
+        ).values(
+            'id',
+            'name',
+            'line_id',
+        ).all()
 
+        line_ids = [i['line_id'] for i in stations]
+
+        lines = Line.objects.filter(
+            id__in=line_ids,
+            deleted_at=None
+        ).values(
+            'id',
+            'route',
+            'group_id',
+            'name',
+            'express',
+            'color',
+            'text_color',
+        ).all()
+
+        distance = list(range(1,11))
+        
         alerts = sum(alerts, [])
 
-        return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id)
+        print('alerts ***********************************************',alerts)
 
-    # current_line = Line.objects.filter(id=line_id).first()
-
-    # station_id_obj = Station.objects.filter(
-    #     line=current_line,
-    #     mta_uptown_id=mta_uid + 'N'
-    # ).values('id').first()
-    
-    # station_id = station_id_obj['id']
+        # return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id, {'alerts':alerts})
+        return render(request, 'alerts/index.html', {
+            'alerts': alerts,
+            'line_id': line_id,
+            'lines': lines,
+            'distance': distance,
+            'station_display': station_display['name'],
+            'mta_uid': mta_uid,
+        })
 
     stations = Station.objects.filter(
         Q(mta_uptown_id=mta_uid+'N') | Q(mta_downtown_id=mta_uid+'S')
