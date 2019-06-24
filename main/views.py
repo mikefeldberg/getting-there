@@ -8,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from copy import copy
 from datetime import datetime, timedelta, timezone
@@ -17,6 +18,7 @@ import uuid
 import boto3
 
 from .models import Line, Station, Trip, Alert, Comment, Vote, Arrival
+
 
 def home(request):
     trips = Trip.objects.filter(
@@ -35,9 +37,21 @@ def home(request):
         'trip_type',
     ).all()
 
+
     for trip in trips:
         trip['resolved'] = True
         trip['status_updated_at'] = None
+        trip['mta_uid'] = ''
+
+        mta_uptown_id = Station.objects.filter(
+            id=trip['station__id'],
+        ).values(
+            'mta_uptown_id'
+        ).first()
+
+        mta_uid = mta_uptown_id['mta_uptown_id'][0:3]
+
+        trip['mta_uid'] = mta_uid
 
         trip['alert_count'] = Alert.objects.filter(
             station_id=trip['station__id'],
@@ -61,7 +75,7 @@ def home(request):
         if last_alert:
             trip['resolved'] = False
             trip['status_updated_at'] = last_alert['updated_at']
-            
+
             last_vote = Vote.objects.filter(
                 alert_id=last_alert['id']
             ).order_by(
@@ -73,7 +87,7 @@ def home(request):
 
             if last_vote:
                 trip['resolved'] = last_vote['resolved']
-                trip['status_updated_at'] = last_vote['updated_at']
+                # trip['status_updated_at'] = last_vote['updated_at']
 
     return render(request, 'home.html', {'trips': trips})
 
@@ -117,8 +131,11 @@ def lines_detail(request, line_id):
     stations = Station.objects.filter(
         line_id=line_id,
         deleted_at=None
-        ).all().order_by('downtown_stop_number')
-        
+    ).all().order_by('downtown_stop_number')
+
+    for station in stations:
+        station.mta_uid = station.mta_uptown_id[0:3]
+
     alerts = Alert.objects.filter(
         line_id=line_id,
         deleted_at=None
@@ -145,19 +162,18 @@ def lines_detail(request, line_id):
 
 
 @login_required
-def trips_new(request, line_id, station_id):
+# def trips_new(request, line_id, station_id):
+def trips_new(request, mta_uid, line_id):
     if request.method == 'POST':
         data = request.POST.copy()
         del data['csrfmiddlewaretoken']
         trip_type = data.pop('trip_type')[0]
 
-        station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
-
         for item in data.keys():
             route_name, direction = item.split('_')
             if trip_type == 'Both':
                 line = Line.objects.filter(id=route_name).first()
-                station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+                station = Station.objects.filter(mta_uptown_id=mta_uid + 'N', line_id=line.id).first()
                 trip = Trip(
                     user=request.user,
                     trip_type="AM",
@@ -165,9 +181,9 @@ def trips_new(request, line_id, station_id):
                     line_id=line.id,
                     direction=direction,
                 )
-                
+
                 trip.save()
-                
+
                 trip = Trip(
                     user=request.user,
                     trip_type="PM",
@@ -180,7 +196,7 @@ def trips_new(request, line_id, station_id):
 
             else:
                 line = Line.objects.filter(id=route_name).first()
-                station = Station.objects.filter(mta_downtown_id=station_uid, line_id=line.id).first()
+                station = Station.objects.filter(mta_uptown_id=mta_uid + 'N', line_id=line.id).first()
                 trip = Trip(
                     user=request.user,
                     trip_type=trip_type,
@@ -193,7 +209,14 @@ def trips_new(request, line_id, station_id):
 
         return redirect('lines_detail', line_id=line_id)
 
-    line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    # line = Line.objects.filter(id=line_id, deleted_at=None).first()
+    current_line = Line.objects.filter(id=line_id).first()
+    station_id_obj = Station.objects.filter(
+        line=current_line,
+        mta_uptown_id=mta_uid + 'N'
+    ).values('id').first()
+    station_id = station_id_obj['id']
+    
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
 
     lines = Station.objects.filter(
@@ -228,7 +251,7 @@ def trips_new(request, line_id, station_id):
             train['direction'] = 'Downtown'
             train_lines.append(copy(train))
 
-    return render(request, 'trips/new.html', {'line': line, 'station': station, 'train_lines': train_lines, 'line_id': line_id, })
+    return render(request, 'trips/new.html', {'station': station, 'train_lines': train_lines, 'line_id': line_id, })
 
 
 @login_required
@@ -242,21 +265,30 @@ def trips_edit(request):
             trip.deleted_at = datetime.now()
             trip.save()
 
-
     trips = Trip.objects.filter(user_id=request.user.id, deleted_at=None).all()
 
     return render(request, 'trips/edit.html', {'trips': trips})
 
 
-def alerts_index(request, station_id, line_id):
+def alerts_index(request, mta_uid, line_id):
     if request.method == 'POST':
         data = dict(request.POST.copy())
+        del data['csrfmiddlewaretoken']
+
+        current_line = Line.objects.filter(id=line_id).first()
+
+        station_id_obj = Station.objects.filter(
+            line=current_line,
+            mta_uptown_id=mta_uid + 'N'
+        ).values('id').first()
+
+        station_id = station_id_obj['id']
 
         if 'line_ids' in data and data['line_ids'][0]:
             filtered_lines = data['line_ids']
         else:
             filtered_lines = [line_id]
-        
+
         if data['stations_away'][0]:
             station_radius = int(data['stations_away'][0])
         else:
@@ -273,7 +305,6 @@ def alerts_index(request, station_id, line_id):
         ).last()
 
         line_filters = {}
-
 
         for line_id in filtered_lines:
             line_data = {}
@@ -304,7 +335,7 @@ def alerts_index(request, station_id, line_id):
                 downtown_min = downtown_stop_number - station_radius
                 downtown_max = downtown_stop_number + station_radius
                 line_data['downtown_range'] = list(range(downtown_min, downtown_max + 1))
-            
+
             if line_data:
                 line_filters[line_id] = line_data
 
@@ -314,7 +345,9 @@ def alerts_index(request, station_id, line_id):
             uptown_alerts = Alert.objects.filter(
                 station__uptown_stop_number__in=line_filter['uptown_range'],
                 line_id=line_id,
-                deleted_at=None
+                direction='Uptown',
+                updated_at__gt=datetime.now() - timedelta(minutes=age_of_alert),
+                deleted_at=None,
             ).values(
                 'id',
                 'line__id',
@@ -332,7 +365,9 @@ def alerts_index(request, station_id, line_id):
             downtown_alerts = Alert.objects.filter(
                 station__downtown_stop_number__in=line_filter['downtown_range'],
                 line_id=line_id,
-                deleted_at=None
+                direction='Downtown',
+                updated_at__gt=datetime.now() - timedelta(minutes=age_of_alert),
+                deleted_at=None,
             ).values(
                 'id',
                 'line__id',
@@ -349,45 +384,76 @@ def alerts_index(request, station_id, line_id):
 
         station_display = Station.objects.filter(id=station_id).values('name').first()
 
-        print(station_display['name'])
+        stations = Station.objects.filter(
+            Q(mta_uptown_id=mta_uid+'N') | Q(mta_downtown_id=mta_uid+'S')
+        ).values(
+            'id',
+            'name',
+            'line_id',
+        ).all()
 
-        alerts = sum(alerts, [])
+        line_ids = [i['line_id'] for i in stations]
 
-        return redirect('alerts_index', station_id=station_id, line_id=line_id)
-
-    else:
-        alerts = Alert.objects.filter(
-            station_id=station_id,
-            line_id=line_id,
+        lines = Line.objects.filter(
+            id__in=line_ids,
             deleted_at=None
         ).values(
             'id',
-            'line__id',
-            'line__name',
-            'line__color',
-            'line__text_color',
-            'line__express',
-            'station__name',
-            'direction',
-            'created_at',
-            'updated_at',
-            'message',
+            'route',
+            'group_id',
+            'name',
+            'express',
+            'color',
+            'text_color',
         ).all()
 
-    station_display = Station.objects.filter(id=station_id).values('name').first()
+        distance = list(range(1,11))
 
+        alerts = sum(alerts, [])
 
-    print(station_display['name'])
-
-    station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
+        # return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id, {'alerts':alerts})
+        return render(request, 'alerts/index.html', {
+            'alerts': alerts,
+            'line_id': line_id,
+            'lines': lines,
+            'filtered_lines': filtered_lines,
+            'distance': distance,
+            'station_display': station_display['name'],
+            'mta_uid': mta_uid,
+        })
 
     stations = Station.objects.filter(
-        mta_downtown_id=station_uid,
+        Q(mta_uptown_id=mta_uid+'N') | Q(mta_downtown_id=mta_uid+'S')
+    ).values(
+        'id',
+        'name',
+        'line_id',
+    ).all()
+
+    station_ids = []
+
+    for item in stations:
+        station_ids.append(item['id'])
+
+    alerts = Alert.objects.filter(
+        station__id__in=station_ids,
         deleted_at=None
     ).values(
-        'line_id',
-        'name',
+        'id',
+        'line__id',
+        'line__name',
+        'line__color',
+        'line__text_color',
+        'line__express',
+        'station__name',
+        'ongoing',
+        'direction',
+        'created_at',
+        'updated_at',
+        'message',
     ).all()
+
+    station_display = Station.objects.filter(id=station_ids[0]).values('name').first()
 
     line_ids = [i['line_id'] for i in stations]
 
@@ -408,17 +474,24 @@ def alerts_index(request, station_id, line_id):
 
     return render(request, 'alerts/index.html', {
         'alerts': alerts,
-        'station_id': station_id,
         'line_id': line_id,
         'lines': lines,
         'distance': distance,
         'station_display': station_display['name'],
+        'mta_uid': mta_uid,
     })
 
 
 @login_required
-def alerts_new(request, station_id, line_id):
+def alerts_new(request, mta_uid, line_id):
     if request.method == 'POST':
+        current_line = Line.objects.filter(id=line_id).first()
+        station_id_obj = Station.objects.filter(
+            line=current_line,
+            mta_uptown_id=mta_uid + 'N'
+        ).values('id').first()
+        station_id = station_id_obj['id']
+        
         data = request.POST.copy()
 
         del data['csrfmiddlewaretoken']
@@ -440,7 +513,14 @@ def alerts_new(request, station_id, line_id):
 
             alert.save()
 
-        return redirect('alerts_index', station_id=station_id, line_id=line_id)
+        return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id)
+
+    current_line = Line.objects.filter(id=line_id).first()
+    station_id_obj = Station.objects.filter(
+        line=current_line,
+        mta_uptown_id=mta_uid + 'N'
+    ).values('id').first()
+    station_id = station_id_obj['id']
 
     line = Line.objects.filter(id=line_id, deleted_at=None).first()
     station = Station.objects.filter(id=station_id, deleted_at=None).first()
@@ -501,6 +581,10 @@ def alerts_detail(request, alert_id):
     ).first()
 
     print(origin_station)
+    mta_uptown_id = Station.objects.filter(id=origin_station['station__id']).values('mta_uptown_id').first()
+    print(mta_uptown_id)
+    origin_station['mta_uid'] = mta_uptown_id['mta_uptown_id'][0:3]
+    print(origin_station)
 
     user_id = request.user.id
 
@@ -513,11 +597,6 @@ def alerts_detail(request, alert_id):
 
     for vote in all_votes:
         votes.append(vote['resolved'])
-
-        if vote['resolved'] == True:
-            resolved_last = vote['updated_at']
-        if vote['resolved'] == False:
-            ongoing_last = vote['updated_at']
 
     resolved_tally = votes.count(True)
     ongoing_tally = votes.count(False)
@@ -532,8 +611,6 @@ def alerts_detail(request, alert_id):
         'message',
         'created_at',
     ).all()
-
-    
 
     return render(
         request,
@@ -562,6 +639,7 @@ def mark_resolved(request, alert_id):
     if (vote):
         vote.resolved=True
         vote.save()
+        alert.ongoing=False
         alert.save()
         return redirect('alerts_detail', alert_id=alert_id)
     
@@ -587,10 +665,10 @@ def mark_ongoing(request, alert_id):
     if (vote):
         vote.resolved=False
         vote.save()
+        alert.ongoing=True
         alert.save()
         return redirect('alerts_detail', alert_id=alert_id)
 
-    
     vote = Vote(
         alert_id=alert_id,
         user_id=request.user.id,
