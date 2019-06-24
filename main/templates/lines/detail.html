@@ -14,15 +14,9 @@
 <ul class="collection">
 {% for station in stations %}
     <li class="collection-item">
-        <div class="list-text">
-            <a href="/alerts/{{ station.mta_uid }}/{{ line.id }}">
+        <div class="list-text row unrow">
+            <a class="col s9" href="/alerts/{{ station.mta_uid }}/{{ line.id }}">
                 {{ station.name }}
-            </a>
-            <a class="secondary-content" href="/alerts/{{ station.mta_uid }}/{{ line.id }}">
-                <i class="material-icons blue-text">send</i>
-            </a>
-            <a class="secondary-content">
-                <i class="material-icons white-text">_</i>
             </a>
             {% if station.id in trip_station_ids %}
                 <a class="secondary-content" href="/trips/edit">

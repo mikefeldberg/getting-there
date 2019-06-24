@@ -72,8 +72,6 @@ def home(request):
             'updated_at',
         ).last()
 
-
-
         if last_alert:
             trip['resolved'] = False
             trip['status_updated_at'] = last_alert['updated_at']
