@@ -14,29 +14,25 @@
 <ul class="collection">
 {% for station in stations %}
     <li class="collection-item">
-        <div class="list-text">
-            {{ station.name }}
-            <a class="secondary-content" href="/alerts/{{ station.id }}/{{ line.id }}">
-                <i class="material-icons blue-text">send</i>
-            </a>
-            <a class="secondary-content" href="">
-                <i class="material-icons white-text">_</i>
+        <div class="list-text row unrow">
+            <a class="col s9" href="/alerts/{{ station.mta_uid }}/{{ line.id }}">
+                {{ station.name }}
             </a>
             {% if station.id in trip_station_ids %}
                 <a class="secondary-content" href="/trips/edit">
                     <i class="material-icons light-blue-text text-darken-4">edit</i>
                 </a>
             {% else %}
-                <a class="secondary-content" href="/trips/new/{{ line.id }}/{{ station.id }}">
+                <a class="secondary-content" href="/trips/new/{{ station.mta_uid }}/{{ line.id }}">
                     <i class="material-icons green-text">add_circle</i>
                 </a>
             {% endif %}
-            <a class="secondary-content" href="">
+            <a class="secondary-content">
                 <i class="material-icons white-text">_</i>
             </a>
             <a class=secondary-content"></a>
             {% if station.id in alert_station_ids %}
-                <a class="secondary-content" href="/alerts/{{ station.id }}/{{ line.id }}" class="secondary-content">
+                <a class="secondary-content" href="/alerts/{{ station.mta_uid }}/{{ line.id }}" class="secondary-content">
                     <i class="material-icons yellow-text text-darken-3">warning</i>
                 </a>
             {% endif %}
