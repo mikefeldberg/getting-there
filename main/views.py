@@ -277,11 +277,6 @@ def alerts_index(request, mta_uid, line_id):
         data = dict(request.POST.copy())
         del data['csrfmiddlewaretoken']
 
-        print(data)
-
-        for item in data:
-            print(item)
-
         current_line = Line.objects.filter(id=line_id).first()
 
         station_id_obj = Station.objects.filter(
@@ -296,28 +291,20 @@ def alerts_index(request, mta_uid, line_id):
         else:
             filtered_lines = [line_id]
 
-        print('filt lines-------------------------------',filtered_lines)
-
         if data['stations_away'][0]:
             station_radius = int(data['stations_away'][0])
         else:
             station_radius = 0
-
-        print('radius-----------------------------------------',station_radius)
 
         if data['age_of_alert'][0]:
             age_of_alert = int(data['age_of_alert'][0])
         else:
             age_of_alert = 15
 
-        print('age-----------------------',age_of_alert)
-
         current_station = Station.objects.filter(id=station_id).values(
             'mta_uptown_id',
             'mta_downtown_id'
         ).last()
-
-        print('cur sta----------------------', current_station)
 
         line_filters = {}
 
@@ -331,15 +318,11 @@ def alerts_index(request, mta_uid, line_id):
                 'uptown_stop_number',
             ).last()
 
-            print('ut stations----------------------', uptown_stations)
-
             if uptown_stations:
                 uptown_stop_number = uptown_stations['uptown_stop_number']
                 uptown_min = uptown_stop_number - station_radius
                 uptown_max = uptown_stop_number + station_radius
                 line_data['uptown_range'] = list(range(uptown_min, uptown_max + 1))
-
-            print(line_data)
 
             downtown_stations = Station.objects.filter(
                 line_id=line_id,
@@ -360,8 +343,6 @@ def alerts_index(request, mta_uid, line_id):
 
         alerts = []
 
-        print('LF--------------------------------',line_filters)
-
         for line_id, line_filter in line_filters.items():
             uptown_alerts = Alert.objects.filter(
                 station__uptown_stop_number__in=line_filter['uptown_range'],
@@ -379,8 +360,7 @@ def alerts_index(request, mta_uid, line_id):
                 'direction',
                 'message',
             ).all()
-            
-            print('UTA++++++++++++++++++++',uptown_alerts)
+
             alerts.append(list(uptown_alerts))
 
             downtown_alerts = Alert.objects.filter(
@@ -401,8 +381,6 @@ def alerts_index(request, mta_uid, line_id):
             ).all()
 
             alerts.append(list(downtown_alerts))
-
-            print('DTA++++++++++++++++++++',downtown_alerts)
 
         station_display = Station.objects.filter(id=station_id).values('name').first()
 
@@ -430,16 +408,15 @@ def alerts_index(request, mta_uid, line_id):
         ).all()
 
         distance = list(range(1,11))
-        
-        alerts = sum(alerts, [])
 
-        print('alerts ***********************************************',alerts)
+        alerts = sum(alerts, [])
 
         # return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id, {'alerts':alerts})
         return render(request, 'alerts/index.html', {
             'alerts': alerts,
             'line_id': line_id,
             'lines': lines,
+            'filtered_lines': filtered_lines,
             'distance': distance,
             'station_display': station_display['name'],
             'mta_uid': mta_uid,
@@ -457,7 +434,6 @@ def alerts_index(request, mta_uid, line_id):
 
     for item in stations:
         station_ids.append(item['id'])
-        print(station_ids)
 
     alerts = Alert.objects.filter(
         station__id__in=station_ids,
@@ -602,8 +578,6 @@ def alerts_detail(request, alert_id):
         'station__name',
         'line__id',
     ).first()
-
-    print(origin_station)
 
     user_id = request.user.id
 

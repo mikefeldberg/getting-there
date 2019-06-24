@@ -6,7 +6,18 @@
 
 <div class="mb20 center">
     <h4>Viewing Alerts For</h4>
-    <h5>{{ station_display }}</h5>
+    <div class="flx-row flx-ctr">
+        <p class="mr10 station-text">{{ station_display }}</p>
+        {% if filtered_lines %}
+            {% for line in filtered_lines %}
+                <img class="mr10" src="/static/bullets/{{ line }}.svg" alt="2" width="30" data-canonical-src="/static/bullets/{{ line }}.svg" style="max-width:100%;">    
+            {% endfor %}
+        {% else %}
+            {% for line in lines %}
+                <img class="mr10" src="/static/bullets/{{ line.id }}.svg" alt="2" width="30" data-canonical-src="/static/bullets/{{ line }}.svg" style="max-width:100%;">    
+            {% endfor %}
+        {% endif %}
+    </div>
 </div>
 
 <div class="row">
@@ -30,7 +41,7 @@
         <div class="input-field col s3">
             <select name="stations_away">
                 <option value="" selected>Stations Away</option>
-                <option value="0">See entire line</option>
+                <option value="99">See entire line</option>
                 {% for range in distance %}
                     <option value="{{ range }}">{{ range }}</option>
                 {% endfor %}
