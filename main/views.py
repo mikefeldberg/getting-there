@@ -360,11 +360,14 @@ def alerts_index(request, mta_uid, line_id):
 
         alerts = []
 
+        print('LF--------------------------------',line_filters)
+
         for line_id, line_filter in line_filters.items():
             uptown_alerts = Alert.objects.filter(
                 station__uptown_stop_number__in=line_filter['uptown_range'],
                 line_id=line_id,
-                deleted_at=None
+                direction='Uptown',
+                deleted_at=None,
             ).values(
                 'id',
                 'line__id',
@@ -376,13 +379,15 @@ def alerts_index(request, mta_uid, line_id):
                 'direction',
                 'message',
             ).all()
-
+            
+            print('UTA++++++++++++++++++++',uptown_alerts)
             alerts.append(list(uptown_alerts))
 
             downtown_alerts = Alert.objects.filter(
                 station__downtown_stop_number__in=line_filter['downtown_range'],
                 line_id=line_id,
-                deleted_at=None
+                direction='Downtown',
+                deleted_at=None,
             ).values(
                 'id',
                 'line__id',
@@ -396,6 +401,8 @@ def alerts_index(request, mta_uid, line_id):
             ).all()
 
             alerts.append(list(downtown_alerts))
+
+            print('DTA++++++++++++++++++++',downtown_alerts)
 
         station_display = Station.objects.filter(id=station_id).values('name').first()
 
