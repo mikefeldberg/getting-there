@@ -8,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from copy import copy
 from datetime import datetime, timedelta, timezone
@@ -386,18 +387,31 @@ def alerts_index(request, mta_uid, line_id):
 
         return redirect('alerts_index', mta_uid=mta_uid, line_id=line_id)
 
-    current_line = Line.objects.filter(id=line_id).first()
+    # current_line = Line.objects.filter(id=line_id).first()
 
-    station_id_obj = Station.objects.filter(
-        line=current_line,
-        mta_uptown_id=mta_uid + 'N'
-    ).values('id').first()
+    # station_id_obj = Station.objects.filter(
+    #     line=current_line,
+    #     mta_uptown_id=mta_uid + 'N'
+    # ).values('id').first()
     
-    station_id = station_id_obj['id']
+    # station_id = station_id_obj['id']
+
+    stations = Station.objects.filter(
+        Q(mta_uptown_id=mta_uid+'N') | Q(mta_downtown_id=mta_uid+'S')
+    ).values(
+        'id',
+        'name',
+        'line_id',
+    ).all()
+
+    station_ids = []
+
+    for item in stations:
+        station_ids.append(item['id'])
+        print(station_ids)
 
     alerts = Alert.objects.filter(
-        station_id=station_id,
-        line_id=line_id,
+        station__id__in=station_ids,
         deleted_at=None
     ).values(
         'id',
@@ -413,21 +427,7 @@ def alerts_index(request, mta_uid, line_id):
         'message',
     ).all()
 
-    print('JUST MADE IT PAST ALERT LOOKUP **************************************************************************************************************')
-
-    station_display = Station.objects.filter(id=station_id).values('name').first()
-
-    print(station_display['name'])
-
-    station_uid = Station.objects.filter(id=station_id).first().mta_downtown_id
-
-    stations = Station.objects.filter(
-        mta_downtown_id=station_uid,
-        deleted_at=None
-    ).values(
-        'line_id',
-        'name',
-    ).all()
+    station_display = Station.objects.filter(id=station_ids[0]).values('name').first()
 
     line_ids = [i['line_id'] for i in stations]
 
@@ -448,7 +448,6 @@ def alerts_index(request, mta_uid, line_id):
 
     return render(request, 'alerts/index.html', {
         'alerts': alerts,
-        'station_id': station_id,
         'line_id': line_id,
         'lines': lines,
         'distance': distance,
