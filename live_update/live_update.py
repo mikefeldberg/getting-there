@@ -1,6 +1,5 @@
 from google.transit import gtfs_realtime_pb2
 from google.protobuf.json_format import MessageToDict
-from bs4 import BeautifulSoup
 import logging
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
@@ -9,8 +8,6 @@ from sqlalchemy import create_engine
 import os
 import requests
 import pandas as pd
-from dotenv import load_dotenv
-load_dotenv()
 
 #This script hits the NYC transit live update feed and populate the d
 db_info = os.environ.get('DATABASE_URL')
