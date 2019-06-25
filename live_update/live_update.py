@@ -11,6 +11,7 @@ import pandas as pd
 
 #This script hits the NYC transit live update feed and populate the d
 db_info = os.environ.get('DATABASE_URL')
+print('dbinfo-------------------------------------',db_info[0])
 
 try:
 
@@ -60,7 +61,8 @@ try:
 
     logging.basicConfig()
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    engine = create_engine('postgres://{}').format(db_info)
+    engine = create_engine('postgres://' + db_info)
+    print(engine)
 
     df.to_sql("arrivals", 
             engine, 
