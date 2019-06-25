@@ -13,23 +13,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #This script hits the NYC transit live update feed and populate the d
-db_info = os.environ['DBINFO']
+db_info = os.environ.get('DATABASE_URL')
 
 try:
 
-    key = os.environ["MTAKEY"]
+    key = os.environ.get("MTAKEY")
 
-    urls = ['http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=1',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=26',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=16',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=21',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=2',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=11',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=31',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=26',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=36',
-            'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=51',
-        ]
+    urls = [
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=1',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=26',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=16',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=21',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=2',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=11',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=31',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=26',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=36',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=51',
+    ]
 
     feed_list = []
    
