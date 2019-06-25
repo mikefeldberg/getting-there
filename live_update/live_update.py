@@ -61,7 +61,7 @@ try:
 
     logging.basicConfig()
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    engine = create_engine('postgres://' + db_info)
+    engine = create_engine(db_info)
     print(engine)
 
     df.to_sql("arrivals", 
