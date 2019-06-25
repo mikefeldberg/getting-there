@@ -1,23 +1,22 @@
 from google.transit import gtfs_realtime_pb2
 from google.protobuf.json_format import MessageToDict
-from bs4 import BeautifulSoup
 import logging
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+# logging.basicConfig()
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 import sqlalchemy
 from sqlalchemy import create_engine
 import os
 import requests
 import pandas as pd
-from dotenv import load_dotenv
-load_dotenv()
 
-#This script hits the NYC transit live update feed and populate the d
-db_info = os.environ['DBINFO']
+db_user = os.environ['DBUSER']
+db_name = os.environ.get('DBNAME')
+db_host = os.environ.get('DBHOST')
+db_pw = os.environ.get('DBPW')
 
 try:
 
-    key = os.environ["MTAKEY"]
+    key = os.environ.get('MTAKEY')
 
     urls = ['http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=1',
             'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=26',
@@ -62,7 +61,8 @@ try:
 
     logging.basicConfig()
     logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-    engine = create_engine('postgres://{}').format(db_info)
+    engine = create_engine('postgres://{}:{}@{}/{}').format(db_user,db_pw,db_host,db_name)
+    print('engine---------------------------------------',engine)
 
     df.to_sql("arrivals", 
             engine, 
