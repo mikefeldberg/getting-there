@@ -17,16 +17,16 @@ try:
     key = os.environ.get("MTAKEY")
 
     urls = [
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=1',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=26',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=16',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=21',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=2',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=11',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=31',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=26',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=36',
-        'http://datamine.mta.info/mta_esi.php?key='+ key + '&feed_id=51',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=1',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=26',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=16',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=21',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=2',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=11',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=31',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=26',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=36',
+        'http://datamine.mta.info/mta_esi.php?key=' + key + '&feed_id=51',
     ]
 
     feed_list = []
