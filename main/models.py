@@ -79,4 +79,4 @@ class Vote(models.Model):
 class Arrival(models.Model):
     stop_id = models.CharField(max_length=10, blank=True)
     route = models.CharField(max_length=10, blank=True)
-    arrival = models.IntegerField(blank=True)
+    arrival = models.CharField(max_length=20, blank=True)
