@@ -80,3 +80,4 @@ class Arrival(models.Model):
     stop_id = models.CharField(max_length=10, blank=True)
     route = models.CharField(max_length=10, blank=True)
     arrival = models.IntegerField(blank=True)
+    arrivaltime = models.DateTimeField(null=True, blank=True)

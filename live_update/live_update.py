@@ -43,7 +43,7 @@ try:
                 try:
                     values = {
                         "route": val.trip_update.trip.route_id,
-                        "arrival": val.trip_update.stop_time_update[idx].arrival.time,
+                        "arrivaltime": val.trip_update.stop_time_update[idx].arrival.time,
                         "stop_id": val.trip_update.stop_time_update[idx].stop_id  
                     }
                     feed_list.append(values)
@@ -56,7 +56,7 @@ try:
         stream = parser(link)
 
     df = pd.DataFrame(stream)
-    # df['arrival'] = int(pd['arrival'])
+    df['arrivaltime'] = pd.to_datetime(df['arrivaltime'], unit='s')
     # df.to_csv('arrival_times.csv')
 
     logging.basicConfig()
@@ -68,11 +68,6 @@ try:
         engine, 
         if_exists="replace",  
         index=False, 
-        dtype= {
-            'arrival': sqlalchemy.types.INTEGER(),
-            'stop_id': sqlalchemy.types.VARCHAR(),
-            'route': sqlalchemy.types.VARCHAR(),
-        }
     )
 
     print('New arrival data pushed')
@@ -81,4 +76,3 @@ except Exception as e:
     logging.error(e)
     logging.debug(engine)
     os.system('python live_update.py')
-
