@@ -33,10 +33,11 @@
                     </div>
                     <div class="col s1"></div>
                     <div class="col s4">
-                        <div class="form-center-text bold center">Upcoming trains:</div>
-                        <div class="form-center-text center">{{ trip.next_three[0] }}</div>
-                        <div class="form-center-text center">{{ trip.next_three[1] }}</div>
-                        <div class="form-center-text center">{{ trip.next_three[2] }}</div>
+                        {% if trip.next_three %}
+                            <div class="form-center-text bold center">Upcoming trains:</div>
+                        {% else %}
+                            <div class="form-center-text center">No upcoming train information at this time</div>
+                        {% endif %}
                     </div>
                     <div class="col s4">
                         <div class="flex-center">
