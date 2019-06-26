@@ -110,11 +110,13 @@ def home(request):
         print('upcoming trains-------------------------',upcoming_trains)
 
         for arrival in arrivals:
-            if arrival['arrival'] - now > 0:
-                upcoming_trains.append(arrival['arrival'])
+            print('-------arr',arrival)
+            print('-------now',now)
+            # if arrival['arrival'] - now > 0:
+            #     upcoming_trains.append(arrival['arrival'])
 
-        trip['next_three'] = upcoming_trains[:3]
-        print('trip next 3-------------------------',trip['next_three'])
+        # trip['next_three'] = upcoming_trains[:3]
+        # print('trip next 3-------------------------',trip['next_three'])
 
     return render(request, 'home.html', {'trips': trips})
 
