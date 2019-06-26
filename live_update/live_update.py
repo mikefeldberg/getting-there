@@ -64,7 +64,7 @@ try:
     engine = create_engine(db_info)
     print(engine)
 
-    df.to_sql("arrivals", 
+    df.to_sql("main_arrival", 
         engine, 
         if_exists="replace",  
         index=False, 
