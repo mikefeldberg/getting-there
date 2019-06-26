@@ -35,6 +35,7 @@
                     <div class="col s4">
                         {% if trip.next_three %}
                             <div class="form-center-text bold center">Upcoming trains:</div>
+                            <div class="form-center-text bold center">{{ trip.next_three }}</div>
                         {% else %}
                             <div class="form-center-text center">No upcoming train information at this time</div>
                         {% endif %}
