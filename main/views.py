@@ -94,27 +94,14 @@ def home(request):
         arrivals = Arrival.objects.filter(
             Q(stop_id=trip['station__mta_uptown_id']) | Q(stop_id=trip['station__mta_downtown_id']),
             route=trip['line__route'],
-            arrival__gt=0,
+            arrival__gt=calendar.timegm(time.gmtime()),
         ).values(
             'route',
             'stop_id',
             'arrival',
         ).all()
 
-        print('arrivals-------------------------',arrivals)
-
-        now = calendar.timegm(time.gmtime())
-
-        print('now-------------------------',now)
-        upcoming_trains = []
-        print('upcoming trains-------------------------',upcoming_trains)
-
-        for arrival in arrivals:
-            if arrival['arrival'] - now > 0:
-                upcoming_trains.append(arrival['arrival'])
-
-        trip['next_three'] = upcoming_trains[:3]
-        print('trip next 3-------------------------',trip['next_three'])
+        trip['next_three'] = arrivals[:3]
 
     return render(request, 'home.html', {'trips': trips})
 
