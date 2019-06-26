@@ -104,7 +104,7 @@ def home(request):
         arrival_times = []
 
         for arrival in arrivals:
-            arrival_times.append(arrival['arrivaltime'])
+            arrival_times.append("%s:%s:%s" % (arrival['arrivaltime'].hour, arrival['arrivaltime'].minute, arrival['arrivaltime'].second))
 
         trip['next_three'] = arrival_times[:3]
 
