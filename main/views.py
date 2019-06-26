@@ -94,7 +94,7 @@ def home(request):
         arrivals = Arrival.objects.filter(
             Q(stop_id=trip['station__mta_uptown_id']) | Q(stop_id=trip['station__mta_downtown_id']),
             route=trip['line__route'],
-            arrivaltime__gt=datetime.fromtimestamp((calendar.timegm(time.gmtime()))),
+            # arrivaltime__gt=datetime.fromtimestamp((calendar.timegm(time.gmtime()))),
         ).values(
             'route',
             'stop_id',
