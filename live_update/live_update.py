@@ -31,9 +31,9 @@ try:
     ]
 
     feed_list = []
-   
+
     def parser(url):
-    
+
         feed = gtfs_realtime_pb2.FeedMessage()
         response = requests.get(url)
         feed.ParseFromString(response.content)
@@ -56,7 +56,7 @@ try:
         stream = parser(link)
 
     df = pd.DataFrame(stream)
-    # df['arrival'] = str(pd['arrival'])
+    # df['arrival'] = int(pd['arrival'])
     # df.to_csv('arrival_times.csv')
 
     logging.basicConfig()
@@ -65,11 +65,18 @@ try:
     print(engine)
 
     df.to_sql("arrivals", 
-            engine, 
-            if_exists="replace",  
-            index=False, 
-            )
+        engine, 
+        if_exists="replace",  
+        index=False, 
+        dtype= {
+            'arrival': sqlalchemy.types.INTEGER(),
+            'stop_id': sqlalchemy.types.VARCHAR(),
+            'route': sqlalchemy.types.VARCHAR(),
+        }
+    )
+
     print('New arrival data pushed')
+
 except Exception as e:
     logging.error(e)
     logging.debug(engine)
