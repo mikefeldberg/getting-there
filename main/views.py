@@ -12,6 +12,8 @@ from django.db.models import Q
 
 from copy import copy
 from datetime import datetime, timedelta, timezone
+import calendar
+import time
 
 import collections
 import uuid
@@ -27,12 +29,11 @@ def home(request):
     ).values(
         'id',
         'line__id',
-        'line__name',
-        'line__color',
-        'line__text_color',
-        'line__express',
+        'line__route',
         'station__id',
         'station__name',
+        'station__mta_downtown_id',
+        'station__mta_uptown_id',
         'direction',
         'trip_type',
     ).all()
@@ -88,6 +89,27 @@ def home(request):
             if last_vote:
                 trip['resolved'] = last_vote['resolved']
                 # trip['status_updated_at'] = last_vote['updated_at']
+
+    for trip in trips:
+        arrivals = Arrival.objects.filter(
+            Q(stop_id=trip['mta_uptown_id'] | Q(stop_id=trip['mta_downtown_id'])),
+            route=trip['route'],
+            arrival__gt=0,
+        ).values(
+            'route',
+            'stop_id',
+            'arrival',
+        ).all()
+
+        now = calendar.timegm(time.gmtime())
+
+        upcoming_trains = []
+
+        for arrival in arrivals:
+            if arrival['arrival'] - now > 0:
+                upcoming_trains.append(arrival['arrival'])
+
+        trip['next_three'] = upcoming_trains[:3]
 
     return render(request, 'home.html', {'trips': trips})
 
