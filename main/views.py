@@ -98,10 +98,15 @@ def home(request):
         ).values(
             'route',
             'stop_id',
-            'arrival',
+            'arrivaltime',
         ).all()
 
-        trip['next_three'] = arrivals[:3]
+        arrival_times = []
+
+        for arrival in arrivals:
+            arrival_times.append(arrival['arrivaltime'])
+
+        trip['next_three'] = arrival_times[:3]
 
     return render(request, 'home.html', {'trips': trips})
 
