@@ -56,7 +56,7 @@ try:
         stream = parser(link)
 
     df = pd.DataFrame(stream)
-    df['arrival'] = pd.to_datetime(df['arrival'], unit='s')
+    df['arrival'] = str(pd['arrival'])
     # df.to_csv('arrival_times.csv')
 
     logging.basicConfig()
