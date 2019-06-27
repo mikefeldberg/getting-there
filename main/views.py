@@ -1,3 +1,10 @@
+import collections
+import uuid
+import boto3
+import pytz
+import calendar
+import time
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -12,14 +19,15 @@ from django.db.models import Q
 
 from copy import copy
 from datetime import datetime, timedelta, timezone
-import calendar
-import time
-
-import collections
-import uuid
-import boto3
 
 from .models import Line, Station, Trip, Alert, Comment, Vote, Arrival
+
+
+def convert_datetime_to_timestamp(dt):
+    target_tz = pytz.timezone("America/New_York")
+    dt = dt.astimezone(target_tz)
+
+    return dt.strftime("%-I:%M%p")
 
 
 def home(request):
@@ -103,8 +111,11 @@ def home(request):
 
         arrival_times = []
 
+        # For testing
+        # arrival_times.append(convert_datetime_to_timestamp(datetime.now()))
+
         for arrival in arrivals:
-            arrival_times.append("%s:%s:%s" % (arrival['arrivaltime'].hour, arrival['arrivaltime'].minute, arrival['arrivaltime'].second))
+            arrival_times.append(convert_datetime_to_timestamp(arrival['arrivaltime']))
 
         trip['next_three'] = arrival_times[:3]
 
