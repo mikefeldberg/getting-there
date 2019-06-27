@@ -25,7 +25,6 @@
                                 {{ trip.station__name }}
                             </div>
                             <img class="mb15" src="/static/bullets/{{ trip.line__id }}.svg" alt="2" width="70" data-canonical-src="/static/bullets/{{ trip.line__id }}.svg" style="max-width:100%;">
-
                             <div class="my-trip-text">
                                 {{ trip.direction }}
                             </div>
@@ -66,7 +65,7 @@
     {% endfor %}
 </div>
 {% else %}
-    <p>You currently do not have any lines added to your trips. Access the All Lines page to add trips.</p>
+    <p>You don't have any trips saved. You can browse trains and their stops in the All Lines section.</p>
 {% endif %}
 
 {% endblock %}

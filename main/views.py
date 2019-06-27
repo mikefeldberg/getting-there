@@ -99,8 +99,13 @@ def home(request):
                 # trip['status_updated_at'] = last_vote['updated_at']
 
     for trip in trips:
+        if trip['direction'] == 'Uptown':
+            stop_id = trip['station__mta_uptown_id']
+        else:
+            stop_id = trip['station__mta_downtown_id']
+
         arrivals = Arrival.objects.filter(
-            Q(stop_id=trip['station__mta_uptown_id']) | Q(stop_id=trip['station__mta_downtown_id']),
+            stop_id=stop_id,
             route=trip['line__route'],
             arrivaltime__gt=datetime.now(),
         ).order_by(
