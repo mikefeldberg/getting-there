@@ -102,12 +102,12 @@ def home(request):
         arrivals = Arrival.objects.filter(
             Q(stop_id=trip['station__mta_uptown_id']) | Q(stop_id=trip['station__mta_downtown_id']),
             route=trip['line__route'],
-            # arrivaltime__gt=datetime.fromtimestamp((calendar.timegm(time.gmtime()))),
-        ).values(
-            'route',
-            'stop_id',
+            arrivaltime__gt=datetime.now(),
+        ).order_by(
             'arrivaltime',
-        ).all()
+        ).values(
+            'arrivaltime',
+        ).all()[:3]
 
         arrival_times = []
 
@@ -117,7 +117,7 @@ def home(request):
         for arrival in arrivals:
             arrival_times.append(convert_datetime_to_timestamp(arrival['arrivaltime']))
 
-        trip['next_three'] = arrival_times[:3]
+        trip['next_three'] = arrival_times
 
     return render(request, 'home.html', {'trips': trips})
 
