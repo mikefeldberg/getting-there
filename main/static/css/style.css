@@ -148,11 +148,15 @@ h1 {
     align-items: center;
 } */
 
+.timestamp {
+    margin-bottom: 5px;
+    font-size: 1.5em;
+}
+
 .flx-ctr {
     align-items: center;
     justify-content: center;
 }
-
 
 .flex-center {
     display: flex;
