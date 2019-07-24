@@ -218,6 +218,10 @@ h1 {
     margin-bottom: 20px;
 }
 
+.mb40 {
+    margin-bottom: 40px;
+}
+
 .ctr-txt {
     display: flex;
     align-items: center;
