@@ -31,8 +31,16 @@ def convert_datetime_to_timestamp(dt):
 
 
 def home(request):
+    if request.user.id:
+        user_id = request.user.id
+        signed_in = True
+    else:
+        # zero state trips
+        user_id = 2
+        signed_in = False
+
     trips = Trip.objects.filter(
-        user_id=request.user.id,
+        user_id=user_id,
         deleted_at=None
     ).values(
         'id',
@@ -124,7 +132,7 @@ def home(request):
 
         trip['next_three'] = arrival_times
 
-    return render(request, 'home.html', {'trips': trips})
+    return render(request, 'home.html', {'trips': trips, 'signed_in': signed_in})
 
 
 def about(request):

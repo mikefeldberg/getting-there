@@ -15,6 +15,10 @@
 
 {% if trips %}
 <div name="all-trips">
+    {% if not signed_in %}
+        <h5 class="mb40" style="text-align:center">Below are a few sample trips. Log in or sign up to create your own!</h5>
+    {% endif %}
+
     {% for trip in trips %}
         <a class="boldish blue-grey-text text-darken-4" href="alerts/{{ trip.mta_uid }}/{{ trip.line__id }}/">
             <div class="trip-container card-panel">
