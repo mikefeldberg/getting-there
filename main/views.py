@@ -118,8 +118,6 @@ def home(request):
 
         # For testing
         # arrival_times.append(convert_datetime_to_timestamp(datetime.now()))
-        # arrival_times.append(convert_datetime_to_timestamp(datetime.now()))
-        # arrival_times.append(convert_datetime_to_timestamp(datetime.now()))
 
         for arrival in arrivals:
             arrival_times.append(convert_datetime_to_timestamp(arrival['arrivaltime']))
