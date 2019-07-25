@@ -4,12 +4,13 @@ Don't be left out in the dark ever again. With the help of Getting There, discus
 
 ## Collaborators
 
-Danny Camarena
-Shawn Kim
+[Danny Camarena](https://github.com/camarenad)
+
+[Shawn Kim](https://github.com/sgk94)
 
 ## Technologies Used
 
-`HTML5` | `CSS3` | `Python` | `Django`| `PostgreSQL` | `MTA GTFS API` | `Heroku`
+`HTML5` | `CSS3` | `Python` | `Django` | `PostgreSQL` | `MTA GTFS API` | `Materialize` | `Heroku` |
 
 ---
 
