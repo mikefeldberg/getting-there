@@ -1,53 +1,66 @@
 # **Getting There**
 
-## **Table of Contents**
-
-#### 1. Introduction
-
-#### 2. Technologies Used
-
-#### 3. Future Enhancements
-
-#### 4. Images
-
----
-
-## 1. **Introduction**
-
 Don't be left out in the dark ever again. With the help of Getting There, discuss with other riders train delays. Create a trip list with all your relevants stations and get the latest alerts. 
 
-![homepage](/images/homepage.png)
+## Collaborators
+
+Danny Camarena
+Shawn Kim
+
+## Technologies Used
+
+`HTML5` | `CSS3` | `Python` | `Django`| `PostgreSQL` | `MTA GTFS API` | `Heroku`
 
 ---
 
-## 2. **Technologies Used**
+# Features
 
-### Languages
+### 1. See what other riders are saying about train status at any station and train combination in the NYC subway system.
+### 2. Create an account to
+* save your own custom trips
+* get live train arrival data from the Metropolitan Transit Authority's GTFS realtime transit data API feed
+* create delay alerts
+* leave comments and status updates on existing alerts
+* mark alerts 'resolved' or 'ongoing'
 
-- HTML 5, CSS, Javascript, Django, Python, MTA API, Trello, Canva
+# <a href="https://getting-there.herokuapp.com/" target="_blank">Get there, today!</a>
 
-### Pitch Deck
+## Pitch Deck
 [Pitch Deck](https://drive.google.com/file/d/195h7Z9oeTjeMqbRf32djBkvx_orPwSpt/view)
 
-### Trello
+## Trello
 [Trello Link](https://trello.com/b/IlZjX1se/getting-there)
 
-### Heroku
-[Heroku Link](http://getting-there.herokuapp.com)
+## Screenshots
 
----
+#### Landing page
 
-## 3. **Future Enhancements**
+<p align="center">
+    <img align="center" src="https://imgur.com/nplif2Ol.png">
+</p>
 
-1. We want to create a fully mobile experience available for iOS and Android.
-2. It's important that we can provide real time updates straight from the MTA along with rider posts.
-3. We hope to make the app experience more smooth with React. 
+#### Create a travel alert
 
----
+<p align="center">
+    <img align="center" src="https://imgur.com/gPCpeP8l.png">
+</p>
 
-## 4. **Images**
+#### View existing alerts
 
-![all lines](/images/alllines.png)
-![all lines](/images/login.png)
-![all lines](/images/mytrip.png)
-![all lines](/images/newtrip.png)
+<p align="center">
+    <img align="center" src="https://imgur.com/98879Hml.png">
+</p>
+
+#### Filter alerts by train line, distance away, or time created
+
+<p align="center">
+    <img src="https://imgur.com/URDFb7Ym.png">
+    <img src="https://imgur.com/iVUcGfQm.png">
+    <img src="https://imgur.com/OuuamRkm.png">
+</p>
+
+#### View all stops on a train line.
+
+<p align="center">
+    <img align="center" src="https://imgur.com/ZduF4ogl.png">
+</p>
